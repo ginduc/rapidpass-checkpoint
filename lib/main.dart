@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
@@ -14,9 +15,16 @@ class RapidPassCheckpointApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       initialRoute: "/",
-      routes: {
-        "/": (context) => WelcomeScreen(),
-        "/menu": (context) => MainMenuScreen("Camp Aguinaldo")
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case '/':
+            return CupertinoPageRoute(
+                builder: (_) => WelcomeScreen(), settings: settings);
+          case '/menu':
+            return CupertinoPageRoute(
+                builder: (_) => MainMenuScreen('Camp Aguinaldo'),
+                settings: settings);
+        }
       },
     );
   }
