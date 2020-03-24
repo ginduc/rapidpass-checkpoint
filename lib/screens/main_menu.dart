@@ -1,0 +1,176 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:rapidpass_checkpoint/themes/default.dart';
+
+class MainMenuScreen extends StatelessWidget {
+  final String checkPointName;
+
+  MainMenuScreen(this.checkPointName);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('RapidPass Checkpoint')),
+      body: Container(
+        margin: const EdgeInsets.all(24.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CheckPointWidget(this.checkPointName),
+              MainMenu(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CheckPointWidget extends StatelessWidget {
+  final String checkPointName;
+
+  CheckPointWidget(this.checkPointName);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            'RapidPass Checkpoint:',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: deepPurple600),
+          ),
+        ),
+        Container(
+          width: 320.0,
+          height: 50.0,
+          decoration: BoxDecoration(color: deepPurple600),
+          child: Center(
+            child: Text(
+              this.checkPointName,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MainMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          MainMenuButton(
+              'Scan QR Code', 'icons8_qr-code-2x.png', () => scan(context)),
+          MainMenuButton('Plate Number', 'license-plate-2x.png',
+              () => debugPrint('Plate Number pressed')),
+          MainMenuButton('Control Code', 'control_number-2x.png',
+              () => debugPrint('Control Code pressed')),
+        ],
+      ),
+    );
+  }
+
+  Future scan(BuildContext context) async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      debugPrint('barcode => ' + barcode);
+      final encoded = utf8.encode(barcode);
+      final display = encoded.map((i) => i.toRadixString(16));
+      _showDialog(context, title: 'Success!', body: '${display}');
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        _showDialog(context, title: 'Error', body: 'Camera access denied');
+      } else {
+        _showDialog(context, title: 'Error', body: 'Unknown Error');
+      }
+    } on FormatException {
+      debugPrint(
+          'null (User returned using the "back"-button before scanning anything. Result)');
+      _showDialog(context,
+          title: 'Error',
+          body:
+              'User returned using the "back"-button before scanning anything. Result');
+    } catch (e) {
+      _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
+    }
+  }
+
+  void _showDialog(BuildContext context, {String title, String body}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(body),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class MainMenuButton extends StatelessWidget {
+  final String text;
+  final String iconName;
+  final VoidCallback onPressed;
+
+  MainMenuButton(this.text, this.iconName, this.onPressed);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 300.0,
+        child: OutlineButton(
+          borderSide: BorderSide(width: 2.0, color: deepPurple900),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: Row(
+            children: <Widget>[
+              Image(
+                width: 80.0,
+                image: AssetImage('assets/' + this.iconName),
+              ),
+              Text(this.text),
+            ],
+          ),
+          onPressed: this.onPressed,
+        ),
+      ),
+    );
+  }
+}
