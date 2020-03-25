@@ -34,6 +34,7 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
 
   @override
   QrData convert(ByteData input) {
+    debugPrint('input.lengthInBytes: ${input.lengthInBytes}');
     if (input.lengthInBytes < 13) {
       throw FormatException(
           'Invalid QR code raw data: ${input.buffer.asUint8List()}',
@@ -42,8 +43,9 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
     }
     // TODO: More sanity checks
     final pass_type = input.getUint8(0);
+    print('pass_type: $pass_type');
     final control_code = input.getUint32(1);
-    print('control_code: $control_code');
+    print('control_code: $control_code (${crockford.encode(control_code)})');
     final valid_from = input.getUint32(5);
     final valid_until = input.getUint32(9);
     // ZigZag encoding, but since should only be positive we can simply drop

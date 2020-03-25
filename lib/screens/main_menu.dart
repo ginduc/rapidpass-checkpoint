@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
@@ -99,11 +101,16 @@ class MainMenu extends StatelessWidget {
 
   Future scan(BuildContext context) async {
     try {
-      String barcode = await BarcodeScanner.scan();
-      debugPrint('barcode => ' + barcode);
-      final encoded = utf8.encode(barcode);
-      final display = encoded.map((i) => i.toRadixString(16));
-      _showDialog(context, title: 'Success!', body: '$display');
+      final String base64Encoded = await BarcodeScanner.scan();
+      final decoded = base64.decode(base64Encoded);
+      final asHex = decoded.map((i) => i.toRadixString(16));
+      debugPrint('barcode => $asHex (${asHex.length} codes)');
+      final buffer = decoded is Uint8List
+          ? decoded.buffer
+          : Uint8List.fromList(decoded).buffer;
+      final byteData = ByteData.view(buffer);
+      final rawQrData = QrCodeDecoder().convert(byteData);
+      _showDialog(context, title: 'Success!', body: '$rawQrData}');
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');
