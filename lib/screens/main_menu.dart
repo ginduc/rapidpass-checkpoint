@@ -84,10 +84,14 @@ class MainMenu extends StatelessWidget {
         children: <Widget>[
           MainMenuButton(
               'Scan QR Code', 'icons8_qr-code-2x.png', () => scan(context)),
-          MainMenuButton('Plate Number', 'license-plate-2x.png',
-              () => debugPrint('Plate Number pressed')),
-          MainMenuButton('Control Code', 'control_number-2x.png',
-              () => debugPrint('Control Code pressed')),
+          MainMenuButton('Plate Number', 'license-plate-2x.png', () {
+            debugPrint('Plate Number pressed');
+            Navigator.pushNamed(context, '/checkPlateNumber');
+          }),
+          MainMenuButton('Control Code', 'control_number-2x.png', () {
+            debugPrint('Control Code pressed');
+            Navigator.pushNamed(context, '/checkControlCode');
+          }),
         ],
       ),
     );

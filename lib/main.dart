@@ -25,6 +25,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => MainMenuScreen('Camp Aguinaldo'),
                 settings: settings);
         }
+        return null;
       },
     );
   }
