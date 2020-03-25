@@ -40,6 +40,9 @@ class CrockfordCodec extends Codec<int, String> {
 }
 
 const alphaEncodingMap = {
+  97: 65,
+  98: 66,
+  99: 67,
   100: 68,
   101: 69,
   102: 70,
@@ -64,7 +67,7 @@ const alphaEncodingMap = {
 class CrockfordEncoder extends Converter<int, String> {
   @override
   String convert(int input) {
-    final rawBase32 = input.toRadixString(32);
+    final rawBase32 = input.toRadixString(32).toLowerCase();
     final codeUnits = rawBase32.codeUnits;
     final List<int> out = List(codeUnits.length);
     for (var i = 0; i < codeUnits.length; ++i) {

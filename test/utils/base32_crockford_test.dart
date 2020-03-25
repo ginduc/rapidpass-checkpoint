@@ -3,8 +3,10 @@ import 'package:test/test.dart';
 
 void main() {
   test('Base32Crockford.encode(int) works', () {
-    final String encoded = crockford.encode(987654321);
-    expect(encoded, equals('XDWT5H'));
+    final testCases = {2491777155: '2A8B043', 987654321: 'XDWT5H'};
+    testCases.forEach((input, expected) {
+      expect(crockford.encode(input), equals(expected));
+    });
   });
   test('normalize() works', () {
     final testCases = {
