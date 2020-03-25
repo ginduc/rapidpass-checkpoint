@@ -110,7 +110,7 @@ class MainMenu extends StatelessWidget {
           : Uint8List.fromList(decoded).buffer;
       final byteData = ByteData.view(buffer);
       final rawQrData = QrCodeDecoder().convert(byteData);
-      _showDialog(context, title: 'Success!', body: '$rawQrData}');
+      Navigator.pushNamed(context, "/passOk", arguments: rawQrData);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');
