@@ -27,7 +27,7 @@ class QrCodeDecoder {
   static List<int> decodeHex(String hex) {
     if (!hex.length.isEven) {
       throw new FormatException(
-          "Invalid input length, must be even.", hex, hex.length);
+          'Invalid input length, must be even.', hex, hex.length);
     }
     return _decode(hex.codeUnits);
   }

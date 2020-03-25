@@ -103,7 +103,7 @@ class MainMenu extends StatelessWidget {
       debugPrint('barcode => ' + barcode);
       final encoded = utf8.encode(barcode);
       final display = encoded.map((i) => i.toRadixString(16));
-      _showDialog(context, title: 'Success!', body: '${display}');
+      _showDialog(context, title: 'Success!', body: '$display');
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');
