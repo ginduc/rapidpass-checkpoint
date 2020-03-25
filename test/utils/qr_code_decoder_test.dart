@@ -1,10 +1,26 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('QrCodeDecoder works', () {
+    final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
+    print('hex.length: ${hex.length}');
+    final bytes = QrCodeDecoder.decodeHex(hex);
+    final input = String.fromCharCodes(bytes);
+    print('input.length: ${input.length}');
+    final list = input.codeUnits;
+    final buffer =
+        list is Uint8List ? list.buffer : Uint8List.fromList(list).buffer;
+    final byteData = ByteData.view(buffer);
+    print('lengthInBytes: ${byteData.lengthInBytes}');
+    final actual = QrCodeDecoder().convert(byteData);
+    print(actual);
+  });
   test('utf8', () {
     final hex = '00d6948580835e77fc005e7d42000e41424331323334893c6f13';
     final bytes = QrCodeDecoder.decodeHex(hex);
