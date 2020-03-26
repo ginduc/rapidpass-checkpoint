@@ -2,24 +2,24 @@ import 'dart:async';
 
 import 'package:device_id/device_id.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
+
+class WelcomeScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return WelcomeScreenState();
+  }
+}
 
 class WelcomeScreenState extends State<WelcomeScreen> {
-  Future<String> imeiFuture = getImei();
-
-  /// Since ImeiPlugin works asynchronously, we need this to be async
-  static Future<String> getImei() async {
-    var imei = await DeviceId.getIMEI;
-    var uuid = await DeviceId.getID;
-    debugPrint('imei => $imei');
-    debugPrint('uuid => $uuid');
-    return imei;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final DeviceInfoModel _deviceNotifier = Provider.of<DeviceInfoModel>(context);
+
     return FutureBuilder<String>(
-        future: this.imeiFuture,
+        future: _deviceNotifier.getImei(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           String imei = snapshot.hasData
               ? 'IMEI: ${snapshot.data}'
@@ -97,12 +97,5 @@ class WelcomeScreenState extends State<WelcomeScreen> {
             ),
           );
         });
-  }
-}
-
-class WelcomeScreen extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return WelcomeScreenState();
   }
 }
