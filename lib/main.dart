@@ -16,11 +16,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       initialRoute: "/",
+      routes: {'/': (_) => WelcomeScreen()},
       onGenerateRoute: (RouteSettings settings) {
         switch (settings.name) {
-          case '/':
-            return CupertinoPageRoute(
-                builder: (_) => WelcomeScreen(), settings: settings);
           case '/menu':
             return CupertinoPageRoute(
                 builder: (_) => MainMenuScreen('Camp Aguinaldo'),

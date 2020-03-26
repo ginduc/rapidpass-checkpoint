@@ -45,6 +45,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/check-2x.png
     - assets/rapidpass_logo.png
     - assets/control_number-2x.png
     - assets/icons8_qr-code-2x.png

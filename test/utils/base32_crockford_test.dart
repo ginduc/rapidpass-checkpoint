@@ -12,7 +12,7 @@ void main() {
     final testCases = {
       '': '',
       '0': '0',
-      '0123456789abcdefgHJKMNPQRSTUVwxyz': '0123456789ABCDEFGHJKMNPQRSTUVWXYZ',
+      '0123456789abcdefgHJKMNPQRSTVwxyz': '0123456789ABCDEFGHJKMNPQRSTVWXYZ',
       'ILilOo': '111100'
     };
     testCases.forEach((input, expected) {
