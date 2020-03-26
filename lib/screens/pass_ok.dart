@@ -10,6 +10,14 @@ class PassOkScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tableTextStyle = TextStyle(fontSize: 20.0);
+    final tableData = {
+      'Control Code': '2A8B043',
+      'Plate Number:': 'ABC 1234',
+      'Access Type:': 'Medical (M)',
+      'Valid From:': 'March 23, 2020',
+      'Valid Until:': 'March 27, 2020',
+    };
     return Scaffold(
         appBar: AppBar(title: Text('Result')),
         body: Padding(
@@ -50,6 +58,23 @@ class PassOkScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Table(
+                            children: tableData.entries
+                                .map((e) => TableRow(children: [
+                                      Text(
+                                        e.key,
+                                        style: tableTextStyle,
+                                      ),
+                                      Text(
+                                        e.value,
+                                        textAlign: TextAlign.right,
+                                        style: tableTextStyle.copyWith(
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ]))
+                                .toList())),
                   ]))),
         ));
   }
