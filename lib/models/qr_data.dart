@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
+import 'package:rapidpass_checkpoint/utils/damm32.dart';
 
 class QrData {
   final int passType;
@@ -19,8 +20,8 @@ class QrData {
   }
 
   String controlCodeAsString() {
-    // TODO: Compute and append check digit
-    return crockford.encode(this.controlCode);
+    return crockford.encode(this.controlCode) +
+        crockford.encode(Damm32.checkDigit(this.controlCode));
   }
 
   final displayPurpose = {'M': 'Medical (M)', 'V': 'VIP (V)'};
