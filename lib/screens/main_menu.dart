@@ -5,9 +5,10 @@ import 'dart:typed_data';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rapidpass_checkpoint/components/main_menu_button.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
+import 'package:rapidpass_checkpoint/widgets/rapid_main_menu_button.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
@@ -85,16 +86,27 @@ class MainMenu extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          MainMenuButton(
-              'Scan QR Code', 'icons8_qr-code-2x.png', () => scan(context)),
-          MainMenuButton('Plate Number', 'license-plate-2x.png', () {
-            debugPrint('Plate Number pressed');
-            Navigator.pushNamed(context, '/checkPlateNumber');
-          }),
-          MainMenuButton('Control Code', 'control_number-2x.png', () {
-            debugPrint('Control Code pressed');
-            Navigator.pushNamed(context, '/checkControlCode');
-          }),
+          RapidMainMenuButton(
+            title: 'Scan QR Code',
+            iconPath: RapidAssetConstants.icQrCode,
+            onPressed: () {
+              scan(context);
+            },
+          ),
+          RapidMainMenuButton(
+            title: 'Plate Number',
+            iconPath: RapidAssetConstants.icPlateNubmer,
+            onPressed: () {
+              Navigator.pushNamed(context, '/checkPlateNumber');
+            },
+          ),
+          RapidMainMenuButton(
+            title: 'Control Code',
+            iconPath: RapidAssetConstants.icControlCode,
+            onPressed: () {
+              Navigator.pushNamed(context, '/checkControlCode');
+            },
+          ),
         ],
       ),
     );
