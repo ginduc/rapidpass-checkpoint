@@ -1,52 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
-
-/// TODO: Come up with a better name
-class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
-  final Widget header;
-  final Widget body;
-  final Color color;
-  BoxWithRoundedBordersAndFilledHeader(
-      {Widget header, Widget body, Color color})
-      : this.header = header ?? Container(),
-        this.body = body ?? Container(),
-        this.color = color ?? green300;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: this.color, width: 1.0),
-            borderRadius: BorderRadius.circular(borderRadius)),
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(borderRadius),
-                      topRight: Radius.circular(borderRadius)),
-                  color: green300,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: this.header,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: this.body,
-              )
-            ])));
-  }
-}
 
 class PassOkScreen extends StatelessWidget {
   QrData qrData;
@@ -55,7 +12,6 @@ class PassOkScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tableTextStyle = TextStyle(fontSize: 18.0);
     final tableData = {
       'Control Code': '${qrData.controlCodeAsString()}',
       'Plate Number:': qrData.idOrPlate,
@@ -63,6 +19,11 @@ class PassOkScreen extends StatelessWidget {
       'Valid From:': qrData.validFromDisplayDate(),
       'Valid Until:': qrData.validUntilDisplayDate(),
     };
+    final passResultsData = tableData.entries.map((e) {
+      debugPrint('e.key: ${e.key}');
+      debugPrint('e.value: ${e.value}');
+      return PassResultsData(label: e.key, value: e.value);
+    }).toList();
     return Theme(
       data: Green.buildFor(context),
       child: Scaffold(
@@ -75,43 +36,11 @@ class PassOkScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    BoxWithRoundedBordersAndFilledHeader(
-                      header: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Image(
-                              width: 80.0,
-                              image: AssetImage('assets/check-2x.png'),
-                            ),
-                          ),
-                          Text(
-                            'ENTRY APPROVED',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                      body: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Table(
-                              children: tableData.entries
-                                  .map((e) => TableRow(children: [
-                                        Text(
-                                          e.key,
-                                          style: tableTextStyle,
-                                        ),
-                                        Text(
-                                          e.value,
-                                          textAlign: TextAlign.right,
-                                          style: tableTextStyle.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ]))
-                                  .toList())),
-                    ),
+                    PassResultsCard(
+                        iconName: 'check-2x',
+                        headerText: 'ENTRY APPROVED',
+                        data: passResultsData,
+                        color: green300),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
