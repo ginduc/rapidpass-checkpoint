@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:device_id/device_id.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -13,8 +16,7 @@ class WelcomeScreen extends StatefulWidget {
 class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final DeviceInfoModel _deviceNotifier =
-        Provider.of<DeviceInfoModel>(context);
+    final DeviceInfoModel _deviceNotifier = Provider.of<DeviceInfoModel>(context);
 
     return FutureBuilder<String>(
         future: _deviceNotifier.getImei(),
@@ -22,8 +24,28 @@ class WelcomeScreenState extends State<WelcomeScreen> {
           String imei = snapshot.hasData
               ? 'IMEI: ${snapshot.data}'
               : 'Retreiving IMEI...';
+          final themeData = Theme.of(context);
+          final colorScheme = themeData.colorScheme.copyWith(
+              surface: deepPurple900,
+              background: deepPurple900,
+              primary: deepPurple900,
+              primaryVariant: green300,
+              onPrimary: Colors.white,
+              onSurface: Colors.white,
+              onBackground: Colors.white,
+              onError: Colors.white,
+              onSecondary: Colors.white);
+          final textTheme = themeData.textTheme.apply(bodyColor: Colors.white);
+          final primaryTextTheme =
+              themeData.primaryTextTheme.apply(bodyColor: Colors.white);
           return Theme(
-            data: Purple.buildFor(context),
+            data: themeData.copyWith(
+                buttonTheme: themeData.buttonTheme.copyWith(
+                    buttonColor: green300,
+                    colorScheme: colorScheme,
+                    textTheme: ButtonTextTheme.accent),
+                textTheme: textTheme,
+                primaryTextTheme: primaryTextTheme),
             child: Scaffold(
               backgroundColor: deepPurple600,
               body: Container(
