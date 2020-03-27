@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
+const borderRadius = 12.0;
+
 /// TODO: Come up with a better name
 class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
   final Widget header;
@@ -19,7 +21,7 @@ class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: this.color, width: 1.0),
-            borderRadius: BorderRadius.circular(8.0)),
+            borderRadius: BorderRadius.circular(borderRadius)),
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Center(
             child: Column(
@@ -28,7 +30,9 @@ class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
                 children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(borderRadius),
+                      topRight: Radius.circular(borderRadius)),
                   color: green300,
                 ),
                 child: Padding(
