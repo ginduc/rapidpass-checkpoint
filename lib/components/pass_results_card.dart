@@ -24,26 +24,49 @@ class PassResultsCard extends StatelessWidget {
     final tableChildren = this.data.map((row) {
       debugPrint('row: $row');
       debugPrint('row.errorMessage: ${row.errorMessage}');
-      // TODO: Replace Colors.black with some theme color
-      final textColor = row.errorMessage != null ? this.color : Colors.black;
-      final tableTextStyle = TextStyle(fontSize: 18.0, color: textColor);
-      return TableRow(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: Text(
-            row.label,
-            style: tableTextStyle,
+      final tableTextStyle = TextStyle(fontSize: 18.0);
+      if (row.errorMessage == null) {
+        return TableRow(children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            child: Text(
+              row.label,
+              style: tableTextStyle,
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: Text(
-            row.value,
-            textAlign: TextAlign.right,
-            style: tableTextStyle.copyWith(fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            child: Text(
+              row.value,
+              textAlign: TextAlign.right,
+              style: tableTextStyle.copyWith(fontWeight: FontWeight.bold),
+            ),
+          )
+        ]);
+      } else {
+        return TableRow(children: [
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text(
+                row.label,
+                style: tableTextStyle.copyWith(color: Colors.red),
+              ),
+            ),
+            onTap: () => _showDialog(context,
+                title: 'Pass expired', body: row.errorMessage),
           ),
-        )
-      ]);
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            child: Text(
+              row.value,
+              textAlign: TextAlign.right,
+              style: tableTextStyle.copyWith(
+                  color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          )
+        ]);
+      }
     }).toList();
     return Container(
         decoration: BoxDecoration(
@@ -91,5 +114,28 @@ class PassResultsCard extends StatelessWidget {
                     child: Table(children: tableChildren)),
               )
             ])));
+  }
+
+  void _showDialog(BuildContext context, {String title, String body}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(body),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

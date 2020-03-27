@@ -23,7 +23,10 @@ class PassInvalidScreen extends StatelessWidget {
     final passResultsData = tableData.entries.map((e) {
       return e.key == 'Valid Until:'
           ? PassResultsData(
-              label: e.key, value: e.value, errorMessage: 'Pass is expired')
+              label: e.key,
+              value: e.value,
+              errorMessage:
+                  'Pass is only valid until ${qrData.validUntilDisplayDate()}')
           : PassResultsData(label: e.key, value: e.value);
     }).toList();
     return Theme(
