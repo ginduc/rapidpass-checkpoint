@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
+import 'package:rapidpass_checkpoint/utils/routes.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                             shape: new RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.0)),
                             onPressed: () {
-                              Navigator.pushNamed(context, "/menu");
+                              Navigator.pushNamed(context, Routes().menu);
                             },
                             child: Text("Start",
                                 style: TextStyle(

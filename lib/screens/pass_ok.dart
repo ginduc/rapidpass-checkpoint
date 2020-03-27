@@ -3,6 +3,7 @@ import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
+
 const borderRadius = 12.0;
 
 class PassOkScreen extends StatelessWidget {

@@ -9,6 +9,8 @@ import 'package:rapidpass_checkpoint/components/main_menu_button.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
+import 'package:rapidpass_checkpoint/utils/routes.dart';
+
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
 
@@ -99,11 +101,11 @@ class MainMenu extends StatelessWidget {
                 : Uint8List.fromList(list).buffer;
             final byteData = ByteData.view(buffer);
             final qrData = QrCodeDecoder().convert(byteData);
-            Navigator.pushNamed(context, "/passInvalid", arguments: qrData);
+            Navigator.pushNamed(context, Routes().passInvalid, arguments: qrData);
           }),
           MainMenuButton('Control Code', 'control_number-2x.png', () {
             debugPrint('Control Code pressed');
-            Navigator.pushNamed(context, '/checkControlCode');
+            Navigator.pushNamed(context, Routes().checkControlCode);
           }),
         ],
       ),
@@ -121,7 +123,7 @@ class MainMenu extends StatelessWidget {
           : Uint8List.fromList(decoded).buffer;
       final byteData = ByteData.view(buffer);
       final rawQrData = QrCodeDecoder().convert(byteData);
-      Navigator.pushNamed(context, "/passOk", arguments: rawQrData);
+      Navigator.pushNamed(context, Routes().passOk, arguments: rawQrData);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');

@@ -6,6 +6,7 @@ import 'package:rapidpass_checkpoint/screens/pass_invalid.dart';
 import 'package:rapidpass_checkpoint/screens/pass_ok.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
+import 'package:rapidpass_checkpoint/utils/routes.dart';
 
 void main() => runApp(RapidPassCheckpointApp());
 
@@ -25,23 +26,23 @@ class RapidPassCheckpointApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
         ),
-        initialRoute: "/",
-        routes: {'/': (_) => WelcomeScreen()},
+        initialRoute: Routes().root,
+        routes: {Routes().root: (_) => WelcomeScreen()},
         onGenerateRoute: (RouteSettings settings) {
-          switch (settings.name) {
-            case '/menu':
-              return CupertinoPageRoute(
-                  builder: (_) => MainMenuScreen('Camp Aguinaldo'),
-                  settings: settings);
-            case '/passOk':
-              return CupertinoPageRoute(
-                  builder: (_) => PassOkScreen(settings.arguments),
-                  settings: settings);
-            case '/passInvalid':
-              return CupertinoPageRoute(
-                  builder: (_) => PassInvalidScreen(settings.arguments),
-                  settings: settings);
+          if (settings.name == Routes().menu) {
+            return CupertinoPageRoute(
+                builder: (_) => MainMenuScreen('Camp Aguinaldo'),
+                settings: settings);
+          } else if (settings.name == Routes().passOk) {
+            return CupertinoPageRoute(
+                builder: (_) => PassOkScreen(settings.arguments),
+                settings: settings);
+          } else if (settings.name == Routes().passInvalid) {
+            return CupertinoPageRoute(
+                builder: (_) => PassInvalidScreen(settings.arguments),
+                settings: settings);
           }
+
           return null;
         },
       ),
