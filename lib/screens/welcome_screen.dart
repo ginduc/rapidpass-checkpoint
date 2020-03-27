@@ -16,7 +16,8 @@ class WelcomeScreen extends StatefulWidget {
 class WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final DeviceInfoModel _deviceNotifier = Provider.of<DeviceInfoModel>(context);
+    final DeviceInfoModel _deviceNotifier =
+        Provider.of<DeviceInfoModel>(context);
 
     return FutureBuilder<String>(
         future: _deviceNotifier.getImei(),
@@ -89,7 +90,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                                     fontSize: 18.0)),
                           ),
                         ),
-                      )
+                      ),
+                      
                     ],
                   ),
                 ),

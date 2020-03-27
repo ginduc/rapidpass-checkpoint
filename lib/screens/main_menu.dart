@@ -95,6 +95,10 @@ class MainMenu extends StatelessWidget {
             debugPrint('Control Code pressed');
             Navigator.pushNamed(context, '/checkControlCode');
           }),
+            MainMenuButton('Control Code', 'control_number-2x.png', () {
+            debugPrint('Control Code pressed');
+            Navigator.pushNamed(context, '/passFail');
+          }),
         ],
       ),
     );
