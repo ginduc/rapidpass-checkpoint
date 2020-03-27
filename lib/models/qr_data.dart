@@ -36,7 +36,7 @@ class QrData {
         : purposeCode;
   }
 
-  final DateFormat dateFormat = DateFormat.yMMMMd('en_US');
+  final DateFormat dateFormat = DateFormat.yMMMd('en_US');
 
   String validFromDisplayDate() {
     final DateTime dateTime =

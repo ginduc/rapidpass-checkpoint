@@ -10,7 +10,7 @@ class PassOkScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tableTextStyle = TextStyle(fontSize: 20.0);
+    final tableTextStyle = TextStyle(fontSize: 18.0);
     final tableData = {
       'Control Code': '${qrData.controlCodeAsString()}',
       'Plate Number:': qrData.idOrPlate,
@@ -23,12 +23,13 @@ class PassOkScreen extends StatelessWidget {
       child: Scaffold(
           appBar: AppBar(title: Text('Result')),
           body: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Container(
                 decoration: BoxDecoration(
                     border: Border.all(color: green300, width: 1.0),
                     borderRadius: BorderRadius.circular(8.0)),
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -61,7 +62,7 @@ class PassOkScreen extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Table(
                               children: tableData.entries
                                   .map((e) => TableRow(children: [
@@ -94,7 +95,7 @@ class PassOkScreen extends StatelessWidget {
                                 style: TextStyle(
                                     // Not sure how to get rid of color: Colors.white here
                                     color: Colors.white,
-                                    fontSize: 18.0)),
+                                    fontSize: 16.0)),
                           ),
                         ),
                       ),
@@ -114,7 +115,7 @@ class PassOkScreen extends StatelessWidget {
                                 style: TextStyle(
                                     // Not sure how to get rid of color: Colors.white here
                                     color: green300,
-                                    fontSize: 18.0)),
+                                    fontSize: 16.0)),
                           ),
                         ),
                       )
