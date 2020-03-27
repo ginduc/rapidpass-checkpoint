@@ -27,6 +27,13 @@ class RapidPassCheckpointApp extends StatelessWidget {
           appBarTheme: AppBarTheme(
             textTheme: GoogleFonts.workSansTextTheme(
               Theme.of(context).textTheme,
+            ).copyWith(
+              title: GoogleFonts.workSans(
+                textStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
             ),
           ),
           textTheme: GoogleFonts.workSansTextTheme(
