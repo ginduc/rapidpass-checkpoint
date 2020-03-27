@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class PassOkScreen extends StatelessWidget {
   QrData qrData;
@@ -12,11 +12,11 @@ class PassOkScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableTextStyle = TextStyle(fontSize: 20.0);
     final tableData = {
-      'Control Code': '2A8B043',
-      'Plate Number:': 'ABC 1234',
-      'Access Type:': 'Medical (M)',
-      'Valid From:': 'March 23, 2020',
-      'Valid Until:': 'March 27, 2020',
+      'Control Code': '${qrData.controlCodeAsString()}',
+      'Plate Number:': qrData.idOrPlate,
+      'Access Type:': qrData.purpose(),
+      'Valid From:': qrData.validFromDisplayDate(),
+      'Valid Until:': qrData.validUntilDisplayDate(),
     };
     return Scaffold(
         appBar: AppBar(title: Text('Result')),
