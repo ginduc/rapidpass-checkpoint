@@ -4,7 +4,7 @@ final Color deepPurple300 = const Color(0xff9575CD);
 final Color deepPurple600 = const Color(0xff5E35B1);
 final Color deepPurple900 = const Color(0xff311B92);
 final Color green300 = const Color(0xff81C784);
-
+final Color red400 = const Color(0xFFEF5350);
 final ColorScheme light = ColorScheme.light();
 final ColorScheme rapidPassColorScheme = ColorScheme(
     background: light.background,

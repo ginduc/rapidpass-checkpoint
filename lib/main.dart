@@ -2,14 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/screens/result.dart';
+
 import 'package:rapidpass_checkpoint/screens/pass_ok.dart';
+import 'package:rapidpass_checkpoint/screens/result.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 import 'screens/pass_ok.dart';
 import 'screens/welcome_screen.dart';
 import 'themes/default.dart';
+import 'themes/default.dart';
+import 'themes/default.dart';
+
 
 void main() => runApp(RapidPassCheckpointApp());
 
@@ -37,8 +41,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
           primarySwatch: Colors.deepPurple,
         ),
         initialRoute: "/",
-        routes: {'/': (_) => //  Result(null, tableData, red400, 'assets/check-2x.png', 'Entry Approved', ''),
-        WelcomeScreen()},
+        routes: {'/': (_) =>   Result(null, tableData,Colors.green, 'assets/check-2x.png', 'Entry Approved', '')},
+       // WelcomeScreen()},
       //  Result(null, tableData, green300, 'assets/check-2x.png', 'Entry Approved', ''),
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {

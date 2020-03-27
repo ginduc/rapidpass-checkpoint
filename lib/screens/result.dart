@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
+import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
 import '../themes/default.dart';
 
