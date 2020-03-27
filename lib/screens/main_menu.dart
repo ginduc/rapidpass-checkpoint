@@ -84,8 +84,15 @@ class MainMenu extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Text(
+            "CHECK VIA:",
+            style: Theme.of(context)
+                .textTheme
+                .body1
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
           RapidMainMenuButton(
             title: 'Scan QR Code',
             iconPath: RapidAssetConstants.icQrCode,
