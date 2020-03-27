@@ -26,7 +26,7 @@ class PassInvalidScreen extends StatelessWidget {
               label: e.key,
               value: e.value,
               errorMessage:
-                  'Pass is only valid until ${qrData.validUntilDisplayDate()}')
+                  'Pass is only valid until ${qrData.validUntilDisplayTimestamp()}')
           : PassResultsData(label: e.key, value: e.value);
     }).toList();
     return Theme(

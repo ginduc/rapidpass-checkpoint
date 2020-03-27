@@ -56,14 +56,18 @@ class PassResultsCard extends StatelessWidget {
             onTap: () => _showDialog(context,
                 title: 'Pass expired', body: row.errorMessage),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: Text(
-              row.value,
-              textAlign: TextAlign.right,
-              style: tableTextStyle.copyWith(
-                  color: Colors.red, fontWeight: FontWeight.bold),
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text(
+                row.value,
+                textAlign: TextAlign.right,
+                style: tableTextStyle.copyWith(
+                    color: Colors.red, fontWeight: FontWeight.bold),
+              ),
             ),
+            onTap: () => _showDialog(context,
+                title: 'Pass expired', body: row.errorMessage),
           )
         ]);
       }
