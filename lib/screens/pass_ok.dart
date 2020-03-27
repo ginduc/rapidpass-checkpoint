@@ -27,7 +27,10 @@ class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
               Container(
-                color: green300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0),
+                  color: green300,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: this.header,
