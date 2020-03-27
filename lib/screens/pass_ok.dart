@@ -1,7 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 /// TODO: Come up with a better name
 class BoxWithRoundedBordersAndFilledHeader extends StatelessWidget {
@@ -116,7 +122,8 @@ class PassOkScreen extends StatelessWidget {
                           shape: new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24.0)),
                           onPressed: () {
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
+                            scan(context);
                           },
                           child: Text('Scan another QR code',
                               style: TextStyle(
@@ -149,6 +156,60 @@ class PassOkScreen extends StatelessWidget {
                   ],
                 ),
               ))),
+    );
+  }
+
+  Future scan(BuildContext context) async {
+    try {
+      final String base64Encoded = await BarcodeScanner.scan();
+      final decoded = base64.decode(base64Encoded);
+      final asHex = decoded.map((i) => i.toRadixString(16));
+      debugPrint('barcode => $asHex (${asHex.length} codes)');
+      final buffer = decoded is Uint8List
+          ? decoded.buffer
+          : Uint8List.fromList(decoded).buffer;
+      final byteData = ByteData.view(buffer);
+      final rawQrData = QrCodeDecoder().convert(byteData);
+      // Navigator.pushNamed(context, "/passOk", arguments: rawQrData);
+      Navigator.popAndPushNamed(context, "/passOk", arguments: rawQrData);
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        _showDialog(context, title: 'Error', body: 'Camera access denied');
+      } else {
+        _showDialog(context, title: 'Error', body: 'Unknown Error');
+      }
+    } on FormatException {
+      debugPrint(
+          'null (User returned using the "back"-button before scanning anything. Result)');
+      _showDialog(context,
+          title: 'Error',
+          body:
+              'User returned using the "back"-button before scanning anything. Result');
+    } catch (e) {
+      _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
+    }
+  }
+
+  void _showDialog(BuildContext context, {String title, String body}) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(body),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
