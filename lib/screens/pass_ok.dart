@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
+import 'main_menu.dart';
+
 class PassOkScreen extends StatelessWidget {
   QrData qrData;
 
@@ -22,7 +24,9 @@ class PassOkScreen extends StatelessWidget {
         appBar: AppBar(title: Text('Result')),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Container(
+          child: Column(
+           children: <Widget>[
+           Container(
               decoration: BoxDecoration(
                   border: Border.all(color: green300, width: 1.0),
                   borderRadius: BorderRadius.circular(8.0)),
@@ -60,22 +64,44 @@ class PassOkScreen extends StatelessWidget {
                     ),
                     Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: Table(
-                            children: tableData.entries
-                                .map((e) => TableRow(children: [
-                                      Text(
-                                        e.key,
-                                        style: tableTextStyle,
-                                      ),
-                                      Text(
-                                        e.value,
-                                        textAlign: TextAlign.right,
-                                        style: tableTextStyle.copyWith(
-                                            fontWeight: FontWeight.bold),
-                                      )
-                                    ]))
-                                .toList())),
+                        child:Table(
+                                children: tableData.entries
+                                    .map((e) => TableRow(children: [
+                                          Text(
+                                            e.key,
+                                            style: tableTextStyle,
+                                          ),
+                                          Text(
+                                            e.value,
+                                            textAlign: TextAlign.right,
+                                            style: tableTextStyle.copyWith(
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ]))
+                                    .toList()),
+                    ),
                   ]))),
+                  SizedBox(
+                    height: 48,
+                    width: 300.0,
+                    child: RaisedButton(
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0)),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                          builder: (context) => MainMenuScreen(checkPointName: 'Camp Aguinaldo', openScan: true) //MainMenuScreen('Camp Aguinaldo', false),
+
+                        ));
+                      },
+                      child: Text("Scan Another",
+                          style: TextStyle(
+                              // Not sure how to get rid of color: Colors.white here
+                              color: Colors.white,
+                              fontSize: 18.0)),
+                    ),
+                  ),
+           ]),
         ));
   }
 }

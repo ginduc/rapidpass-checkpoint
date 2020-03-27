@@ -11,11 +11,14 @@ import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
+  final bool openScan;
 
-  MainMenuScreen(this.checkPointName);
+  MainMenuScreen({Key key, this.checkPointName, this.openScan}) : super(key: key);
+  //(this.checkPointName, this.openScan);
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: Text('RapidPass Checkpoint')),
       body: Container(
@@ -26,7 +29,7 @@ class MainMenuScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               CheckPointWidget(this.checkPointName),
-              MainMenu(),
+              MainMenu(this.openScan),
             ],
           ),
         ),
@@ -77,8 +80,18 @@ class CheckPointWidget extends StatelessWidget {
 }
 
 class MainMenu extends StatelessWidget {
+
+  final bool openScan;
+
+  MainMenu(this.openScan);
+
   @override
   Widget build(BuildContext context) {
+
+    if(this.openScan == true){
+       scan(context);
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
