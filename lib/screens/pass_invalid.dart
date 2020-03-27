@@ -5,10 +5,10 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
 
-class PassOkScreen extends StatelessWidget {
+class PassInvalidScreen extends StatelessWidget {
   QrData qrData;
 
-  PassOkScreen(this.qrData);
+  PassInvalidScreen(this.qrData);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,10 @@ class PassOkScreen extends StatelessWidget {
       'Valid Until:': qrData.validUntilDisplayDate(),
     };
     final passResultsData = tableData.entries.map((e) {
-      return PassResultsData(label: e.key, value: e.value);
+      return e.key == 'Valid Until:'
+          ? PassResultsData(
+              label: e.key, value: e.value, errorMessage: 'Pass is expired')
+          : PassResultsData(label: e.key, value: e.value);
     }).toList();
     return Theme(
       data: Green.buildFor(context),
@@ -36,10 +39,10 @@ class PassOkScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     PassResultsCard(
-                        iconName: 'check-2x',
-                        headerText: 'ENTRY APPROVED',
+                        iconName: 'error',
+                        headerText: 'PASS EXPIRED',
                         data: passResultsData,
-                        color: green300),
+                        color: Colors.red),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(

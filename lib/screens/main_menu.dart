@@ -89,7 +89,17 @@ class MainMenu extends StatelessWidget {
               'Scan QR Code', 'icons8_qr-code-2x.png', () => scan(context)),
           MainMenuButton('Plate Number', 'license-plate-2x.png', () {
             debugPrint('Plate Number pressed');
-            Navigator.pushNamed(context, '/checkPlateNumber');
+            // Navigator.pushNamed(context, '/checkPlateNumber');
+            final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
+            final bytes = QrCodeDecoder.decodeHex(hex);
+            final input = String.fromCharCodes(bytes);
+            final list = input.codeUnits;
+            final buffer = list is Uint8List
+                ? list.buffer
+                : Uint8List.fromList(list).buffer;
+            final byteData = ByteData.view(buffer);
+            final qrData = QrCodeDecoder().convert(byteData);
+            Navigator.pushNamed(context, "/passInvalid", arguments: qrData);
           }),
           MainMenuButton('Control Code', 'control_number-2x.png', () {
             debugPrint('Control Code pressed');
