@@ -104,7 +104,16 @@ class MainMenu extends StatelessWidget {
             title: 'Plate Number',
             iconPath: RapidAssetConstants.icPlateNubmer,
             onPressed: () {
-              Navigator.pushNamed(context, '/checkPlateNumber');
+              final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
+              final bytes = QrCodeDecoder.decodeHex(hex);
+              final input = String.fromCharCodes(bytes);
+              final list = input.codeUnits;
+              final buffer = list is Uint8List
+                  ? list.buffer
+                  : Uint8List.fromList(list).buffer;
+              final byteData = ByteData.view(buffer);
+              final qrData = QrCodeDecoder().convert(byteData);
+              Navigator.pushNamed(context, "/passInvalid", arguments: qrData);
             },
           ),
           RapidMainMenuButton(

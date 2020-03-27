@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
-
-final tableTextStyle = const TextStyle(fontSize: 18.0);
 
 class PassResultsData {
   final String label;
@@ -26,6 +23,10 @@ class PassResultsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableChildren = this.data.map((row) {
       debugPrint('row: $row');
+      debugPrint('row.errorMessage: ${row.errorMessage}');
+      // TODO: Replace Colors.black with some theme color
+      final textColor = row.errorMessage != null ? this.color : Colors.black;
+      final tableTextStyle = TextStyle(fontSize: 18.0, color: textColor);
       return TableRow(children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -59,7 +60,7 @@ class PassResultsCard extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(borderRadius),
                       topRight: Radius.circular(borderRadius)),
-                  color: green300,
+                  color: this.color,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
