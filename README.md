@@ -69,14 +69,13 @@ git push origin feature/99-added-profile-image
 8. You deserve a pat on the back, celebrate!
 
 [1] Creating a branch guidelines
-- Naming convention, choose from: `feature`, `bugs`, `hotfix`:
+- Naming convention, choose from: `feature`, `hotfix`:
 
 Example:
 ```
-git checkout -b bugs/<ticket_no>-what-you-did
+git checkout -b hotfix/<ticket_no>-what-you-did
 ```
 - `feature` - If you are an adding a new feature to the app
-- `bugs` - Fixing bugs reported by the QAs/devs
 - `hotfix` - If you are working on quick-fixes/patches to ensure that the `develop` branch is buildable
 
 [2] Merge request guidelines
