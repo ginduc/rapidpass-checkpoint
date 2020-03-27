@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
 import 'base32_crockford.dart';
 
@@ -13,21 +14,6 @@ const int $a = 0x61;
 
 /// Character 'f'
 const int $f = 0x66;
-
-class QrData {
-  final int pass_type;
-  final int control_code;
-  final int valid_from;
-  final int valid_until;
-  final String id_or_plate;
-  QrData(this.pass_type, this.control_code, this.valid_from, this.valid_until,
-      this.id_or_plate);
-  @override
-  String toString() {
-    final String cc = crockford.encode(control_code);
-    return "%{pass_type: $pass_type, control_code: ${cc}, valid_from: $valid_from, valid_until: $valid_until, id_or_plate: '$id_or_plate'}";
-  }
-}
 
 class QrCodeDecoder extends Converter<ByteData, QrData> {
   final AsciiDecoder asciiDecoder = AsciiDecoder();
