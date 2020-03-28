@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+/// Character '0'
+const $0 = 0x30;
+
 /// Character '9'
 const $9 = 0x39;
 
@@ -36,7 +39,7 @@ class CrockfordCodec extends Codec<int, String> {
   Converter<String, int> get decoder => CrockfordDecoder();
 
   @override
-  Converter<int, String> get encoder => CrockfordEncoder();
+  Converter<int, String> get encoder => CrockfordEncoder(0);
 }
 
 const alphaEncodingMap = {
@@ -65,14 +68,22 @@ const alphaEncodingMap = {
 };
 
 class CrockfordEncoder extends Converter<int, String> {
+  final int padToLength;
+
+  const CrockfordEncoder(this.padToLength);
+
   @override
   String convert(int input) {
     final rawBase32 = input.toRadixString(32).toLowerCase();
     final codeUnits = rawBase32.codeUnits;
-    final List<int> out = List(codeUnits.length);
-    for (var i = 0; i < codeUnits.length; ++i) {
+    var length = codeUnits.length;
+    final List<int> out = List();
+    for (var i = padToLength - length; i > 0; --i) {
+      out.add($0);
+    }
+    for (var i = 0; i < length; ++i) {
       final inp = codeUnits[i];
-      out[i] = inp <= $9 ? inp : alphaEncodingMap[codeUnits[i]];
+      out.add(inp <= $9 ? inp : alphaEncodingMap[codeUnits[i]]);
     }
     return AsciiDecoder().convert(out);
   }
