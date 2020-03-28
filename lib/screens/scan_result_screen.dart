@@ -1,11 +1,11 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 const borderRadius = 12.0;
 
@@ -15,7 +15,6 @@ class ScanResultScreen extends StatelessWidget {
 
   ScanResultScreen(this.scanResults);
 
- 
   @override
   Widget build(BuildContext context) {
     final qrData = scanResults.qrData;
@@ -41,9 +40,9 @@ class ScanResultScreen extends StatelessWidget {
               label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
 
-    if(scanResults.isValid()){
+    if (scanResults.isValid()) {
       playNotificationApproved();
-    }else{
+    } else {
       playNotificationRegected();
     }
 
@@ -119,12 +118,12 @@ class ScanResultScreen extends StatelessWidget {
   }
 
   Future<AudioPlayer> playNotificationApproved() async {
-      AudioCache cache = new AudioCache();
-      return await cache.play("notification_approved.mp3");
+    AudioCache cache = new AudioCache();
+    return await cache.play("notification_approved.mp3");
   }
 
   Future<AudioPlayer> playNotificationRegected() async {
-      AudioCache cache = new AudioCache();
-      return await cache.play("notification_denied.mp3");
+    AudioCache cache = new AudioCache();
+    return await cache.play("notification_denied.mp3");
   }
 }
