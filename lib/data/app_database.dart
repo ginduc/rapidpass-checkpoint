@@ -3,7 +3,6 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('QrCode')
 class QrCodes extends Table {
   IntColumn get id => integer().autoIncrement()();
 
@@ -20,7 +19,7 @@ class QrCodes extends Table {
   TextColumn get homeAddress => text()();
 }
 
-@UseMoor(tables: [])
+@UseMoor(tables: [QrCodes])
 class AppDatabase extends _$AppDatabase {
   static const String databaseName = 'rapid_pass.sqlite';
 
@@ -41,4 +40,16 @@ class AppDatabase extends _$AppDatabase {
       },
     );
   }
+
+  // Retrieve the latest changes upon method invocation
+  Future<List<QrCode>> getAllQrCodes() => select(qrCodes).get();
+
+  // Subscribe and retrieve the latest changes in database
+  Stream<List<QrCode>> streamQrCodes() => select(qrCodes).watch();
+
+  Future insertQrCode(QrCode qrCode) => into(qrCodes).insert(qrCode);
+
+  Future updateQrCode(QrCode qrCode) => update(qrCodes).replace(qrCode);
+
+  Future deleteQrCode(QrCode qrCode) => delete(qrCodes).delete(qrCode);
 }

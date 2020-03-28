@@ -11,8 +11,13 @@ class QrData {
   final int validUntil;
   final String idOrPlate;
 
-  QrData(this.passType, this.controlCode, this.validFrom, this.validUntil,
-      this.idOrPlate);
+  QrData(
+    this.passType,
+    this.controlCode,
+    this.validFrom,
+    this.validUntil,
+    this.idOrPlate,
+  );
 
   @override
   String toString() {
