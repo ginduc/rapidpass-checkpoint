@@ -21,7 +21,7 @@ class QrData {
 
   String controlCodeAsString() {
     return crockford.encode(this.controlCode) +
-        crockford.encode(Damm32.checkDigit(this.controlCode));
+        crockford.encode(Damm32.compute(this.controlCode));
   }
 
   final displayPurpose = {'M': 'Medical (M)', 'V': 'VIP (V)'};
