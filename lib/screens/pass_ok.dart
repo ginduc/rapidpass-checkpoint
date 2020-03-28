@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 import 'main_menu.dart';
 
@@ -10,8 +12,11 @@ const borderRadius = 12.0;
 class PassOkScreen extends StatelessWidget {
   QrData qrData;
 
-  PassOkScreen(this.qrData);
+  PassOkScreen(this.qrData){
+     playNotificationApproved();
+  }
 
+ 
   @override
   Widget build(BuildContext context) {
     // TODO ValidatorService
@@ -91,5 +96,15 @@ class PassOkScreen extends StatelessWidget {
     final qrData = await MainMenu.scan(context);
     // TODO: Use ValidatorService
     Navigator.popAndPushNamed(context, '/passOk', arguments: qrData);
+  }
+
+  Future<AudioPlayer> playNotificationApproved() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_approved.mp3");
+  }
+
+  Future<AudioPlayer> playNotificationRegected() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_denied.mp3");
   }
 }
