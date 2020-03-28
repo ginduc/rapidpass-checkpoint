@@ -2,6 +2,36 @@ import 'package:flutter/material.dart';
 
 const borderRadius = 12.0;
 
+const aporCodes = {
+  'AG': 'Agribusiness & Agricultural Workers',
+  'BA': 'Banks',
+  'BP': 'BPOs & Export-Oriented Business Personnel',
+  'CA': 'Civil Aviation',
+  'DC': 'Delivery personnel of cargoes',
+  'DO': 'Distressed OFWs',
+  'ER': 'Emergency Responders',
+  'FC': 'Food Chain/ Resturants',
+  'FS': 'Funeral Service',
+  'GO': 'Government Agency',
+  'GR': 'Grocery / Convenience Stores',
+  'HM': 'Heads of Mission',
+  'HT': 'Hotel Employees and Tenants',
+  'IP': 'International Passengers and Driver',
+  'LW': 'Logistics Warehouse',
+  'ME': 'Media Personalities',
+  'MS': 'Medical Services',
+  'MF': 'Manufacturing',
+  'MT': 'Money Transfer Services',
+  'PH': 'Pharmacies / Drug Stores',
+  'PM': 'Public Market',
+  'PI': 'Private Individual',
+  'SH': 'Ship Captain & Crew',
+  'SS': 'Security Services',
+  'TF': 'Transportation Facilities',
+  'UT': 'Utilities',
+  'VE': 'Veterinary'
+};
+
 class PassResultsTableRow {
   final String label;
   final String value;
@@ -21,10 +51,11 @@ class PassResultsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tableTextStyle = TextStyle(fontSize: 18.0);
     final tableChildren = this.data.map((row) {
-      debugPrint('row: $row');
-      debugPrint('row.errorMessage: ${row.errorMessage}');
-      final tableTextStyle = TextStyle(fontSize: 18.0);
+      final value = row.label == 'APOR'
+          ? aporCodes[row.value] + ' (${row.value})'
+          : row.value;
       if (row.errorMessage == null) {
         return TableRow(children: [
           Padding(
@@ -37,7 +68,7 @@ class PassResultsCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 2.0),
             child: Text(
-              row.value,
+              value,
               textAlign: TextAlign.right,
               style: tableTextStyle.copyWith(fontWeight: FontWeight.bold),
             ),

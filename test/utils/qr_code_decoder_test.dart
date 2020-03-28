@@ -1,25 +1,21 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('QrCodeDecoder works', () {
-    final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
-    print('hex.length: ${hex.length}');
-    final bytes = QrCodeDecoder.decodeHex(hex);
-    final input = String.fromCharCodes(bytes);
-    print('input.length: ${input.length}');
-    final list = input.codeUnits;
-    final buffer =
-        list is Uint8List ? list.buffer : Uint8List.fromList(list).buffer;
-    final byteData = ByteData.view(buffer);
-    print('lengthInBytes: ${byteData.lengthInBytes}');
-    final actual = QrCodeDecoder().convert(byteData);
-    print(actual);
+    final String raw = 'x09EMhTHXoDGAF6ppIAHQUJDMTIzNAb/HyA=';
+    final bytes = base64.decode(raw);
+    final uint8list = bytes.buffer.asByteData();
+    final qrData = QrCodeDecoder().convert(uint8list);
+    expect(qrData.passType, equals(0x80));
+    expect(qrData.apor, equals("GO"));
+    expect(qrData.controlCode, equals(1144132807));
+    expect(qrData.validFrom, equals(1585497600));
+    expect(qrData.validUntil, equals(1588176000));
+    expect(qrData.idOrPlate, equals("ABC1234"));
   });
   test('utf8', () {
     final hex = '00d6948580835e77fc005e7d42000e41424331323334893c6f13';

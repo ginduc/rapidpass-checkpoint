@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-
-import 'main_menu.dart';
 
 const borderRadius = 12.0;
 
@@ -18,6 +18,8 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     // TODO ValidatorService
     final tableData = {
+      RapidPassField.passType:
+          qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
       RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
       RapidPassField.idOrPlate: qrData.idOrPlate,
       RapidPassField.apor: qrData.purpose(),
@@ -38,12 +40,12 @@ class ScanResultScreen extends StatelessWidget {
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: 'ENTRY APPROVED',
+            headerText: scanResults.resultMessage.toUpperCase(),
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: 'INVALID PASS',
+            headerText: scanResults.resultMessage.toUpperCase(),
             data: passResultsData,
             color: Colors.red);
     return Theme(
@@ -106,8 +108,7 @@ class ScanResultScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final qrData = await MainMenu.scan(context);
-    final scanResults = ScanResults(qrData);
-    // TODO: Use ValidatorService
-    Navigator.popAndPushNamed(context, '/passOk', arguments: scanResults);
+    final ScanResults scanResults = PassValidationService.validate(qrData);
+    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
   }
 }
