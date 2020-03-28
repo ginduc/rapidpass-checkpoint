@@ -6,6 +6,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/components/main_menu_button.dart';
+import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
@@ -85,8 +86,8 @@ class MainMenu extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          MainMenuButton(
-              'Scan QR Code', 'icons8_qr-code-2x.png', () => scan(context)),
+          MainMenuButton('Scan QR Code', 'icons8_qr-code-2x.png',
+              () => _scanAndNavigate(context)),
           MainMenuButton('Plate Number', 'license-plate-2x.png', () {
             debugPrint('Plate Number pressed');
             Navigator.pushNamed(context, '/checkPlateNumber');
@@ -100,7 +101,14 @@ class MainMenu extends StatelessWidget {
     );
   }
 
-  Future scan(BuildContext context) async {
+  Future _scanAndNavigate(final BuildContext context) async {
+    final qrData = await scan(context);
+    // TODO: Use ValidatorService
+    Navigator.pushNamed(context, '/passOk', arguments: qrData);
+  }
+
+  // TODO: Maybe move this to a service or something
+  static Future<QrData> scan(final BuildContext context) async {
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       final decoded = base64.decode(base64Encoded);
@@ -110,8 +118,7 @@ class MainMenu extends StatelessWidget {
           ? decoded.buffer
           : Uint8List.fromList(decoded).buffer;
       final byteData = ByteData.view(buffer);
-      final rawQrData = QrCodeDecoder().convert(byteData);
-      Navigator.pushNamed(context, "/passOk", arguments: rawQrData);
+      return QrCodeDecoder().convert(byteData);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');
@@ -130,7 +137,7 @@ class MainMenu extends StatelessWidget {
     }
   }
 
-  void _showDialog(BuildContext context, {String title, String body}) {
+  static void _showDialog(BuildContext context, {String title, String body}) {
     // flutter defined function
     showDialog(
       context: context,
