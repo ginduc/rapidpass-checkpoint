@@ -1,34 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
-import 'package:rapidpass_checkpoint/models/qr_data.dart';
+import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 const borderRadius = 12.0;
 
-class PassInvalidScreen extends StatelessWidget {
-  QrData qrData;
+/// Pass or Fail screen
+class ScanResultScreen extends StatelessWidget {
+  ScanResults scanResults;
 
-  PassInvalidScreen(this.qrData);
+  ScanResultScreen(this.scanResults){
+	playNotificationApproved();
+  }
 
+ 
   @override
   Widget build(BuildContext context) {
+    final qrData = scanResults.qrData;
     // TODO ValidatorService
     final tableData = {
-      'Control Code': '${qrData.controlCodeAsString()}',
-      'Plate Number:': qrData.idOrPlate,
-      'Access Type:': qrData.purpose(),
-      'Valid From:': qrData.validFromDisplayDate(),
-      'Valid Until:': qrData.validUntilDisplayDate(),
+      RapidPassField.passType:
+          qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
+      RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
+      RapidPassField.idOrPlate: qrData.idOrPlate,
+      RapidPassField.apor: qrData.purpose(),
+      RapidPassField.validFrom: qrData.validFromDisplayDate(),
+      RapidPassField.validUntil: qrData.validUntilDisplayDate(),
     };
     final passResultsData = tableData.entries.map((e) {
-      return e.key == 'Valid Until:'
-          ? PassResultsData(
-              label: e.key,
-              value: e.value,
-              errorMessage:
-                  'Pass is only valid until ${qrData.validUntilDisplayTimestamp()}')
-          : PassResultsData(label: e.key, value: e.value);
+      var field = e.key;
+      final String label = field == RapidPassField.idOrPlate
+          ? 'Plate Number'
+          : getFieldName(field);
+      final error = scanResults.findErrorForSource(field);
+      return error == null
+          ? PassResultsTableRow(label: label, value: e.value)
+          : PassResultsTableRow(
+              label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
+    final card = scanResults.isValid()
+        ? PassResultsCard(
+            iconName: 'check-2x',
+            headerText: scanResults.resultMessage.toUpperCase(),
+            data: passResultsData,
+            color: green300)
+        : PassResultsCard(
+            iconName: 'error',
+            headerText: scanResults.resultMessage.toUpperCase(),
+            data: passResultsData,
+            color: Colors.red);
     return Theme(
       data: Green.buildFor(context),
       child: Scaffold(
@@ -41,11 +65,7 @@ class PassInvalidScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    PassResultsCard(
-                        iconName: 'error',
-                        headerText: 'PASS EXPIRED',
-                        data: passResultsData,
-                        color: Colors.red),
+                    card,
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -56,9 +76,7 @@ class PassInvalidScreen extends StatelessWidget {
                         child: RaisedButton(
                           shape: new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24.0)),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => _scanAndNavigate(context),
                           child: Text('Scan another QR code',
                               style: TextStyle(
                                   // Not sure how to get rid of color: Colors.white here
@@ -91,5 +109,21 @@ class PassInvalidScreen extends StatelessWidget {
                 ),
               ))),
     );
+  }
+
+  Future _scanAndNavigate(final BuildContext context) async {
+    final qrData = await MainMenu.scan(context);
+    final ScanResults scanResults = PassValidationService.validate(qrData);
+    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+  }
+
+  Future<AudioPlayer> playNotificationApproved() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_approved.mp3");
+  }
+
+  Future<AudioPlayer> playNotificationRegected() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_denied.mp3");
   }
 }
