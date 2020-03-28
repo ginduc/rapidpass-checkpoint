@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
+import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 import 'package:rapidpass_checkpoint/widgets/rapid_main_menu_button.dart';
@@ -112,7 +113,12 @@ class MainMenu extends StatelessWidget {
                   : Uint8List.fromList(list).buffer;
               final byteData = ByteData.view(buffer);
               final qrData = QrCodeDecoder().convert(byteData);
-              Navigator.pushNamed(context, "/passInvalid", arguments: qrData);
+              final scanResults = ScanResults(qrData);
+              scanResults.errors.add(ValidationError(
+                  'Pass was valid only until ${qrData.validUntilDisplayTimestamp()}',
+                  source: 'Valid Until:'));
+              Navigator.pushNamed(context, "/passInvalid",
+                  arguments: scanResults);
             },
           ),
           RapidMainMenuButton(
@@ -129,8 +135,9 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final qrData = await scan(context);
+    final scanResults = ScanResults(qrData);
     // TODO: Use ValidatorService
-    Navigator.pushNamed(context, '/passOk', arguments: qrData);
+    Navigator.pushNamed(context, '/passOk', arguments: scanResults);
   }
 
   // TODO: Maybe move this to a service or something

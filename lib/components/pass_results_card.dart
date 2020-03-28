@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 const borderRadius = 12.0;
 
-class PassResultsData {
+class PassResultsTableRow {
   final String label;
   final String value;
   final String errorMessage;
 
-  PassResultsData({this.label, this.value, String errorMessage})
+  PassResultsTableRow({this.label, this.value, String errorMessage})
       : this.errorMessage = errorMessage;
 }
 
@@ -15,7 +15,7 @@ class PassResultsData {
 class PassResultsCard extends StatelessWidget {
   final String iconName;
   final String headerText;
-  final List<PassResultsData> data;
+  final List<PassResultsTableRow> data;
   final Color color;
   PassResultsCard({this.iconName, this.headerText, this.data, this.color});
 

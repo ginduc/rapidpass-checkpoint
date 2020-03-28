@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
-import 'package:rapidpass_checkpoint/models/qr_data.dart';
+import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 import 'main_menu.dart';
 
 const borderRadius = 12.0;
 
-class PassOkScreen extends StatelessWidget {
-  QrData qrData;
+/// Pass or Fail screen
+class ScanResultScreen extends StatelessWidget {
+  ScanResults scanResults;
 
-  PassOkScreen(this.qrData);
+  ScanResultScreen(this.scanResults);
 
   @override
   Widget build(BuildContext context) {
+    final qrData = scanResults.qrData;
     // TODO ValidatorService
     final tableData = {
       'Control Code': '${qrData.controlCodeAsString()}',
@@ -23,8 +25,23 @@ class PassOkScreen extends StatelessWidget {
       'Valid Until:': qrData.validUntilDisplayDate(),
     };
     final passResultsData = tableData.entries.map((e) {
-      return PassResultsData(label: e.key, value: e.value);
+      final error = scanResults.findErrorForSource(e.key);
+      return error == null
+          ? PassResultsTableRow(label: e.key, value: e.value)
+          : PassResultsTableRow(
+              label: e.key, value: e.value, errorMessage: error.errorMessage);
     }).toList();
+    final card = scanResults.errors.isEmpty
+        ? PassResultsCard(
+            iconName: 'check-2x',
+            headerText: 'ENTRY APPROVED',
+            data: passResultsData,
+            color: green300)
+        : PassResultsCard(
+            iconName: 'error',
+            headerText: 'INVALID PASS',
+            data: passResultsData,
+            color: Colors.red);
     return Theme(
       data: Green.buildFor(context),
       child: Scaffold(
@@ -37,11 +54,7 @@ class PassOkScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    PassResultsCard(
-                        iconName: 'check-2x',
-                        headerText: 'ENTRY APPROVED',
-                        data: passResultsData,
-                        color: green300),
+                    card,
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -89,6 +102,7 @@ class PassOkScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final qrData = await MainMenu.scan(context);
+    final scanResults = ScanResults(qrData);
     // TODO: Use ValidatorService
     Navigator.popAndPushNamed(context, '/passOk', arguments: qrData);
   }
