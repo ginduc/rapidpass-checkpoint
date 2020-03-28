@@ -5,10 +5,11 @@ import 'dart:typed_data';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rapidpass_checkpoint/components/main_menu_button.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
+import 'package:rapidpass_checkpoint/widgets/rapid_main_menu_button.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
@@ -84,18 +85,43 @@ class MainMenu extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          MainMenuButton('Scan QR Code', 'icons8_qr-code-2x.png',
-              () => _scanAndNavigate(context)),
-          MainMenuButton('Plate Number', 'license-plate-2x.png', () {
-            debugPrint('Plate Number pressed');
-            Navigator.pushNamed(context, '/checkPlateNumber');
-          }),
-          MainMenuButton('Control Code', 'control_number-2x.png', () {
-            debugPrint('Control Code pressed');
-            Navigator.pushNamed(context, '/checkControlCode');
-          }),
+          Text(
+            "CHECK VIA:",
+            style: Theme.of(context)
+                .textTheme
+                .body1
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          RapidMainMenuButton(
+            title: 'Scan QR Code',
+            iconPath: RapidAssetConstants.icQrCode,
+            onPressed: () => _scanAndNavigate(context),
+          ),
+          RapidMainMenuButton(
+            title: 'Plate Number',
+            iconPath: RapidAssetConstants.icPlateNubmer,
+            onPressed: () {
+              final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
+              final bytes = QrCodeDecoder.decodeHex(hex);
+              final input = String.fromCharCodes(bytes);
+              final list = input.codeUnits;
+              final buffer = list is Uint8List
+                  ? list.buffer
+                  : Uint8List.fromList(list).buffer;
+              final byteData = ByteData.view(buffer);
+              final qrData = QrCodeDecoder().convert(byteData);
+              Navigator.pushNamed(context, "/passInvalid", arguments: qrData);
+            },
+          ),
+          RapidMainMenuButton(
+            title: 'Control Code',
+            iconPath: RapidAssetConstants.icControlCode,
+            onPressed: () {
+              Navigator.pushNamed(context, '/checkControlCode');
+            },
+          ),
         ],
       ),
     );

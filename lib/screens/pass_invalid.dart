@@ -3,14 +3,12 @@ import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
-import 'main_menu.dart';
-
 const borderRadius = 12.0;
 
-class PassOkScreen extends StatelessWidget {
+class PassInvalidScreen extends StatelessWidget {
   QrData qrData;
 
-  PassOkScreen(this.qrData);
+  PassInvalidScreen(this.qrData);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,13 @@ class PassOkScreen extends StatelessWidget {
       'Valid Until:': qrData.validUntilDisplayDate(),
     };
     final passResultsData = tableData.entries.map((e) {
-      return PassResultsData(label: e.key, value: e.value);
+      return e.key == 'Valid Until:'
+          ? PassResultsData(
+              label: e.key,
+              value: e.value,
+              errorMessage:
+                  'Pass is only valid until ${qrData.validUntilDisplayTimestamp()}')
+          : PassResultsData(label: e.key, value: e.value);
     }).toList();
     return Theme(
       data: Green.buildFor(context),
@@ -38,10 +42,10 @@ class PassOkScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     PassResultsCard(
-                        iconName: 'check-2x',
-                        headerText: 'ENTRY APPROVED',
+                        iconName: 'error',
+                        headerText: 'PASS EXPIRED',
                         data: passResultsData,
-                        color: green300),
+                        color: Colors.red),
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -52,7 +56,9 @@ class PassOkScreen extends StatelessWidget {
                         child: RaisedButton(
                           shape: new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24.0)),
-                          onPressed: () => _scanAndNavigate(context),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           child: Text('Scan another QR code',
                               style: TextStyle(
                                   // Not sure how to get rid of color: Colors.white here
@@ -85,11 +91,5 @@ class PassOkScreen extends StatelessWidget {
                 ),
               ))),
     );
-  }
-
-  Future _scanAndNavigate(final BuildContext context) async {
-    final qrData = await MainMenu.scan(context);
-    // TODO: Use ValidatorService
-    Navigator.popAndPushNamed(context, '/passOk', arguments: qrData);
   }
 }
