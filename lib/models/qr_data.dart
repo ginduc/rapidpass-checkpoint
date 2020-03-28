@@ -39,18 +39,22 @@ class QrData {
         : purposeCode;
   }
 
+  DateTime validFromDateTime() {
+    return DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
+  }
+
+  DateTime validUntilDateTime() {
+    return DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
+  }
+
   final DateFormat dateFormat = DateFormat.yMMMd('en_US');
 
   String validFromDisplayDate() {
-    final DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
-    return dateFormat.format(dateTime);
+    return dateFormat.format(validFromDateTime());
   }
 
   String validUntilDisplayDate() {
-    final DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
-    return dateFormat.format(dateTime);
+    return dateFormat.format(validUntilDateTime());
   }
 
   String validUntilDisplayTimestamp() {

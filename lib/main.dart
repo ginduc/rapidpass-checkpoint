@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/screens/pass_invalid.dart';
-import 'package:rapidpass_checkpoint/screens/pass_ok.dart';
+import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
@@ -51,11 +50,11 @@ class RapidPassCheckpointApp extends StatelessWidget {
                   settings: settings);
             case '/passOk':
               return CupertinoPageRoute(
-                  builder: (_) => PassOkScreen(settings.arguments),
+                  builder: (_) => ScanResultScreen(settings.arguments),
                   settings: settings);
             case '/passInvalid':
               return CupertinoPageRoute(
-                  builder: (_) => PassInvalidScreen(settings.arguments),
+                  builder: (_) => ScanResultScreen(settings.arguments),
                   settings: settings);
           }
           return null;
