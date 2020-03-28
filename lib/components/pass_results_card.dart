@@ -51,7 +51,7 @@ class PassResultsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tableTextStyle = TextStyle(fontSize: 18.0);
+    final tableTextStyle = TextStyle(fontSize: 16.0);
     final tableChildren = this.data.map((row) {
       final value = row.label == 'APOR'
           ? aporCodes[row.value] + ' (${row.value})'
@@ -85,7 +85,7 @@ class PassResultsCard extends StatelessWidget {
               ),
             ),
             onTap: () => _showDialog(context,
-                title: 'Pass expired', body: row.errorMessage),
+                title: this.headerText, body: row.errorMessage),
           ),
           GestureDetector(
             child: Padding(
@@ -98,7 +98,7 @@ class PassResultsCard extends StatelessWidget {
               ),
             ),
             onTap: () => _showDialog(context,
-                title: 'Pass expired', body: row.errorMessage),
+                title: this.headerText, body: row.errorMessage),
           )
         ]);
       }
@@ -107,7 +107,6 @@ class PassResultsCard extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(color: this.color, width: 1.0),
             borderRadius: BorderRadius.circular(borderRadius)),
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Center(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

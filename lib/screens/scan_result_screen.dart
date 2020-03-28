@@ -66,15 +66,11 @@ class ScanResultScreen extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: ListView(
                   children: <Widget>[
                     card,
-                    Spacer(),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
                       child: SizedBox(
                         height: 48,
                         width: 300.0,
@@ -92,7 +88,7 @@ class ScanResultScreen extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
+                          vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
                         height: 48,
                         child: FlatButton(
