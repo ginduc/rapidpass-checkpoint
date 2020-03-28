@@ -2,10 +2,15 @@ import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('Base32Crockford.encode(int) works', () {
-    final testCases = {2491777155: '2A8B043', 987654321: '0XDWT5H'};
+  test('CrockfordEncoder.convert(int) works', () {
+    final CrockfordEncoder encoder = CrockfordEncoder(7);
+    final testCases = {
+      0: '0000000',
+      2491777155: '2A8B043',
+      987654321: '0XDWT5H'
+    };
     testCases.forEach((input, expected) {
-      expect(crockford.encode(input), equals(expected));
+      expect(encoder.convert(input), equals(expected));
     });
   });
   test('normalize() works', () {

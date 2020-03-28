@@ -39,7 +39,7 @@ class CrockfordCodec extends Codec<int, String> {
   Converter<String, int> get decoder => CrockfordDecoder();
 
   @override
-  Converter<int, String> get encoder => CrockfordEncoder(7);
+  Converter<int, String> get encoder => CrockfordEncoder(0);
 }
 
 const alphaEncodingMap = {
@@ -70,7 +70,7 @@ const alphaEncodingMap = {
 class CrockfordEncoder extends Converter<int, String> {
   final int padToLength;
 
-  CrockfordEncoder(this.padToLength);
+  const CrockfordEncoder(this.padToLength);
 
   @override
   String convert(int input) {

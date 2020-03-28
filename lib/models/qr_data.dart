@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
 import 'package:rapidpass_checkpoint/utils/damm32.dart';
 
+const CrockfordEncoder paddedEncoder = const CrockfordEncoder(7);
+
 class QrData {
   final int passType;
   final int controlCode;
@@ -20,7 +22,7 @@ class QrData {
   }
 
   String controlCodeAsString() {
-    return crockford.encode(this.controlCode) +
+    return paddedEncoder.convert(this.controlCode) +
         crockford.encode(Damm32.compute(this.controlCode));
   }
 
