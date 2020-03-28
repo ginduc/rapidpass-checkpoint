@@ -4,6 +4,8 @@ import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 const borderRadius = 12.0;
 
@@ -13,6 +15,7 @@ class ScanResultScreen extends StatelessWidget {
 
   ScanResultScreen(this.scanResults);
 
+ 
   @override
   Widget build(BuildContext context) {
     final qrData = scanResults.qrData;
@@ -37,6 +40,13 @@ class ScanResultScreen extends StatelessWidget {
           : PassResultsTableRow(
               label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
+
+    if(scanResults.isValid()){
+      playNotificationApproved();
+    }else{
+      playNotificationRegected();
+    }
+
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
@@ -110,5 +120,15 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = await MainMenu.scan(context);
     final ScanResults scanResults = PassValidationService.validate(qrData);
     Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+  }
+
+  Future<AudioPlayer> playNotificationApproved() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_approved.mp3");
+  }
+
+  Future<AudioPlayer> playNotificationRegected() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("notification_denied.mp3");
   }
 }
