@@ -6,11 +6,11 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
-import 'package:rapidpass_checkpoint/widgets/rapid_main_menu_button.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
