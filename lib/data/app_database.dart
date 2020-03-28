@@ -13,7 +13,7 @@ class QrData extends Table {
 
   IntColumn get validUntil => integer()();
 
-  BoolColumn get idOrPlate => boolean()();
+  IntColumn get idOrPlate => integer()();
 
   TextColumn get company => text()();
 
@@ -22,10 +22,7 @@ class QrData extends Table {
 
 @UseMoor(tables: [QrData])
 class AppDatabase extends _$AppDatabase {
-  static const String databaseName = 'rapid_pass.sqlite';
-
-  AppDatabase()
-      : super(FlutterQueryExecutor.inDatabaseFolder(path: databaseName));
+  AppDatabase(QueryExecutor executor) : super(executor);
 
   @override
   int get schemaVersion => 1;
@@ -45,6 +42,10 @@ class AppDatabase extends _$AppDatabase {
   Future<List<QrDataEntry>> getAllQrData() => select(qrData).get();
 
   Stream<List<QrDataEntry>> streamQrData() => select(qrData).watch();
+
+  Stream<QrDataEntry> streamQrDataEntry(int id) {
+    return (select(qrData)..where((u) => u.id.equals(id))).watchSingle();
+  }
 
   Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
 

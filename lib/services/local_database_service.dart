@@ -4,9 +4,11 @@ import 'package:rapidpass_checkpoint/data/app_database.dart';
 abstract class ILocalDatabaseService {
   Future<List<QrDataEntry>> getAllQrData();
   Stream<List<QrDataEntry>> streamQrData();
+  Stream<QrDataEntry> streamQrDataEntry(int id);
   Future<QrDataEntry> insertQrCode(QrDataEntry entry);
   Future<QrDataEntry> updateQrCode(QrDataEntry entry);
   Future<QrDataEntry> deleteQrCode(QrDataEntry entry);
+  void dispose();
 }
 
 // TODO: Additional logic while retrieving the data from local db should be placed here
@@ -27,6 +29,13 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Stream<List<QrDataEntry>> streamQrData() {
     return appDatabase.streamQrData();
+  }
+
+  // Subscribes and listens to the latest changes of a single record in the database.
+  // Please see [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
+  @override
+  Stream<QrDataEntry> streamQrDataEntry(int id) {
+    return appDatabase.streamQrDataEntry(id);
   }
 
   // Inserts new record to the database.
@@ -51,5 +60,11 @@ class LocalDatabaseService implements ILocalDatabaseService {
   Future<QrDataEntry> deleteQrCode(QrDataEntry entry) async {
     await appDatabase.deleteQrCode(entry);
     return entry;
+  }
+
+  // Close and clear all expensive resources needed as this class gets killed.
+  @override
+  void dispose() async {
+    await appDatabase.close();
   }
 }

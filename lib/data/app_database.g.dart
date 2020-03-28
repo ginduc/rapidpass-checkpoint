@@ -12,7 +12,7 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
   final int controlCode;
   final int validFrom;
   final int validUntil;
-  final bool idOrPlate;
+  final int idOrPlate;
   final String company;
   final String homeAddress;
   QrDataEntry(
@@ -27,7 +27,6 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
-    final boolType = db.typeSystem.forDartType<bool>();
     final stringType = db.typeSystem.forDartType<String>();
     return QrDataEntry(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -37,7 +36,7 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
           intType.mapFromDatabaseResponse(data['${effectivePrefix}valid_from']),
       validUntil: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}valid_until']),
-      idOrPlate: boolType
+      idOrPlate: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}id_or_plate']),
       company:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}company']),
@@ -53,7 +52,7 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
       controlCode: serializer.fromJson<int>(json['controlCode']),
       validFrom: serializer.fromJson<int>(json['validFrom']),
       validUntil: serializer.fromJson<int>(json['validUntil']),
-      idOrPlate: serializer.fromJson<bool>(json['idOrPlate']),
+      idOrPlate: serializer.fromJson<int>(json['idOrPlate']),
       company: serializer.fromJson<String>(json['company']),
       homeAddress: serializer.fromJson<String>(json['homeAddress']),
     );
@@ -66,7 +65,7 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
       'controlCode': serializer.toJson<int>(controlCode),
       'validFrom': serializer.toJson<int>(validFrom),
       'validUntil': serializer.toJson<int>(validUntil),
-      'idOrPlate': serializer.toJson<bool>(idOrPlate),
+      'idOrPlate': serializer.toJson<int>(idOrPlate),
       'company': serializer.toJson<String>(company),
       'homeAddress': serializer.toJson<String>(homeAddress),
     };
@@ -102,7 +101,7 @@ class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
           int controlCode,
           int validFrom,
           int validUntil,
-          bool idOrPlate,
+          int idOrPlate,
           String company,
           String homeAddress}) =>
       QrDataEntry(
@@ -157,7 +156,7 @@ class QrDataCompanion extends UpdateCompanion<QrDataEntry> {
   final Value<int> controlCode;
   final Value<int> validFrom;
   final Value<int> validUntil;
-  final Value<bool> idOrPlate;
+  final Value<int> idOrPlate;
   final Value<String> company;
   final Value<String> homeAddress;
   const QrDataCompanion({
@@ -174,7 +173,7 @@ class QrDataCompanion extends UpdateCompanion<QrDataEntry> {
     @required int controlCode,
     @required int validFrom,
     @required int validUntil,
-    @required bool idOrPlate,
+    @required int idOrPlate,
     @required String company,
     @required String homeAddress,
   })  : controlCode = Value(controlCode),
@@ -188,7 +187,7 @@ class QrDataCompanion extends UpdateCompanion<QrDataEntry> {
       Value<int> controlCode,
       Value<int> validFrom,
       Value<int> validUntil,
-      Value<bool> idOrPlate,
+      Value<int> idOrPlate,
       Value<String> company,
       Value<String> homeAddress}) {
     return QrDataCompanion(
@@ -255,11 +254,11 @@ class $QrDataTable extends QrData with TableInfo<$QrDataTable, QrDataEntry> {
   }
 
   final VerificationMeta _idOrPlateMeta = const VerificationMeta('idOrPlate');
-  GeneratedBoolColumn _idOrPlate;
+  GeneratedIntColumn _idOrPlate;
   @override
-  GeneratedBoolColumn get idOrPlate => _idOrPlate ??= _constructIdOrPlate();
-  GeneratedBoolColumn _constructIdOrPlate() {
-    return GeneratedBoolColumn(
+  GeneratedIntColumn get idOrPlate => _idOrPlate ??= _constructIdOrPlate();
+  GeneratedIntColumn _constructIdOrPlate() {
+    return GeneratedIntColumn(
       'id_or_plate',
       $tableName,
       false,
@@ -371,7 +370,7 @@ class $QrDataTable extends QrData with TableInfo<$QrDataTable, QrDataEntry> {
       map['valid_until'] = Variable<int, IntType>(d.validUntil.value);
     }
     if (d.idOrPlate.present) {
-      map['id_or_plate'] = Variable<bool, BoolType>(d.idOrPlate.value);
+      map['id_or_plate'] = Variable<int, IntType>(d.idOrPlate.value);
     }
     if (d.company.present) {
       map['company'] = Variable<String, StringType>(d.company.value);
