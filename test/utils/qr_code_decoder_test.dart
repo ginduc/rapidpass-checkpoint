@@ -9,8 +9,13 @@ void main() {
     final String raw = 'x09EMhTHXoDGAF6ppIAHQUJDMTIzNAb/HyA=';
     final bytes = base64.decode(raw);
     final uint8list = bytes.buffer.asByteData();
-    final actual = QrCodeDecoder().convert(uint8list);
-    print(actual);
+    final qrData = QrCodeDecoder().convert(uint8list);
+    expect(qrData.passType, equals(0x80));
+    expect(qrData.apor, equals("GO"));
+    expect(qrData.controlCode, equals(1144132807));
+    expect(qrData.validFrom, equals(1585497600));
+    expect(qrData.validUntil, equals(1588176000));
+    expect(qrData.idOrPlate, equals("ABC1234"));
   });
   test('utf8', () {
     final hex = '00d6948580835e77fc005e7d42000e41424331323334893c6f13';

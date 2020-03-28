@@ -18,6 +18,8 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     // TODO ValidatorService
     final tableData = {
+      RapidPassField.passType:
+          qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
       RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
       RapidPassField.idOrPlate: qrData.idOrPlate,
       RapidPassField.apor: qrData.purpose(),
@@ -38,12 +40,12 @@ class ScanResultScreen extends StatelessWidget {
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: 'ENTRY APPROVED',
+            headerText: scanResults.resultMessage.toUpperCase(),
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: 'INVALID PASS',
+            headerText: scanResults.resultMessage.toUpperCase(),
             data: passResultsData,
             color: Colors.red);
     return Theme(

@@ -1,8 +1,17 @@
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
-enum RapidPassField { controlCode, apor, validFrom, validUntil, idOrPlate, signature }
+enum RapidPassField {
+  passType,
+  controlCode,
+  apor,
+  validFrom,
+  validUntil,
+  idOrPlate,
+  signature
+}
 
 final fieldNames = {
+  RapidPassField.passType: 'Pass Type',
   RapidPassField.controlCode: 'Control Code',
   RapidPassField.apor: 'APOR',
   RapidPassField.validFrom: 'Valid From',
@@ -24,6 +33,7 @@ class ValidationError {
 class ScanResults {
   final QrData qrData;
   final List<ValidationError> errors = List();
+  String resultMessage = 'Pass Ok';
 
   ScanResults(this.qrData);
 
