@@ -116,7 +116,7 @@ class MainMenu extends StatelessWidget {
               final scanResults = ScanResults(qrData);
               scanResults.errors.add(ValidationError(
                   'Pass was valid only until ${qrData.validUntilDisplayTimestamp()}',
-                  source: 'Valid Until:'));
+                  source: RapidPassField.validUntil));
               Navigator.pushNamed(context, "/passInvalid",
                   arguments: scanResults);
             },

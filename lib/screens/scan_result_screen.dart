@@ -18,20 +18,24 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     // TODO ValidatorService
     final tableData = {
-      'Control Code': '${qrData.controlCodeAsString()}',
-      'Plate Number:': qrData.idOrPlate,
-      'Access Type:': qrData.purpose(),
-      'Valid From:': qrData.validFromDisplayDate(),
-      'Valid Until:': qrData.validUntilDisplayDate(),
+      RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
+      RapidPassField.idOrPlate: qrData.idOrPlate,
+      RapidPassField.apor: qrData.purpose(),
+      RapidPassField.validFrom: qrData.validFromDisplayDate(),
+      RapidPassField.validUntil: qrData.validUntilDisplayDate(),
     };
     final passResultsData = tableData.entries.map((e) {
-      final error = scanResults.findErrorForSource(e.key);
+      var field = e.key;
+      final String label = field == RapidPassField.idOrPlate
+          ? 'Plate Number'
+          : getFieldName(field);
+      final error = scanResults.findErrorForSource(field);
       return error == null
-          ? PassResultsTableRow(label: e.key, value: e.value)
+          ? PassResultsTableRow(label: label, value: e.value)
           : PassResultsTableRow(
-              label: e.key, value: e.value, errorMessage: error.errorMessage);
+              label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
-    final card = scanResults.errors.isEmpty
+    final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
             headerText: 'ENTRY APPROVED',
@@ -104,6 +108,6 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = await MainMenu.scan(context);
     final scanResults = ScanResults(qrData);
     // TODO: Use ValidatorService
-    Navigator.popAndPushNamed(context, '/passOk', arguments: qrData);
+    Navigator.popAndPushNamed(context, '/passOk', arguments: scanResults);
   }
 }
