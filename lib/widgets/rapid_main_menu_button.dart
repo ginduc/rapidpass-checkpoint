@@ -27,22 +27,25 @@ class RapidMainMenuButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                width: 40.0,
-                image: AssetImage(iconPath),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(this.title,
-                    style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: 22,
-                        color: Colors.deepPurple,
-                        fontWeight: FontWeight.bold)),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image(
+                  width: 40.0,
+                  image: AssetImage(iconPath),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text(this.title,
+                      style: Theme.of(context).textTheme.title.copyWith(
+                          fontSize: 22,
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
           ),
           onPressed: this.onPressed,
         ),

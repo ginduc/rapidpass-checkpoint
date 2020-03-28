@@ -50,4 +50,12 @@ class QrData {
         DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
     return dateFormat.format(dateTime);
   }
+
+  String validUntilDisplayTimestamp() {
+    final DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
+    return dateFormat.format(dateTime) +
+        ' ' +
+        DateFormat.Hm('en_US').format(dateTime);
+  }
 }

@@ -48,7 +48,6 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                               fontWeight: FontWeight.bold, fontSize: 32.0),
                           textAlign: TextAlign.center),
                       Spacer(),
-                      Text(imei),
                       Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: SizedBox(
@@ -67,7 +66,8 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                                     fontSize: 18.0)),
                           ),
                         ),
-                      )
+                      ),
+                      Text(imei)
                     ],
                   ),
                 ),
