@@ -5,8 +5,7 @@ import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/screens/pass_invalid.dart';
-import 'package:rapidpass_checkpoint/screens/pass_ok.dart';
+import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -61,13 +60,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(
                   builder: (_) => MainMenuScreen('Camp Aguinaldo'),
                   settings: settings);
-            case '/passOk':
+            case '/scanResults':
               return CupertinoPageRoute(
-                  builder: (_) => PassOkScreen(settings.arguments),
-                  settings: settings);
-            case '/passInvalid':
-              return CupertinoPageRoute(
-                  builder: (_) => PassInvalidScreen(settings.arguments),
+                  builder: (_) => ScanResultScreen(settings.arguments),
                   settings: settings);
           }
           return null;
