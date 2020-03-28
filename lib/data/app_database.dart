@@ -42,10 +42,8 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  // Retrieve the latest changes upon method invocation
   Future<List<QrDataEntry>> getAllQrData() => select(qrData).get();
 
-  // Subscribe and retrieve the latest changes in database
   Stream<List<QrDataEntry>> streamQrData() => select(qrData).watch();
 
   Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
