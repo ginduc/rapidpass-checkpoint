@@ -3,7 +3,8 @@ import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-class QrCodes extends Table {
+@DataClassName('QrDataEntry')
+class QrData extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   IntColumn get controlCode => integer()();
@@ -19,7 +20,7 @@ class QrCodes extends Table {
   TextColumn get homeAddress => text()();
 }
 
-@UseMoor(tables: [QrCodes])
+@UseMoor(tables: [QrData])
 class AppDatabase extends _$AppDatabase {
   static const String databaseName = 'rapid_pass.sqlite';
 
@@ -42,14 +43,14 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // Retrieve the latest changes upon method invocation
-  Future<List<QrCode>> getAllQrCodes() => select(qrCodes).get();
+  Future<List<QrDataEntry>> getAllQrCodes() => select(qrData).get();
 
   // Subscribe and retrieve the latest changes in database
-  Stream<List<QrCode>> streamQrCodes() => select(qrCodes).watch();
+  Stream<List<QrDataEntry>> streamQrCodes() => select(qrData).watch();
 
-  Future insertQrCode(QrCode qrCode) => into(qrCodes).insert(qrCode);
+  Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
 
-  Future updateQrCode(QrCode qrCode) => update(qrCodes).replace(qrCode);
+  Future updateQrCode(QrDataEntry entry) => update(qrData).replace(entry);
 
-  Future deleteQrCode(QrCode qrCode) => delete(qrCodes).delete(qrCode);
+  Future deleteQrCode(QrDataEntry entry) => delete(qrData).delete(entry);
 }

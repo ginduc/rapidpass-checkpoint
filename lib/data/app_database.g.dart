@@ -7,7 +7,7 @@ part of 'app_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class QrCode extends DataClass implements Insertable<QrCode> {
+class QrDataEntry extends DataClass implements Insertable<QrDataEntry> {
   final int id;
   final int controlCode;
   final int validFrom;
@@ -15,7 +15,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
   final bool idOrPlate;
   final String company;
   final String homeAddress;
-  QrCode(
+  QrDataEntry(
       {@required this.id,
       @required this.controlCode,
       @required this.validFrom,
@@ -23,13 +23,13 @@ class QrCode extends DataClass implements Insertable<QrCode> {
       @required this.idOrPlate,
       @required this.company,
       @required this.homeAddress});
-  factory QrCode.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory QrDataEntry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final boolType = db.typeSystem.forDartType<bool>();
     final stringType = db.typeSystem.forDartType<String>();
-    return QrCode(
+    return QrDataEntry(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       controlCode: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}control_code']),
@@ -45,10 +45,10 @@ class QrCode extends DataClass implements Insertable<QrCode> {
           .mapFromDatabaseResponse(data['${effectivePrefix}home_address']),
     );
   }
-  factory QrCode.fromJson(Map<String, dynamic> json,
+  factory QrDataEntry.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return QrCode(
+    return QrDataEntry(
       id: serializer.fromJson<int>(json['id']),
       controlCode: serializer.fromJson<int>(json['controlCode']),
       validFrom: serializer.fromJson<int>(json['validFrom']),
@@ -73,8 +73,8 @@ class QrCode extends DataClass implements Insertable<QrCode> {
   }
 
   @override
-  QrCodesCompanion createCompanion(bool nullToAbsent) {
-    return QrCodesCompanion(
+  QrDataCompanion createCompanion(bool nullToAbsent) {
+    return QrDataCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       controlCode: controlCode == null && nullToAbsent
           ? const Value.absent()
@@ -97,7 +97,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
     );
   }
 
-  QrCode copyWith(
+  QrDataEntry copyWith(
           {int id,
           int controlCode,
           int validFrom,
@@ -105,7 +105,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
           bool idOrPlate,
           String company,
           String homeAddress}) =>
-      QrCode(
+      QrDataEntry(
         id: id ?? this.id,
         controlCode: controlCode ?? this.controlCode,
         validFrom: validFrom ?? this.validFrom,
@@ -116,7 +116,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
       );
   @override
   String toString() {
-    return (StringBuffer('QrCode(')
+    return (StringBuffer('QrDataEntry(')
           ..write('id: $id, ')
           ..write('controlCode: $controlCode, ')
           ..write('validFrom: $validFrom, ')
@@ -142,7 +142,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is QrCode &&
+      (other is QrDataEntry &&
           other.id == this.id &&
           other.controlCode == this.controlCode &&
           other.validFrom == this.validFrom &&
@@ -152,7 +152,7 @@ class QrCode extends DataClass implements Insertable<QrCode> {
           other.homeAddress == this.homeAddress);
 }
 
-class QrCodesCompanion extends UpdateCompanion<QrCode> {
+class QrDataCompanion extends UpdateCompanion<QrDataEntry> {
   final Value<int> id;
   final Value<int> controlCode;
   final Value<int> validFrom;
@@ -160,7 +160,7 @@ class QrCodesCompanion extends UpdateCompanion<QrCode> {
   final Value<bool> idOrPlate;
   final Value<String> company;
   final Value<String> homeAddress;
-  const QrCodesCompanion({
+  const QrDataCompanion({
     this.id = const Value.absent(),
     this.controlCode = const Value.absent(),
     this.validFrom = const Value.absent(),
@@ -169,7 +169,7 @@ class QrCodesCompanion extends UpdateCompanion<QrCode> {
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
   });
-  QrCodesCompanion.insert({
+  QrDataCompanion.insert({
     this.id = const Value.absent(),
     @required int controlCode,
     @required int validFrom,
@@ -183,7 +183,7 @@ class QrCodesCompanion extends UpdateCompanion<QrCode> {
         idOrPlate = Value(idOrPlate),
         company = Value(company),
         homeAddress = Value(homeAddress);
-  QrCodesCompanion copyWith(
+  QrDataCompanion copyWith(
       {Value<int> id,
       Value<int> controlCode,
       Value<int> validFrom,
@@ -191,7 +191,7 @@ class QrCodesCompanion extends UpdateCompanion<QrCode> {
       Value<bool> idOrPlate,
       Value<String> company,
       Value<String> homeAddress}) {
-    return QrCodesCompanion(
+    return QrDataCompanion(
       id: id ?? this.id,
       controlCode: controlCode ?? this.controlCode,
       validFrom: validFrom ?? this.validFrom,
@@ -203,10 +203,10 @@ class QrCodesCompanion extends UpdateCompanion<QrCode> {
   }
 }
 
-class $QrCodesTable extends QrCodes with TableInfo<$QrCodesTable, QrCode> {
+class $QrDataTable extends QrData with TableInfo<$QrDataTable, QrDataEntry> {
   final GeneratedDatabase _db;
   final String _alias;
-  $QrCodesTable(this._db, [this._alias]);
+  $QrDataTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
   @override
@@ -296,13 +296,13 @@ class $QrCodesTable extends QrCodes with TableInfo<$QrCodesTable, QrCode> {
   List<GeneratedColumn> get $columns =>
       [id, controlCode, validFrom, validUntil, idOrPlate, company, homeAddress];
   @override
-  $QrCodesTable get asDslTable => this;
+  $QrDataTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'qr_codes';
+  String get $tableName => _alias ?? 'qr_data';
   @override
-  final String actualTableName = 'qr_codes';
+  final String actualTableName = 'qr_data';
   @override
-  VerificationContext validateIntegrity(QrCodesCompanion d,
+  VerificationContext validateIntegrity(QrDataCompanion d,
       {bool isInserting = false}) {
     final context = VerificationContext();
     if (d.id.present) {
@@ -350,13 +350,13 @@ class $QrCodesTable extends QrCodes with TableInfo<$QrCodesTable, QrCode> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  QrCode map(Map<String, dynamic> data, {String tablePrefix}) {
+  QrDataEntry map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return QrCode.fromData(data, _db, prefix: effectivePrefix);
+    return QrDataEntry.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
-  Map<String, Variable> entityToSql(QrCodesCompanion d) {
+  Map<String, Variable> entityToSql(QrDataCompanion d) {
     final map = <String, Variable>{};
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
@@ -383,17 +383,17 @@ class $QrCodesTable extends QrCodes with TableInfo<$QrCodesTable, QrCode> {
   }
 
   @override
-  $QrCodesTable createAlias(String alias) {
-    return $QrCodesTable(_db, alias);
+  $QrDataTable createAlias(String alias) {
+    return $QrDataTable(_db, alias);
   }
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
-  $QrCodesTable _qrCodes;
-  $QrCodesTable get qrCodes => _qrCodes ??= $QrCodesTable(this);
+  $QrDataTable _qrData;
+  $QrDataTable get qrData => _qrData ??= $QrDataTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [qrCodes];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [qrData];
 }
