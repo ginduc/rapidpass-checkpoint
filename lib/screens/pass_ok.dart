@@ -3,6 +3,8 @@ import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
+import 'main_menu.dart';
+
 const borderRadius = 12.0;
 
 class PassOkScreen extends StatelessWidget {
@@ -50,9 +52,7 @@ class PassOkScreen extends StatelessWidget {
                         child: RaisedButton(
                           shape: new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24.0)),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => _scanAndNavigate(context),
                           child: Text('Scan another QR code',
                               style: TextStyle(
                                   // Not sure how to get rid of color: Colors.white here
@@ -85,5 +85,11 @@ class PassOkScreen extends StatelessWidget {
                 ),
               ))),
     );
+  }
+
+  Future _scanAndNavigate(final BuildContext context) async {
+    final qrData = await MainMenu.scan(context);
+    // TODO: Use ValidatorService
+    Navigator.popAndPushNamed(context, '/passOk', arguments: qrData);
   }
 }
