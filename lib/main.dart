@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/pass_invalid.dart';
 import 'package:rapidpass_checkpoint/screens/pass_ok.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
+import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 void main() => runApp(RapidPassCheckpointApp());
@@ -19,6 +21,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
         // Provide the model here
         ChangeNotifierProvider(
           create: (_) => DeviceInfoModel(),
+        ),
+        Provider(
+          create: (_) => LocalDatabaseService(appDatabase: AppDatabase()),
         ),
       ],
       child: MaterialApp(
