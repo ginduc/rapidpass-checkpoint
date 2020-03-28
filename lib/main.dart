@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/pass_invalid.dart';
@@ -24,6 +25,21 @@ class RapidPassCheckpointApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
+          appBarTheme: AppBarTheme(
+            textTheme: GoogleFonts.workSansTextTheme(
+              Theme.of(context).textTheme,
+            ).copyWith(
+              title: GoogleFonts.workSans(
+                textStyle: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ),
+          textTheme: GoogleFonts.workSansTextTheme(
+            Theme.of(context).textTheme,
+          ),
         ),
         initialRoute: "/",
         routes: {'/': (_) => WelcomeScreen()},
