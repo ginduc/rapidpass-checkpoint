@@ -28,26 +28,23 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
           input.lengthInBytes);
     }
     // TODO: More sanity checks
-    final pass_type = input.getUint8(0);
+    final pass_type = input.getUint8(0) & 0x80;
     print('pass_type: $pass_type');
-    final control_code = input.getUint32(1);
+    final apor_bytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
+    final apor = asciiDecoder.convert(apor_bytes);
+    final control_code = input.getUint32(2);
     print('control_code: $control_code (${crockford.encode(control_code)})');
-    final valid_from = input.getUint32(5);
-    final valid_until = input.getUint32(9);
-    // ZigZag encoding, but since should only be positive we can simply drop
-    // the LSB.
-    // TODO: Handle lengths > 64 (MSB is 1)
-    final byte13 = input.getUint8(13);
-    debugPrint('byte13: ${byte13.toRadixString(16)}');
-    final id_or_plate_len = input.getUint8(13) >> 1;
+    final valid_from = input.getUint32(6);
+    final valid_until = input.getUint32(10);
+    final id_or_plate_len = input.getUint8(14);
     debugPrint('id_or_plate_len: $id_or_plate_len');
     final List<int> bytes = List(id_or_plate_len);
     for (var i = 0; i < id_or_plate_len; ++i) {
-      bytes[i] = input.getUint8(14 + i);
+      bytes[i] = input.getUint8(15 + i);
     }
     final String id_or_plate = asciiDecoder.convert(bytes);
     return QrData(
-        pass_type, control_code, valid_from, valid_until, id_or_plate);
+        pass_type, apor, control_code, valid_from, valid_until, id_or_plate);
   }
 
   /// Just a utility method (used mainly in dev/test) to decode a hex string

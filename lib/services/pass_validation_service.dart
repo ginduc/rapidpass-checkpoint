@@ -6,7 +6,13 @@ class PassValidationService {
     final results = ScanResults(qrData);
     final DateTime now = DateTime.now();
     if (now.isBefore(qrData.validFromDateTime())) {
-      results.addError('ValidFrom', source: RapidPassField.validFrom);
+      results.addError(
+          'Pass is only valid starting on ${qrData.validFromDisplayDate()}',
+          source: RapidPassField.validFrom);
+    }
+    if (now.isAfter(qrData.validUntilDateTime())) {
+      results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
+          source: RapidPassField.validUntil);
     }
     return results;
   }

@@ -9,6 +9,7 @@ import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
@@ -135,9 +136,8 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final qrData = await scan(context);
-    final scanResults = ScanResults(qrData);
-    // TODO: Use ValidatorService
-    Navigator.pushNamed(context, '/passOk', arguments: scanResults);
+    final ScanResults scanResults = PassValidationService.validate(qrData);
+    Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
   }
 
   // TODO: Maybe move this to a service or something
@@ -161,10 +161,6 @@ class MainMenu extends StatelessWidget {
     } on FormatException {
       debugPrint(
           'null (User returned using the "back"-button before scanning anything. Result)');
-      _showDialog(context,
-          title: 'Error',
-          body:
-              'User returned using the "back"-button before scanning anything. Result');
     } catch (e) {
       _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
     }

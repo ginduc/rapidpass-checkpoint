@@ -48,11 +48,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(
                   builder: (_) => MainMenuScreen('Camp Aguinaldo'),
                   settings: settings);
-            case '/passOk':
-              return CupertinoPageRoute(
-                  builder: (_) => ScanResultScreen(settings.arguments),
-                  settings: settings);
-            case '/passInvalid':
+            case '/scanResults':
               return CupertinoPageRoute(
                   builder: (_) => ScanResultScreen(settings.arguments),
                   settings: settings);
