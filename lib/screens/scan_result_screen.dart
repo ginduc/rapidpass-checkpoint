@@ -13,9 +13,7 @@ const borderRadius = 12.0;
 class ScanResultScreen extends StatelessWidget {
   ScanResults scanResults;
 
-  ScanResultScreen(this.scanResults){
-	playNotificationApproved();
-  }
+  ScanResultScreen(this.scanResults);
 
  
   @override
@@ -42,6 +40,13 @@ class ScanResultScreen extends StatelessWidget {
           : PassResultsTableRow(
               label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
+
+    if(scanResults.isValid()){
+      playNotificationApproved();
+    }else{
+      playNotificationRegected();
+    }
+
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
