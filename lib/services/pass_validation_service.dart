@@ -20,6 +20,8 @@ class PassValidationService {
     final signatureIsValid = HmacShac256.validateSignature(decodedFromBase64);
     if (!signatureIsValid) {
       scanResults.errors.add(ValidationError('Invalid signature'));
+      scanResults.resultMessage = 'INVALID PASS';
+      scanResults.allRed = true;
     }
     return scanResults;
   }
@@ -28,13 +30,13 @@ class PassValidationService {
     final results = ScanResults(qrData);
     final DateTime now = DateTime.now();
     if (now.isBefore(qrData.validFromDateTime())) {
-      results.resultMessage = 'Invalid Pass';
+      results.resultMessage = 'INVALID PASS';
       results.addError(
           'Pass is only valid starting on ${qrData.validFromDisplayDate()}',
           source: RapidPassField.validFrom);
     }
     if (now.isAfter(qrData.validUntilDateTime())) {
-      results.resultMessage = 'Pass Expired';
+      results.resultMessage = 'PASS EXPIRED';
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
           source: RapidPassField.validUntil);
     }
