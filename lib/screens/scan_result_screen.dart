@@ -104,13 +104,13 @@ class ScanResultScreen extends StatelessWidget {
                   children: <Widget>[
                     card,
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 4),
                       child: SizedBox(
-                        height: 48,
+                        height: 58,
                         width: 300.0,
                         child: RaisedButton(
                           shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0)),
+                              borderRadius: BorderRadius.circular(34.0)),
                           onPressed: () => _scanAndNavigate(context),
                           child: Text('Scan another QR code',
                               style: TextStyle(
@@ -124,10 +124,10 @@ class ScanResultScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
-                        height: 48,
+                        height: 58,
                         child: FlatButton(
                           shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
+                              borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
                             Navigator.pop(context);
