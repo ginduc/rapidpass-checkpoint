@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
@@ -112,8 +111,7 @@ class ScanResultScreen extends StatelessWidget {
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
-    final qrData = await MainMenu.scan(context);
-    final ScanResults scanResults = PassValidationService.validate(qrData);
+    final scanResults = await MainMenu.scanAndValidate(context);
     Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
   }
 
