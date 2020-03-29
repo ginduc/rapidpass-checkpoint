@@ -11,15 +11,17 @@ class QrData {
   final int validFrom;
   final int validUntil;
   final String idOrPlate;
+  final int signature;
 
   QrData(this.passType, this.apor, this.controlCode, this.validFrom,
-      this.validUntil, this.idOrPlate);
+      this.validUntil, this.idOrPlate,
+      {this.signature});
 
   @override
   String toString() {
     return "%{pass_type: $passType, apor: $apor, control_code: $controlCode, "
         "valid_from: $validFrom, valid_until: $validUntil, "
-        "id_or_plate: '$idOrPlate'}";
+        "id_or_plate: '$idOrPlate', signature: $signature}";
   }
 
   String controlCodeAsString() {

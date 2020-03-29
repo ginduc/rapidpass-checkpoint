@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:barcode_scan/barcode_scan.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
-import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -135,23 +133,14 @@ class MainMenu extends StatelessWidget {
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
-    final qrData = await scan(context);
-    final ScanResults scanResults = PassValidationService.validate(qrData);
+    final scanResults = await scanAndValidate(context);
     Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
   }
 
-  // TODO: Maybe move this to a service or something
-  static Future<QrData> scan(final BuildContext context) async {
+  static Future<ScanResults> scanAndValidate(final BuildContext context) async {
     try {
       final String base64Encoded = await BarcodeScanner.scan();
-      final decoded = base64.decode(base64Encoded);
-      final asHex = decoded.map((i) => i.toRadixString(16));
-      debugPrint('barcode => $asHex (${asHex.length} codes)');
-      final buffer = decoded is Uint8List
-          ? decoded.buffer
-          : Uint8List.fromList(decoded).buffer;
-      final byteData = ByteData.view(buffer);
-      return QrCodeDecoder().convert(byteData);
+      return PassValidationService.deserializeAndValidate(base64Encoded);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _showDialog(context, title: 'Error', body: 'Camera access denied');

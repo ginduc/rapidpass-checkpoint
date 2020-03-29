@@ -34,6 +34,7 @@ class ScanResults {
   final QrData qrData;
   final List<ValidationError> errors = List();
   String resultMessage = 'Pass Ok';
+  bool allRed = false;
 
   ScanResults(this.qrData);
 
