@@ -27,24 +27,29 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
           input,
           input.lengthInBytes);
     }
-    // TODO: More sanity checks
-    final pass_type = input.getUint8(0) & 0x80;
-    print('pass_type: $pass_type');
-    final apor_bytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
-    final apor = asciiDecoder.convert(apor_bytes);
-    final control_code = input.getUint32(2);
-    print('control_code: $control_code (${crockford.encode(control_code)})');
-    final valid_from = input.getUint32(6);
-    final valid_until = input.getUint32(10);
-    final id_or_plate_len = input.getUint8(14);
-    debugPrint('id_or_plate_len: $id_or_plate_len');
-    final List<int> bytes = List(id_or_plate_len);
-    for (var i = 0; i < id_or_plate_len; ++i) {
-      bytes[i] = input.getUint8(15 + i);
+    try {
+      final pass_type = input.getUint8(0) & 0x80;
+      print('pass_type: $pass_type');
+      final apor_bytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
+      final apor = asciiDecoder.convert(apor_bytes);
+      final control_code = input.getUint32(2);
+      print('control_code: $control_code (${crockford.encode(control_code)})');
+      final valid_from = input.getUint32(6);
+      final valid_until = input.getUint32(10);
+      final id_or_plate_len = input.getUint8(14);
+      debugPrint('id_or_plate_len: $id_or_plate_len');
+      final List<int> bytes = List(id_or_plate_len);
+      for (var i = 0; i < id_or_plate_len; ++i) {
+        bytes[i] = input.getUint8(15 + i);
+      }
+      final String id_or_plate = asciiDecoder.convert(bytes);
+      final int signature = input.getUint32(15 + id_or_plate_len);
+      return QrData(
+          pass_type, apor, control_code, valid_from, valid_until, id_or_plate,
+          signature: signature);
+    } catch (e) {
+      throw FormatException(e.toString());
     }
-    final String id_or_plate = asciiDecoder.convert(bytes);
-    return QrData(
-        pass_type, apor, control_code, valid_from, valid_until, id_or_plate);
   }
 
   /// Just a utility method (used mainly in dev/test) to decode a hex string

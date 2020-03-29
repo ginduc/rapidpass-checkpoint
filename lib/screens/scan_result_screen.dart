@@ -4,10 +4,39 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
+
+const aporCodes = {
+  'AG': 'Agribusiness & Agricultural Workers',
+  'BA': 'Banks',
+  'BP': 'BPOs & Export-Oriented Business Personnel',
+  'CA': 'Civil Aviation',
+  'DC': 'Delivery personnel of cargoes',
+  'DO': 'Distressed OFWs',
+  'ER': 'Emergency Responders',
+  'FC': 'Food Chain/ Resturants',
+  'FS': 'Funeral Service',
+  'GO': 'Government Agency',
+  'GR': 'Grocery / Convenience Stores',
+  'HM': 'Heads of Mission',
+  'HT': 'Hotel Employees and Tenants',
+  'IP': 'International Passengers and Driver',
+  'LW': 'Logistics Warehouse',
+  'ME': 'Media Personalities',
+  'MS': 'Medical Services',
+  'MF': 'Manufacturing',
+  'MT': 'Money Transfer Services',
+  'PH': 'Pharmacies / Drug Stores',
+  'PM': 'Public Market',
+  'PI': 'Private Individual',
+  'SH': 'Ship Captain & Crew',
+  'SS': 'Security Services',
+  'TF': 'Transportation Facilities',
+  'UT': 'Utilities',
+  'VE': 'Veterinary'
+};
 
 /// Pass or Fail screen
 class ScanResultScreen extends StatelessWidget {
@@ -18,7 +47,6 @@ class ScanResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final qrData = scanResults.qrData;
-    // TODO ValidatorService
     final tableData = {
       RapidPassField.passType:
           qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
@@ -34,10 +62,15 @@ class ScanResultScreen extends StatelessWidget {
           ? 'Plate Number'
           : getFieldName(field);
       final error = scanResults.findErrorForSource(field);
+      final value =
+          field == RapidPassField.apor && aporCodes.containsKey(e.value)
+              ? aporCodes[e.value] + ' (${e.value})'
+              : e.value;
+
       return error == null
-          ? PassResultsTableRow(label: label, value: e.value)
+          ? PassResultsTableRow(label: label, value: value)
           : PassResultsTableRow(
-              label: label, value: e.value, errorMessage: error.errorMessage);
+              label: label, value: value, errorMessage: error.errorMessage);
     }).toList();
 
     if (scanResults.isValid()) {
@@ -56,7 +89,9 @@ class ScanResultScreen extends StatelessWidget {
             iconName: 'error',
             headerText: scanResults.resultMessage.toUpperCase(),
             data: passResultsData,
-            color: Colors.red);
+            color: Colors.red,
+            allRed: scanResults.allRed,
+          );
     return Theme(
       data: Green.buildFor(context),
       child: Scaffold(
@@ -130,8 +165,7 @@ class ScanResultScreen extends StatelessWidget {
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
-    final qrData = await MainMenu.scan(context);
-    final ScanResults scanResults = PassValidationService.validate(qrData);
+    final scanResults = await MainMenu.scanAndValidate(context);
     Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
   }
 
