@@ -35,7 +35,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     super.initState();
     _formFieldTextEditingController = TextEditingController()
       ..addListener(() {
-        if (_formFieldTextEditingController.text.isNotEmpty && _formHasErrors) {
+        if (_formHasErrors) {
           setState(() {
             _formHasErrors = false;
           });
