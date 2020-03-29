@@ -33,7 +33,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'RapidPass Checkpoint',
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           appBarTheme: AppBarTheme(
