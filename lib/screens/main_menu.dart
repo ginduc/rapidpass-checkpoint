@@ -22,17 +22,14 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('RapidPass Checkpoint')),
-      body: Container(
-        margin: const EdgeInsets.all(24.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              CheckPointWidget(this.checkPointName),
-              MainMenu(),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CheckPointWidget(this.checkPointName),
+            MainMenu(),
+          ],
         ),
       ),
     );
@@ -46,36 +43,40 @@ class CheckPointWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            'RapidPass Checkpoint:',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: deepPurple600),
-          ),
-        ),
-        Container(
-          width: 320.0,
-          height: 50.0,
-          decoration: BoxDecoration(color: deepPurple600),
-          child: Center(
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              this.checkPointName,
+              'RapidPass Checkpoint:',
+              textAlign: TextAlign.left,
               style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.bold,
+                  color: deepPurple600),
             ),
           ),
-        ),
-      ],
+          Container(
+            width: 320.0,
+            height: 50.0,
+            decoration: BoxDecoration(color: deepPurple600),
+            child: Center(
+              child: Text(
+                this.checkPointName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -83,8 +84,7 @@ class CheckPointWidget extends StatelessWidget {
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
