@@ -13,7 +13,7 @@ class DeviceInfoModel extends ChangeNotifier {
     return _imei;
   }
 
-  Future<String> getDeviceId() async {q
+  Future<String> getDeviceId() async {
     _deviceId = await DeviceId.getID;
     debugPrint('deviceId => $_deviceId');
     return _deviceId;
