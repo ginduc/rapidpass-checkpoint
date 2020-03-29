@@ -33,7 +33,14 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   @override
   void initState() {
     super.initState();
-    _formFieldTextEditingController = TextEditingController();
+    _formFieldTextEditingController = TextEditingController()
+      ..addListener(() {
+        if (_formFieldTextEditingController.text.isNotEmpty && _formHasErrors) {
+          setState(() {
+            _formHasErrors = false;
+          });
+        }
+      });
   }
 
   String _getAppBarText() {
