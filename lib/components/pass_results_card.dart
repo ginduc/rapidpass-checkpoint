@@ -53,7 +53,7 @@ class PassResultsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableTextStyle = TextStyle(fontSize: 16.0);
     final tableChildren = this.data.map((row) {
-      final value = row.label == 'APOR'
+      final value = row.label == 'APOR' && aporCodes.containsKey(row.value)
           ? aporCodes[row.value] + ' (${row.value})'
           : row.value;
       if (row.errorMessage == null) {
