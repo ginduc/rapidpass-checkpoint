@@ -1,15 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
+import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 void main() => runApp(RapidPassCheckpointApp());
 
 class RapidPassCheckpointApp extends StatelessWidget {
+  static const String databaseName = 'rapid_pass.sqlite';
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -18,6 +23,13 @@ class RapidPassCheckpointApp extends StatelessWidget {
         // Provide the model here
         ChangeNotifierProvider(
           create: (_) => DeviceInfoModel(),
+        ),
+        Provider(
+          create: (_) => LocalDatabaseService(
+            appDatabase: AppDatabase(
+              FlutterQueryExecutor.inDatabaseFolder(path: databaseName),
+            ),
+          ),
         ),
       ],
       child: MaterialApp(
