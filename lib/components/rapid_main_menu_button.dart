@@ -52,9 +52,10 @@ class RapidMainMenuButton extends StatelessWidget {
                         child: Text(
                           this.title,
                           style: Theme.of(context).textTheme.title.copyWith(
-                              fontSize: 22,
-                              color: Colors.deepPurple,
-                              fontWeight: FontWeight.bold),
+                                fontSize: 22,
+                                color: Colors.deepPurple,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ),
                     ],
