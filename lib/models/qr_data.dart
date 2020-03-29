@@ -6,17 +6,18 @@ const CrockfordEncoder paddedEncoder = const CrockfordEncoder(7);
 
 class QrData {
   final int passType;
+  final String apor;
   final int controlCode;
   final int validFrom;
   final int validUntil;
   final String idOrPlate;
 
-  QrData(this.passType, this.controlCode, this.validFrom, this.validUntil,
-      this.idOrPlate);
+  QrData(this.passType, this.apor, this.controlCode, this.validFrom,
+      this.validUntil, this.idOrPlate);
 
   @override
   String toString() {
-    return "%{pass_type: $passType, control_code: $controlCode, "
+    return "%{pass_type: $passType, apor: $apor, control_code: $controlCode, "
         "valid_from: $validFrom, valid_until: $validUntil, "
         "id_or_plate: '$idOrPlate'}";
   }
@@ -26,31 +27,26 @@ class QrData {
         crockford.encode(Damm32.compute(this.controlCode));
   }
 
-  final displayPurpose = {'M': 'Medical (M)', 'V': 'VIP (V)'};
-
-  String purposeCode() {
-    return String.fromCharCode(passType & 0x7F);
+  String purpose() {
+    return this.apor;
   }
 
-  String purpose() {
-    final purposeCode = this.purposeCode();
-    return displayPurpose.containsKey(purposeCode)
-        ? displayPurpose[purposeCode]
-        : purposeCode;
+  DateTime validFromDateTime() {
+    return DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
+  }
+
+  DateTime validUntilDateTime() {
+    return DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
   }
 
   final DateFormat dateFormat = DateFormat.yMMMd('en_US');
 
   String validFromDisplayDate() {
-    final DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
-    return dateFormat.format(dateTime);
+    return dateFormat.format(validFromDateTime());
   }
 
   String validUntilDisplayDate() {
-    final DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
-    return dateFormat.format(dateTime);
+    return dateFormat.format(validUntilDateTime());
   }
 
   String validUntilDisplayTimestamp() {

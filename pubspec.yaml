@@ -29,6 +29,7 @@ dependencies:
   intl: ^0.16.0
   provider: ^4.0.4
   google_fonts: ^0.3.10
+  audioplayers: ^0.13.2
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,8 @@ flutter:
     - assets/icons8_qr-code-2x.png
     - assets/license-plate-2x.png
     - assets/rapidpass_logo.png
+    - assets/notification_approved.mp3
+    - assets/notification_denied.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
