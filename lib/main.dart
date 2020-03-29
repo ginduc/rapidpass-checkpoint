@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
+import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 void main() => runApp(RapidPassCheckpointApp());
@@ -18,6 +19,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
         // Provide the model here
         ChangeNotifierProvider(
           create: (_) => DeviceInfoModel(),
+        ),
+        StreamProvider(
+          create: (_) =>  LocationService().locationStream,
         ),
       ],
       child: MaterialApp(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/models/user_location.dart';
+import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
@@ -15,6 +17,9 @@ class WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     final DeviceInfoModel _deviceNotifier =
         Provider.of<DeviceInfoModel>(context);
+     //var userLocation = Provider.of<UserLocation>(context);
+    final UserLocation locationServiceProvider =
+        Provider.of<UserLocation>(context);
 
     return FutureBuilder<String>(
         future: _deviceNotifier.getImei(),
@@ -33,6 +38,11 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
+                      // Sample implementation of the GPS Location
+                      // Center(
+                      //   child: Text(
+                      //       'Location: Lat${locationServiceProvider?.latitude}, Long: ${locationServiceProvider?.longitude}'),
+                      // ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 32.0),
                         child: Image(
