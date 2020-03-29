@@ -102,21 +102,7 @@ class MainMenu extends StatelessWidget {
             title: 'Plate Number',
             iconPath: RapidAssetConstants.icPlateNubmer,
             onPressed: () {
-              final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
-              final bytes = QrCodeDecoder.decodeHex(hex);
-              final input = String.fromCharCodes(bytes);
-              final list = input.codeUnits;
-              final buffer = list is Uint8List
-                  ? list.buffer
-                  : Uint8List.fromList(list).buffer;
-              final byteData = ByteData.view(buffer);
-              final qrData = QrCodeDecoder().convert(byteData);
-              final scanResults = ScanResults(qrData);
-              scanResults.errors.add(ValidationError(
-                  'Pass was valid only until ${qrData.validUntilDisplayTimestamp()}',
-                  source: RapidPassField.validUntil));
-              Navigator.pushNamed(context, "/passInvalid",
-                  arguments: scanResults);
+              Navigator.pushNamed(context, "/checkPlateNumber");
             },
           ),
           RapidMainMenuButton(
