@@ -25,7 +25,6 @@ class MainMenuScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CheckPointWidget(this.checkPointName),
             MainMenu(),
           ],
         ),
