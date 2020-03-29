@@ -68,7 +68,6 @@ class _QrScannerScreenState extends State<QrScannerScreen> with WidgetsBindingOb
     this._controller = controller;
 
     this._controller.scannedDataStream.listen((String data) {
-      this._controller.pauseCamera();
       Navigator.pop(context, data);
     });
   }
