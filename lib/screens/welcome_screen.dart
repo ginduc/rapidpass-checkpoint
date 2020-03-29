@@ -57,6 +57,13 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 32.0),
                           textAlign: TextAlign.center),
+                      Padding(
+                        padding: EdgeInsets.only(top: 32),
+                        child: Text(
+                          "Database updated as of\nMarch 29, 2020",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                       Spacer(),
                       Padding(
                         padding: const EdgeInsets.all(20.0),

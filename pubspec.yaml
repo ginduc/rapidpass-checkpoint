@@ -23,19 +23,26 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-
   barcode_scan: ^2.0.1
   device_id: ^0.2.0
   intl: ^0.16.0
   provider: ^4.0.4
   google_fonts: ^0.3.10
+  path_provider: ^1.6.5
+  moor: ^2.4.2
+  moor_flutter: ^2.1.1  
+  moor_ffi: ^0.4.0
+  mockito: ^4.1.1
   audioplayers: ^0.13.2
+  imei_plugin: ^1.1.6
   location: ^2.3.5
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.9.4
+  build_runner: ^1.8.0
+  moor_generator: ^2.4.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

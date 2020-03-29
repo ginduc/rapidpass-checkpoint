@@ -1,3 +1,5 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
@@ -37,6 +39,13 @@ class ScanResultScreen extends StatelessWidget {
           : PassResultsTableRow(
               label: label, value: e.value, errorMessage: error.errorMessage);
     }).toList();
+
+    if (scanResults.isValid()) {
+      playNotificationApproved();
+    } else {
+      playNotificationRegected();
+    }
+
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
@@ -56,15 +65,11 @@ class ScanResultScreen extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: ListView(
                   children: <Widget>[
                     card,
-                    Spacer(),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
                       child: SizedBox(
                         height: 48,
                         width: 300.0,
@@ -82,7 +87,7 @@ class ScanResultScreen extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
+                          vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
                         height: 48,
                         child: FlatButton(
@@ -110,5 +115,15 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = await MainMenu.scan(context);
     final ScanResults scanResults = PassValidationService.validate(qrData);
     Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+  }
+
+  Future<AudioPlayer> playNotificationApproved() async {
+    AudioCache cache = new AudioCache();
+    return await cache.play("notification_approved.mp3");
+  }
+
+  Future<AudioPlayer> playNotificationRegected() async {
+    AudioCache cache = new AudioCache();
+    return await cache.play("notification_denied.mp3");
   }
 }
