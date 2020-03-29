@@ -104,11 +104,9 @@ class DialogHelper {
         return WillPopScope(
           onWillPop: onWillPop ?? () => Future.value(true),
           child: AlertDialog(
-            // TODO: Parameter is deprecated
-            // scrollable: true,
             title: title != null ? Text(title) : const SizedBox(),
             contentPadding: message != null ? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0) : const EdgeInsets.all(0),
-            content: message != null ? Text(message) : const SizedBox(height: 12.0),
+            content: message != null ? SingleChildScrollView(child: Text(message)) : const SizedBox(height: 12.0),
             actions: _buildActions().toList()
           ),
         );
