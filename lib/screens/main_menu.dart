@@ -119,22 +119,17 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
-    Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
+    if (scanResults != null) {
+      Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
+    }
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
     try {
-      final String base64Encoded = await BarcodeScanner.scan();
-      return PassValidationService.deserializeAndValidate(base64Encoded);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        _showDialog(context, title: 'Error', body: 'Camera access denied');
-      } else {
-        _showDialog(context, title: 'Error', body: 'Unknown Error');
+      final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
+      if (base64Encoded != null) {
+        return PassValidationService.deserializeAndValidate(base64Encoded);
       }
-    } on FormatException {
-      debugPrint(
-          'null (User returned using the "back"-button before scanning anything. Result)');
     } catch (e) {
       _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
     }

@@ -8,6 +8,7 @@ import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart'
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -94,6 +95,11 @@ class RapidPassCheckpointApp extends StatelessWidget {
                     args: args,
                   );
                 },
+              );
+            case '/scanQrCode':
+              return CupertinoPageRoute(
+                builder: (_) => QrScannerScreen(),
+                settings: settings,
               );
           }
           return null;
