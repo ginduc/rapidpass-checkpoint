@@ -33,10 +33,11 @@ class ValidationError {
 class ScanResults {
   final QrData qrData;
   final List<ValidationError> errors = List();
-  String resultMessage = 'Pass Ok';
+  String resultMessage;
   bool allRed = false;
 
-  ScanResults(this.qrData);
+  ScanResults(this.qrData,
+      {this.resultMessage = 'Pass Ok', this.allRed = false});
 
   List<ValidationError> addError(String errorMessage, {RapidPassField source}) {
     this.errors.add(ValidationError(errorMessage, source: source));

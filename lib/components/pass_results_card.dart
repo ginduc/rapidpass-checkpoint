@@ -40,7 +40,8 @@ class PassResultsCard extends StatelessWidget {
               ),
             ),
             onTap: () => _showDialog(context,
-                title: this.headerText, body: row.errorMessage),
+                title: this.headerText,
+                body: row.errorMessage ?? this.headerText),
           ),
           GestureDetector(
             child: Padding(
@@ -53,7 +54,8 @@ class PassResultsCard extends StatelessWidget {
               ),
             ),
             onTap: () => _showDialog(context,
-                title: this.headerText, body: row.errorMessage),
+                title: this.headerText,
+                body: row.errorMessage ?? this.headerText),
           )
         ]);
       } else {
@@ -104,7 +106,7 @@ class PassResultsCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        this.headerText,
+                        this.headerText.toUpperCase(),
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 22.0,

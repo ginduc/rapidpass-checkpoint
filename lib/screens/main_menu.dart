@@ -1,15 +1,11 @@
 import 'dart:async';
-import 'dart:typed_data';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
@@ -125,13 +121,9 @@ class MainMenu extends StatelessWidget {
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
-    try {
-      final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
-      if (base64Encoded != null) {
-        return PassValidationService.deserializeAndValidate(base64Encoded);
-      }
-    } catch (e) {
-      _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
+    final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
+    if (base64Encoded != null) {
+      return PassValidationService.deserializeAndValidate(base64Encoded);
     }
   }
 

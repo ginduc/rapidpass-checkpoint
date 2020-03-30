@@ -47,21 +47,35 @@ class ScanResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final qrData = scanResults.qrData;
-    final tableData = {
-      RapidPassField.passType:
-          qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
-      RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
-      RapidPassField.idOrPlate: qrData.idOrPlate,
-      RapidPassField.apor: qrData.purpose(),
-      RapidPassField.validFrom: qrData.validFromDisplayDate(),
-      RapidPassField.validUntil: qrData.validUntilDisplayDate(),
-    };
+    final tableData = qrData != null
+        ? {
+            RapidPassField.passType:
+                qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
+            RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
+            RapidPassField.idOrPlate: qrData.idOrPlate,
+            RapidPassField.apor: qrData.purpose(),
+            RapidPassField.validFrom: qrData.validFromDisplayDate(),
+            RapidPassField.validUntil: qrData.validUntilDisplayDate(),
+          }
+        : {
+            RapidPassField.passType: '',
+            RapidPassField.controlCode: '',
+            RapidPassField.idOrPlate: '',
+            RapidPassField.apor: '',
+            RapidPassField.validFrom: '',
+            RapidPassField.validUntil: '',
+          };
     final passResultsData = tableData.entries.map((e) {
       var field = e.key;
       final String label = field == RapidPassField.idOrPlate
           ? 'Plate Number'
           : getFieldName(field);
+
+      String errorMessage;
       final error = scanResults.findErrorForSource(field);
+      if (error != null) {
+        errorMessage = error.errorMessage;
+      }
       final value =
           field == RapidPassField.apor && aporCodes.containsKey(e.value)
               ? aporCodes[e.value] + ' (${e.value})'
@@ -70,7 +84,7 @@ class ScanResultScreen extends StatelessWidget {
       return error == null
           ? PassResultsTableRow(label: label, value: value)
           : PassResultsTableRow(
-              label: label, value: value, errorMessage: error.errorMessage);
+              label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
     if (scanResults.isValid()) {
@@ -82,12 +96,12 @@ class ScanResultScreen extends StatelessWidget {
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: scanResults.resultMessage.toUpperCase(),
+            headerText: scanResults.resultMessage,
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: scanResults.resultMessage.toUpperCase(),
+            headerText: scanResults.resultMessage,
             data: passResultsData,
             color: Colors.red,
             allRed: scanResults.allRed,
