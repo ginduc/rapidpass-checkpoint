@@ -108,24 +108,27 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 12.0),
-                      child: TextFormField(
-                        controller: _formFieldTextEditingController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
+                      child: SizedBox(
+                        height: 80.0,
+                        child: TextFormField(
+                          controller: _formFieldTextEditingController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              setState(() {
+                                _formHasErrors = true;
+                              });
+                              return 'This field is required.';
+                            } else if (value.isNotEmpty) {
+                              setState(() {
+                                _formHasErrors = false;
+                              });
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            setState(() {
-                              _formHasErrors = true;
-                            });
-                            return 'This field is required.';
-                          } else if (value.isNotEmpty) {
-                            setState(() {
-                              _formHasErrors = false;
-                            });
-                          }
-                          return null;
-                        },
                       ),
                     ),
                   ],
