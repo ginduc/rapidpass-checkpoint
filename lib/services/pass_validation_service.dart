@@ -50,6 +50,11 @@ class PassValidationService {
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
           source: RapidPassField.validUntil);
     }
+    if (qrData.idOrPlate.isEmpty) {
+      results.resultMessage = 'INVALID PASS';
+      results.addError('Invalid Plate Number',
+          source: RapidPassField.idOrPlate);
+    }
     return results;
   }
 }
