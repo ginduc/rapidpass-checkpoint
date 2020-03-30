@@ -104,7 +104,7 @@ class ScanResultScreen extends StatelessWidget {
                   children: <Widget>[
                     card,
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 4),
+                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 12),
                       child: SizedBox(
                         height: 58,
                         width: 300.0,
