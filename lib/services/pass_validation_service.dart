@@ -20,18 +20,19 @@ class PassValidationService {
       final qrData = QrCodeDecoder().convert(byteData);
       final scanResults = validate(qrData);
       final signatureIsValid = HmacShac256.validateSignature(decodedFromBase64);
-      if (!signatureIsValid) {
-        scanResults.addError('Invalid signature');
-        scanResults.resultMessage = 'INVALID PASS';
-        scanResults.allRed = true;
+      if (signatureIsValid) {
+        return scanResults;
+      } else {
+        final sr =
+            ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+        sr.addError('Invalid QR Data');
+        return sr;
       }
-      return scanResults;
     } catch (e) {
       print(e.toString());
-      final scanResults =
-          ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
-      scanResults.addError('Invalid QR Data');
-      return scanResults;
+      final sr = ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+      sr.addError('Invalid QR Data');
+      return sr;
     }
   }
 
