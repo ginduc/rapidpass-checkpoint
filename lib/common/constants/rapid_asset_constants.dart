@@ -1,8 +1,13 @@
 class RapidAssetConstants {
   static const baseAssetFont = 'assets';
-  
-  /// Images
-  static const icQrCode = '$baseAssetFont/icons8_qr-code-2x.png';
-  static const icPlateNubmer = '$baseAssetFont/license-plate-2x.png';
-  static const icControlCode = '$baseAssetFont/control_number-2x.png';
+
+  /// Purple
+  static const icQrCode = '$baseAssetFont/control-number-purple.svg';
+  static const icPlateNumber = '$baseAssetFont/plate-number-purple.svg';
+  static const icControlCode = '$baseAssetFont/qrcode-purple.svg';
+
+  /// White
+  static const icQrCodeWhite = '$baseAssetFont/control-number-white.svg';
+  static const icPlateNumberWhite = '$baseAssetFont/plate-number-white.svg';
+  static const icControlCodeWhite = '$baseAssetFont/qrcode-white.svg';
 }

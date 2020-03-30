@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class RapidMainMenuButton extends StatefulWidget {
   final String title;
   final String iconPath;
+  final String iconPathInverted;
   final VoidCallback onPressed;
 
   RapidMainMenuButton({
     @required this.title,
     @required this.iconPath,
+    @required this.iconPathInverted,
     @required this.onPressed,
   });
 
@@ -18,15 +21,26 @@ class RapidMainMenuButton extends StatefulWidget {
 
 class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   Color _textColor = Colors.deepPurple, _backgroundColor = Colors.white;
+  SvgPicture _svgPicture;
+
+  @override
+  void initState() {
+    super.initState();
+    _textColor = Colors.deepPurple;
+    _backgroundColor = Colors.white;
+    _svgPicture = SvgPicture.asset(widget.iconPath, width: 40.0);
+  }
 
   void _changeColor(bool value) {
     setState(() {
       if (value) {
         _textColor = Colors.white;
         _backgroundColor = deepPurple600;
+        _svgPicture = SvgPicture.asset(widget.iconPathInverted, width: 40.0);
       } else {
         _textColor = Colors.deepPurple;
         _backgroundColor = Colors.white;
+        _svgPicture = SvgPicture.asset(widget.iconPath, width: 40.0);
       }
     });
   }
@@ -64,10 +78,11 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Image(
-                        width: 40.0,
-                        image: AssetImage(widget.iconPath),
-                      ),
+                      // Image(
+                      //   width: 40.0,
+                      //   image: AssetImage(widget.iconPath),
+                      // ),
+                      _svgPicture,
                       Padding(
                         padding: const EdgeInsets.only(left: 4.0),
                         child: Text(
