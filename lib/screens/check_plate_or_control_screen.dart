@@ -85,57 +85,54 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       appBar: AppBar(
         title: Text(_getAppBarText()),
       ),
-      body: Container(
-        height: size.height,
-        padding: const EdgeInsets.only(bottom: 16),
+      body: Center(
         child: Form(
           key: _formKey,
-          child: Stack(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Align(
-                alignment: Alignment.topCenter,
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 24),
-                        child: Text(_getHelpText()),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 48),
-                        child: Text(_getFormFieldLabel()),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 12),
-                        child: TextFormField(
-                          controller: _formFieldTextEditingController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              setState(() {
-                                _formHasErrors = true;
-                              });
-                              return 'This field is required.';
-                            } else if (value.isNotEmpty) {
-                              setState(() {
-                                _formHasErrors = false;
-                              });
-                            }
-                            return null;
-                          },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(top: 24.0),
+                      child: Text(_getHelpText()),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 48.0),
+                      child: Text(_getFormFieldLabel()),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 12.0),
+                      child: TextFormField(
+                        controller: _formFieldTextEditingController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            setState(() {
+                              _formHasErrors = true;
+                            });
+                            return 'This field is required.';
+                          } else if (value.isNotEmpty) {
+                            setState(() {
+                              _formHasErrors = false;
+                            });
+                          }
+                          return null;
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
+              Padding(
+                padding: EdgeInsets.only(top: 64.0, bottom: 40.0),
                 child: InkWell(
                   onTap: () {
                     _formKey.currentState.validate();
