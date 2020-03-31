@@ -16,7 +16,7 @@ class LocationService {
   LocationService() {
     // Request permission to use location
     location.requestPermission().then((granted) {
-      if (granted != null) {
+      if (granted != PermissionStatus.DENIED) {
         // If granted listen to the onLocationChanged stream and emit over our controller
         location.onLocationChanged().listen((locationData) {
           if (locationData != null) {
