@@ -4,11 +4,13 @@ import 'package:imei_plugin/imei_plugin.dart';
 
 class DeviceInfoModel extends ChangeNotifier {
   String _imei;
+  String get imei => _imei;
   String _deviceId;
 
   Future<String> getImei() async {
     _imei = await ImeiPlugin.getImei();
     debugPrint('imei => $_imei');
+    notifyListeners();
     return _imei;
   }
 
