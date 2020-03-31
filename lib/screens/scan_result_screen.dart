@@ -134,6 +134,25 @@ class ScanResultScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                     if (scanResults.isValid() == true) 
+                       Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 20.0),
+                        child: SizedBox(
+                          height: 58,
+                          width: 300.0,
+                          child: RaisedButton(
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(34.0)),
+                            onPressed: () =>   Navigator.pushNamed(context, "/viewMoreInfo"),
+                            child: Text('View more info',
+                                style: TextStyle(
+                                    // Not sure how to get rid of color: Colors.white here
+                                    color: Colors.white,
+                                    fontSize: 16.0)),
+                          ),
+                        ),
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 20.0),
