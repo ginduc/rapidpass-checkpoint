@@ -106,8 +106,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         message:
             'To use this feature, you must OPEN SETTINGS and grant the CAMERA permission.',
         confirmText: 'OPEN SETTINGS',
-        // TODO : Causing error here
-        // onWillPop: () async => Navigator.pop(context),
+        onWillPop: () async => Navigator.pop(context),
         onCancel: () => Navigator.pop(context),
         onConfirm: () {
           _isFromAppSettings = true;
@@ -121,8 +120,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
       title: 'Camera access denied',
       message: 'We need to access your camera to use this feature.',
       confirmText: 'REQUEST ACCESS',
-      // TODO : Causing error here
-      // onWillPop: () async => Navigator.pop(context),
+      onWillPop: () async => Navigator.pop(context),
       onConfirm: () => _requestPermission(),
       onCancel: () => Navigator.pop(context),
     );
