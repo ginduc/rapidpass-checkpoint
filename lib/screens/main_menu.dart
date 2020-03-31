@@ -92,11 +92,13 @@ class MainMenu extends StatelessWidget {
           RapidMainMenuButton(
             title: 'Scan QR Code',
             iconPath: RapidAssetConstants.icQrCode,
+            iconPathInverted: RapidAssetConstants.icQrCodeWhite,
             onPressed: () => _scanAndNavigate(context),
           ),
           RapidMainMenuButton(
             title: 'Plate Number',
-            iconPath: RapidAssetConstants.icPlateNubmer,
+            iconPath: RapidAssetConstants.icPlateNumber,
+            iconPathInverted: RapidAssetConstants.icPlateNumberWhite,
             onPressed: () {
               Navigator.pushNamed(context, "/checkPlateNumber");
             },
@@ -104,6 +106,7 @@ class MainMenu extends StatelessWidget {
           RapidMainMenuButton(
             title: 'Control Code',
             iconPath: RapidAssetConstants.icControlCode,
+            iconPathInverted: RapidAssetConstants.icControlCodeWhite,
             onPressed: () {
               Navigator.pushNamed(context, '/checkControlCode');
             },
