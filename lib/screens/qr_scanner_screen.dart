@@ -106,8 +106,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         message:
             'To use this feature, you must OPEN SETTINGS and grant the CAMERA permission.',
         confirmText: 'OPEN SETTINGS',
-        // TODO : Causing error here
-        // onWillPop: () async => Navigator.pop(context),
+        onWillPop: _onDialogWillPop,
         onCancel: () => Navigator.pop(context),
         onConfirm: () {
           _isFromAppSettings = true;
@@ -121,10 +120,17 @@ class _QrScannerScreenState extends State<QrScannerScreen>
       title: 'Camera access denied',
       message: 'We need to access your camera to use this feature.',
       confirmText: 'REQUEST ACCESS',
-      // TODO : Causing error here
-      // onWillPop: () async => Navigator.pop(context),
+      onWillPop: _onDialogWillPop,
       onConfirm: () => _requestPermission(),
       onCancel: () => Navigator.pop(context),
     );
+  }
+
+  // This will trigger once the scrim is tapped, or back navigation was activated
+  Future<bool> _onDialogWillPop() async {
+    Navigator.pop(context); // Close the current AlertDialog
+    Navigator.pop(context); // Go back to MainMenu screen
+
+    return false;
   }
 }

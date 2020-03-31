@@ -102,7 +102,7 @@ class DialogHelper {
       barrierDismissible: dismissible,
       builder: (BuildContext context) {
         return WillPopScope(
-          onWillPop: onWillPop ?? () => Future.value(true),
+          onWillPop: onWillPop ?? () async => true,
           child: AlertDialog(
             title: title != null ? Text(title) : const SizedBox(),
             contentPadding: message != null ? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0) : const EdgeInsets.all(0),
