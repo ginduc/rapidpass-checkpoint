@@ -115,7 +115,7 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
-    if (scanResults != null) {
+    if (scanResults is ScanResults) {
       Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
     }
   }
@@ -125,6 +125,7 @@ class MainMenu extends StatelessWidget {
     if (base64Encoded != null) {
       return PassValidationService.deserializeAndValidate(base64Encoded);
     }
+    return null;
   }
 
   static void _showDialog(BuildContext context, {String title, String body}) {

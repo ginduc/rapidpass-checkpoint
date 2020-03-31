@@ -162,7 +162,9 @@ class ScanResultScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    if (scanResults is ScanResults) {
+      Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    }
   }
 
   Future<AudioPlayer> playNotificationApproved() async {
