@@ -10,12 +10,11 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
 
-
 /// Pass or Fail screen
-class ScanResultScreen extends StatelessWidget {
+class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
   ScanResults scanResults;
 
-  ScanResultScreen(this.scanResults);
+  CheckPlateOrControlCodeResultsScreen(this.scanResults);
 
   @override
   Widget build(BuildContext context) {
@@ -90,25 +89,8 @@ class ScanResultScreen extends StatelessWidget {
                 child: ListView(
                   children: <Widget>[
                     card,
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 12),
-                      child: SizedBox(
-                        height: 58,
-                        width: 300.0,
-                        child: RaisedButton(
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0)),
-                          onPressed: () => _scanAndNavigate(context),
-                          child: Text('Scan another QR code',
-                              style: TextStyle(
-                                  // Not sure how to get rid of color: Colors.white here
-                                  color: Colors.white,
-                                  fontSize: 16.0)),
-                        ),
-                      ),
-                    ),
-                     if (scanResults.isValid() == true) 
-                       Padding(
+                    if (scanResults.isValid() == true)
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 20.0),
                         child: SizedBox(
@@ -117,10 +99,11 @@ class ScanResultScreen extends StatelessWidget {
                           child: RaisedButton(
                             shape: new RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(34.0)),
-                            onPressed: () =>   Navigator.pushNamed(context, "/viewMoreInfo"),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, "/viewMoreInfo"),
                             child: Text('View more info',
                                 style: TextStyle(
-                                    // Not sure how to get rid of color: Colors.white here
+                                  // Not sure how to get rid of color: Colors.white here
                                     color: Colors.white,
                                     fontSize: 16.0)),
                           ),
@@ -136,7 +119,7 @@ class ScanResultScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.popUntil(context, ModalRoute.withName('/main'));
                           },
                           child: Text('Return to checker page',
                               style: TextStyle(

@@ -8,10 +8,6 @@ import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
-  final String checkPointName;
-
-  MainMenuScreen(this.checkPointName);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

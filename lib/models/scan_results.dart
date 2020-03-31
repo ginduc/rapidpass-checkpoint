@@ -36,11 +36,14 @@ class ScanResults {
   String resultMessage;
   bool allRed = false;
 
+  static final invalidPass = ScanResults(null, resultMessage: 'Invalid Pass', allRed: true).addError('Invalid Pass');
+
   ScanResults(this.qrData,
       {this.resultMessage = 'Pass Ok', this.allRed = false});
 
-  List<ValidationError> addError(String errorMessage, {RapidPassField source}) {
+  ScanResults addError(String errorMessage, {RapidPassField source}) {
     this.errors.add(ValidationError(errorMessage, source: source));
+    return this;
   }
 
   ValidationError findErrorForSource(final RapidPassField source) {

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
@@ -65,13 +66,18 @@ class RapidPassCheckpointApp extends StatelessWidget {
           switch (settings.name) {
             case '/menu':
               return CupertinoPageRoute(
-                builder: (_) => MainMenuScreen('Camp Aguinaldo'),
+                builder: (_) => MainMenuScreen(),
                 settings: settings,
               );
             case '/scanResults':
               return CupertinoPageRoute(
                 builder: (_) => ScanResultScreen(settings.arguments),
                 settings: settings,
+              );
+            case '/checkPlateOrCodeResults':
+              return CupertinoPageRoute(
+                builder: (_) => CheckPlateOrControlCodeResultsScreen(settings.arguments),
+                settings: settings
               );
             case '/checkPlateNumber':
               return CupertinoPageRoute(

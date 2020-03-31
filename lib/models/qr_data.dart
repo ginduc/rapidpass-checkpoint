@@ -4,8 +4,10 @@ import 'package:rapidpass_checkpoint/utils/damm32.dart';
 
 const CrockfordEncoder paddedEncoder = const CrockfordEncoder(7);
 
+enum PassType { Vehicle, Individual }
+
 class QrData {
-  final int passType;
+  final PassType passType;
   final String apor;
   final int controlCode;
   final int validFrom;
@@ -17,7 +19,7 @@ class QrData {
       this.validUntil, this.idOrPlate,
       {this.signature});
 
-  static final QrData empty = QrData(0, '', 0, 0, 0, '');
+  static final QrData empty = QrData(null, '', 0, 0, 0, '');
 
   @override
   String toString() {
