@@ -47,21 +47,35 @@ class ScanResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final qrData = scanResults.qrData;
-    final tableData = {
-      RapidPassField.passType:
-          qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
-      RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
-      RapidPassField.idOrPlate: qrData.idOrPlate,
-      RapidPassField.apor: qrData.purpose(),
-      RapidPassField.validFrom: qrData.validFromDisplayDate(),
-      RapidPassField.validUntil: qrData.validUntilDisplayDate(),
-    };
+    final tableData = qrData != null
+        ? {
+            RapidPassField.passType:
+                qrData.passType == 0x80 ? "V - Vehicle" : "I - Individual",
+            RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
+            RapidPassField.idOrPlate: qrData.idOrPlate,
+            RapidPassField.apor: qrData.purpose(),
+            RapidPassField.validFrom: qrData.validFromDisplayDate(),
+            RapidPassField.validUntil: qrData.validUntilDisplayDate(),
+          }
+        : {
+            RapidPassField.passType: '',
+            RapidPassField.controlCode: '',
+            RapidPassField.idOrPlate: '',
+            RapidPassField.apor: '',
+            RapidPassField.validFrom: '',
+            RapidPassField.validUntil: '',
+          };
     final passResultsData = tableData.entries.map((e) {
       var field = e.key;
       final String label = field == RapidPassField.idOrPlate
           ? 'Plate Number'
           : getFieldName(field);
+
+      String errorMessage;
       final error = scanResults.findErrorForSource(field);
+      if (error != null) {
+        errorMessage = error.errorMessage;
+      }
       final value =
           field == RapidPassField.apor && aporCodes.containsKey(e.value)
               ? aporCodes[e.value] + ' (${e.value})'
@@ -70,7 +84,7 @@ class ScanResultScreen extends StatelessWidget {
       return error == null
           ? PassResultsTableRow(label: label, value: value)
           : PassResultsTableRow(
-              label: label, value: value, errorMessage: error.errorMessage);
+              label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
     if (scanResults.isValid()) {
@@ -82,12 +96,12 @@ class ScanResultScreen extends StatelessWidget {
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: scanResults.resultMessage.toUpperCase(),
+            headerText: scanResults.resultMessage,
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: scanResults.resultMessage.toUpperCase(),
+            headerText: scanResults.resultMessage,
             data: passResultsData,
             color: Colors.red,
             allRed: scanResults.allRed,
@@ -104,13 +118,13 @@ class ScanResultScreen extends StatelessWidget {
                   children: <Widget>[
                     card,
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
+                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 12),
                       child: SizedBox(
-                        height: 48,
+                        height: 58,
                         width: 300.0,
                         child: RaisedButton(
                           shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0)),
+                              borderRadius: BorderRadius.circular(34.0)),
                           onPressed: () => _scanAndNavigate(context),
                           child: Text('Scan another QR code',
                               style: TextStyle(
@@ -124,10 +138,10 @@ class ScanResultScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
-                        height: 48,
+                        height: 58,
                         child: FlatButton(
                           shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24.0),
+                              borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
                             Navigator.pop(context);

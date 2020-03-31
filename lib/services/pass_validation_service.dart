@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/utils/hmac_sha256.dart';
@@ -8,22 +9,31 @@ import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class PassValidationService {
   static ScanResults deserializeAndValidate(final String base64Encoded) {
-    final decodedFromBase64 = base64.decode(base64Encoded);
-    final asHex = decodedFromBase64.map((i) => i.toRadixString(16));
-    print('barcode => $asHex (${asHex.length} codes)');
-    final buffer = decodedFromBase64 is Uint8List
-        ? decodedFromBase64.buffer
-        : Uint8List.fromList(decodedFromBase64).buffer;
-    final byteData = ByteData.view(buffer);
-    final qrData = QrCodeDecoder().convert(byteData);
-    final scanResults = validate(qrData);
-    final signatureIsValid = HmacShac256.validateSignature(decodedFromBase64);
-    if (!signatureIsValid) {
-      scanResults.errors.add(ValidationError('Invalid signature'));
-      scanResults.resultMessage = 'INVALID PASS';
-      scanResults.allRed = true;
+    try {
+      final decodedFromBase64 = base64.decode(base64Encoded);
+      final asHex = hex.encode(decodedFromBase64);
+      print('barcode => $asHex (${asHex.length} codes)');
+      final buffer = decodedFromBase64 is Uint8List
+          ? decodedFromBase64.buffer
+          : Uint8List.fromList(decodedFromBase64).buffer;
+      final byteData = ByteData.view(buffer);
+      final qrData = QrCodeDecoder().convert(byteData);
+      final scanResults = validate(qrData);
+      final signatureIsValid = HmacShac256.validateSignature(decodedFromBase64);
+      if (signatureIsValid) {
+        return scanResults;
+      } else {
+        final sr =
+            ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+        sr.addError('Invalid QR Data');
+        return sr;
+      }
+    } catch (e) {
+      print(e.toString());
+      final sr = ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+      sr.addError('Invalid QR Data');
+      return sr;
     }
-    return scanResults;
   }
 
   static ScanResults validate(final QrData qrData) {
@@ -39,6 +49,11 @@ class PassValidationService {
       results.resultMessage = 'PASS EXPIRED';
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
           source: RapidPassField.validUntil);
+    }
+    if (qrData.idOrPlate.isEmpty) {
+      results.resultMessage = 'INVALID PASS';
+      results.addError('Invalid Plate Number',
+          source: RapidPassField.idOrPlate);
     }
     return results;
   }

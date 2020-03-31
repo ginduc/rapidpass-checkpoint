@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -62,12 +64,43 @@ class RapidPassCheckpointApp extends StatelessWidget {
           switch (settings.name) {
             case '/menu':
               return CupertinoPageRoute(
-                  builder: (_) => MainMenuScreen('Camp Aguinaldo'),
-                  settings: settings);
+                builder: (_) => MainMenuScreen('Camp Aguinaldo'),
+                settings: settings,
+              );
             case '/scanResults':
               return CupertinoPageRoute(
-                  builder: (_) => ScanResultScreen(settings.arguments),
-                  settings: settings);
+                builder: (_) => ScanResultScreen(settings.arguments),
+                settings: settings,
+              );
+            case '/checkPlateNumber':
+              return CupertinoPageRoute(
+                builder: (_) {
+                  final CheckPlateOrControlScreenArgs args =
+                      CheckPlateOrControlScreenArgs(
+                    screenModeType: CheckPlateOrControlScreenModeType.plate,
+                  );
+                  return CheckPlateOrControlScreen(
+                    args: args,
+                  );
+                },
+              );
+            case '/checkControlCode':
+              return CupertinoPageRoute(
+                builder: (_) {
+                  final CheckPlateOrControlScreenArgs args =
+                      CheckPlateOrControlScreenArgs(
+                    screenModeType: CheckPlateOrControlScreenModeType.control,
+                  );
+                  return CheckPlateOrControlScreen(
+                    args: args,
+                  );
+                },
+              );
+            case '/scanQrCode':
+              return CupertinoPageRoute(
+                builder: (_) => QrScannerScreen(),
+                settings: settings,
+              );
           }
           return null;
         },

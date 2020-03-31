@@ -1,15 +1,11 @@
 import 'dart:async';
-import 'dart:typed_data';
 
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
 class MainMenuScreen extends StatelessWidget {
   final String checkPointName;
@@ -25,7 +21,6 @@ class MainMenuScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CheckPointWidget(this.checkPointName),
             MainMenu(),
           ],
         ),
@@ -103,21 +98,7 @@ class MainMenu extends StatelessWidget {
             title: 'Plate Number',
             iconPath: RapidAssetConstants.icPlateNubmer,
             onPressed: () {
-              final hex = 'd6948580835e77fc005e7d42000e41424331323334893c6f13';
-              final bytes = QrCodeDecoder.decodeHex(hex);
-              final input = String.fromCharCodes(bytes);
-              final list = input.codeUnits;
-              final buffer = list is Uint8List
-                  ? list.buffer
-                  : Uint8List.fromList(list).buffer;
-              final byteData = ByteData.view(buffer);
-              final qrData = QrCodeDecoder().convert(byteData);
-              final scanResults = ScanResults(qrData);
-              scanResults.errors.add(ValidationError(
-                  'Pass was valid only until ${qrData.validUntilDisplayTimestamp()}',
-                  source: RapidPassField.validUntil));
-              Navigator.pushNamed(context, "/passInvalid",
-                  arguments: scanResults);
+              Navigator.pushNamed(context, "/checkPlateNumber");
             },
           ),
           RapidMainMenuButton(
@@ -134,24 +115,15 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
-    Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
+    if (scanResults != null) {
+      Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
+    }
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
-    try {
-      final String base64Encoded = await BarcodeScanner.scan();
+    final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
+    if (base64Encoded != null) {
       return PassValidationService.deserializeAndValidate(base64Encoded);
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        _showDialog(context, title: 'Error', body: 'Camera access denied');
-      } else {
-        _showDialog(context, title: 'Error', body: 'Unknown Error');
-      }
-    } on FormatException {
-      debugPrint(
-          'null (User returned using the "back"-button before scanning anything. Result)');
-    } catch (e) {
-      _showDialog(context, title: 'Error', body: 'Unknown Error: $e');
     }
   }
 

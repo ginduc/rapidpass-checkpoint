@@ -17,6 +17,8 @@ class QrData {
       this.validUntil, this.idOrPlate,
       {this.signature});
 
+  static final QrData empty = QrData(0, '', 0, 0, 0, '');
+
   @override
   String toString() {
     return "%{pass_type: $passType, apor: $apor, control_code: $controlCode, "

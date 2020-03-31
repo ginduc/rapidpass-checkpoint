@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:location/location.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
 
@@ -7,8 +8,7 @@ class LocationService {
 
   var location = Location();
 
-
- StreamController<UserLocation> _locationController =
+  StreamController<UserLocation> _locationController =
       StreamController<UserLocation>();
 
   Stream<UserLocation> get locationStream => _locationController.stream;
