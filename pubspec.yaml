@@ -47,6 +47,7 @@ dev_dependencies:
   test: ^1.9.4
   build_runner: ^1.8.0
   moor_generator: ^2.4.0
+  vibration: ^1.2.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
