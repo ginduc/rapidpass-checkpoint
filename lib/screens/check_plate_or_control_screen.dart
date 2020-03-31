@@ -85,9 +85,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       appBar: AppBar(
         title: Text(_getAppBarText()),
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,

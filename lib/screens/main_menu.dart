@@ -17,12 +17,14 @@ class MainMenuScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('RapidPass Checkpoint')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            MainMenu(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              MainMenu(),
+            ],
+          ),
         ),
       ),
     );
@@ -77,7 +79,8 @@ class CheckPointWidget extends StatelessWidget {
 class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
