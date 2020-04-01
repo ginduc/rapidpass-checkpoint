@@ -112,6 +112,30 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 20.0,
+                      ),
+                      child: SizedBox(
+                        height: 58,
+                        child: FlatButton(
+                          color: green300,
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(34.0),
+                            side: BorderSide(color: green300)
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Check another Plate Number',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
                         height: 58,
@@ -130,7 +154,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                                   fontSize: 16.0)),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ))),
