@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -85,6 +86,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
         ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(_getAppBarText()),
       ),
@@ -118,6 +120,14 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                           ),
+                          maxLength: _args.screenModeType ==
+                                  CheckPlateOrControlScreenModeType.plate
+                              ? 11
+                              : 10,
+                          maxLengthEnforced: true,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter(RegExp("[0-9A-Z]"))
+                          ],
                           validator: (String value) {
                             if (value.isEmpty) {
                               setState(() {
@@ -135,7 +145,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                       value)
                                   : PassValidationService.checkControlCode(
                                       value);
-                              Navigator.pushNamed(context, '/checkPlateOrCodeResults',
+                              Navigator.pushNamed(
+                                  context, '/checkPlateOrCodeResults',
                                   arguments: scanResults);
                             }
                             return null;
