@@ -126,7 +126,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               : 10,
                           maxLengthEnforced: true,
                           inputFormatters: [
-                            WhitelistingTextInputFormatter(RegExp("[0-9A-Z]"))
+                            WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]"))
                           ],
                           validator: (String value) {
                             if (value.isEmpty) {
