@@ -6,9 +6,18 @@ class DeviceInfoModel extends ChangeNotifier {
   String _imei;
   String _deviceId;
   String platformImei;
+ 
+  DeviceInfoModel() {
+    Future<String> platformImei = initPermission();
+    debugPrint('initialized imei => $_imei');
+  }
   
+  Future<String> initPermission() async {
+      return platformImei = await ImeiPlugin.getImei( shouldShowRequestPermissionRationale: false );
+  }
+
   Future<String> getImei() async {
-     platformImei = await ImeiPlugin.getImei( shouldShowRequestPermissionRationale: false );
+   
     _imei = await ImeiPlugin.getImei();
     debugPrint('imei => $_imei');
     return _imei;
