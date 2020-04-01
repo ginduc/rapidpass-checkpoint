@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 class DeviceInfoModel extends ChangeNotifier {
   String _imei;
+  String get imei => _imei;
   String _deviceId;
   String platformImei;
  
@@ -27,6 +28,7 @@ class DeviceInfoModel extends ChangeNotifier {
    
     _imei = await ImeiPlugin.getImei();
     debugPrint('imei => $_imei');
+    notifyListeners();
     return _imei;
   }
 
