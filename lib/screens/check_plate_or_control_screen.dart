@@ -147,7 +147,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 64.0, bottom: 40.0),
+                padding: EdgeInsets.only(top: 10.0),
                 child: InkWell(
                   onTap: () {
                     _formKey.currentState.validate();
