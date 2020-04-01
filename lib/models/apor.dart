@@ -1,4 +1,3 @@
-
 const aporCodes = {
   'AG': 'Agribusiness & Agricultural Workers',
   'BA': 'Banks',

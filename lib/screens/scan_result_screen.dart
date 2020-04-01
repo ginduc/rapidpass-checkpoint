@@ -25,8 +25,9 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     final tableData = qrData != null
         ? {
-            RapidPassField.passType:
-            (qrData.passType == PassType.Vehicle) ? "V - Vehicle" : "I - Individual",
+            RapidPassField.passType: (qrData.passType == PassType.Vehicle)
+                ? "V - Vehicle"
+                : "I - Individual",
             RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
             RapidPassField.idOrPlate: qrData.idOrPlate,
             RapidPassField.apor: qrData.purpose(),

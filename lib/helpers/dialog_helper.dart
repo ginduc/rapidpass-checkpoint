@@ -8,26 +8,26 @@ class DialogHelper {
 
   /// Shows an alert dialog,
   /// Follow the specs in https://material.io/components/dialogs/
-  /// 
+  ///
   /// Usage:
   /// * Informative/Acknowledgement - Presents an information with a single action.
   ///   ```
   ///   @params {
   ///     title
   ///     message
-  ///     confirmText (optional) = defaults to "OK"  
+  ///     confirmText (optional) = defaults to "OK"
   ///   }
   ///   ```
   ///   @code
   ///   ```dart
-  ///   DialogHelper.showAlertDialog(context, 
+  ///   DialogHelper.showAlertDialog(context,
   ///     title: 'An error occured',
   ///     message: 'Something went wrong.',
   ///     confirmText: 'OK'
   ///   )
   ///   ```
-  /// 
-  /// 
+  ///
+  ///
   /// * Confirmation-like - Informs the user with some information and lets the user decide to proceed or not.
   ///   ```
   ///   @params {
@@ -45,7 +45,7 @@ class DialogHelper {
   ///   ```
   ///   @code
   ///   ```dart
-  ///   DialogHelper.showAlertDialog(context, 
+  ///   DialogHelper.showAlertDialog(context,
   ///     title: 'Logout?',
   ///     message: 'Do you really want to logout?',
   ///     cancelText: 'CANCEL'
@@ -54,19 +54,18 @@ class DialogHelper {
   ///     onConfirm: () { // Do something when confirm was tapped },
   ///   )
   ///   ```
-  static Future showAlertDialog(BuildContext context, {
-    String title, 
-    String message, 
-    String cancelText, 
-    String confirmText, 
-    TextStyle cancelStyle, 
-    TextStyle confirmStyle, 
-    VoidCallback onCancel, 
-    VoidCallback onConfirm,
-    WillPopCallback onWillPop,
-    List<Widget> actions,
-    bool dismissible = true
-  }) {
+  static Future showAlertDialog(BuildContext context,
+      {String title,
+      String message,
+      String cancelText,
+      String confirmText,
+      TextStyle cancelStyle,
+      TextStyle confirmStyle,
+      VoidCallback onCancel,
+      VoidCallback onConfirm,
+      WillPopCallback onWillPop,
+      List<Widget> actions,
+      bool dismissible = true}) {
     TextStyle _defaultStyle = TextStyle(color: Theme.of(context).primaryColor);
     String _defaultCancelText = 'CANCEL';
     String _defaultConfirmText = 'OK';
@@ -81,7 +80,8 @@ class DialogHelper {
             Navigator.pop(context);
             if (onCancel != null) onCancel();
           },
-          child: Text(cancelText ?? _defaultCancelText, style: _defaultStyle.merge(cancelStyle)),
+          child: Text(cancelText ?? _defaultCancelText,
+              style: _defaultStyle.merge(cancelStyle)),
         ));
       }
       if (confirmText != null || confirmText != '') {
@@ -90,7 +90,8 @@ class DialogHelper {
             Navigator.pop(context);
             if (onConfirm != null) onConfirm();
           },
-          child: Text(confirmText ?? _defaultConfirmText, style: _defaultStyle.merge(confirmStyle)),
+          child: Text(confirmText ?? _defaultConfirmText,
+              style: _defaultStyle.merge(confirmStyle)),
         ));
       }
 
@@ -98,20 +99,21 @@ class DialogHelper {
     }
 
     return showDialog(
-      context: context,
-      barrierDismissible: dismissible,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: onWillPop ?? () => Future.value(true),
-          child: AlertDialog(
-            title: title != null ? Text(title) : const SizedBox(),
-            contentPadding: message != null ? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0) : const EdgeInsets.all(0),
-            content: message != null ? SingleChildScrollView(child: Text(message)) : const SizedBox(height: 12.0),
-            actions: _buildActions().toList()
-          ),
-        );
-      }
-    );
+        context: context,
+        barrierDismissible: dismissible,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: onWillPop ?? () async => true,
+            child: AlertDialog(
+                title: title != null ? Text(title) : const SizedBox(),
+                contentPadding: message != null
+                    ? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0)
+                    : const EdgeInsets.all(0),
+                content: message != null
+                    ? SingleChildScrollView(child: Text(message))
+                    : const SizedBox(height: 12.0),
+                actions: _buildActions().toList()),
+          );
+        });
   }
-
 }

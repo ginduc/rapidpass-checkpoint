@@ -9,12 +9,14 @@ class MainMenuScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('RapidPass Checkpoint')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            MainMenu(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              MainMenu(),
+            ],
+          ),
         ),
       ),
     );
