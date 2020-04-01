@@ -88,7 +88,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       appBar: AppBar(
         title: Text(_getAppBarText()),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
@@ -118,6 +118,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                           ),
+                          autofocus: true,
                           validator: (String value) {
                             if (value.isEmpty) {
                               setState(() {
