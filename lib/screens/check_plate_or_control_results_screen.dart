@@ -135,11 +135,6 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     );
   }
 
-  Future _scanAndNavigate(final BuildContext context) async {
-    final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
-  }
-
   Future<AudioPlayer> playNotificationApproved() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_approved.mp3");

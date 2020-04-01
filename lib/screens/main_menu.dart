@@ -1,10 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
-import 'package:rapidpass_checkpoint/models/scan_results.dart';
-import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -89,7 +85,7 @@ class MainMenu extends StatelessWidget {
             title: 'Scan QR Code',
             iconPath: RapidAssetConstants.icQrCode,
             iconPathInverted: RapidAssetConstants.icQrCodeWhite,
-            onPressed: () => _scanAndNavigate(context),
+            onPressed: () => Navigator.pushNamed(context, '/scanQrCode'),
           ),
           RapidMainMenuButton(
             title: 'Plate Number',
@@ -110,20 +106,6 @@ class MainMenu extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future _scanAndNavigate(final BuildContext context) async {
-    final scanResults = await scanAndValidate(context);
-    if (scanResults != null) {
-      Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
-    }
-  }
-
-  static Future<ScanResults> scanAndValidate(final BuildContext context) async {
-    final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
-    if (base64Encoded != null) {
-      return PassValidationService.deserializeAndValidate(base64Encoded);
-    }
   }
 
   static void _showDialog(BuildContext context, {String title, String body}) {

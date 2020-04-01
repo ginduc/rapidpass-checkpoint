@@ -4,6 +4,8 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
+import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 
 class QrScannerScreen extends StatefulWidget {
   @override
@@ -70,7 +72,16 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 
     this._controller.scannedDataStream.listen((String data) {
       this._controller.pauseCamera();
-      Navigator.pop(context, data);
+
+      ScanResults results;
+
+      if (data != null) {
+        results = PassValidationService.deserializeAndValidate(data);
+      }
+
+      if (results != null) {
+        Navigator.pushNamed(context, '/scanResults', arguments: results);
+      }
     });
   }
 
