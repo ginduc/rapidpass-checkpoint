@@ -28,7 +28,7 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
           input.lengthInBytes);
     }
     try {
-      final pass_type = input.getUint8(0) & 0x80;
+      final pass_type = (input.getUint8(0) & 0x80 == 0x80) ? PassType.Vehicle : PassType.Individual;
       print('pass_type: $pass_type');
       final apor_bytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
       final apor = asciiDecoder.convert(apor_bytes);

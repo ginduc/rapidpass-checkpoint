@@ -6,6 +6,7 @@ import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/utils/hmac_sha256.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
+import 'package:rapidpass_checkpoint/utils/skip32.dart';
 
 class PassValidationService {
   static ScanResults deserializeAndValidate(final String base64Encoded) {
@@ -56,5 +57,38 @@ class PassValidationService {
           source: RapidPassField.idOrPlate);
     }
     return results;
+  }
+  
+  static final skip32key = AsciiEncoder().convert('SKIP32_SECRET_KEY');
+  
+  static final knownPlateNumbers = {
+    'NAZ2070': QrData(PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
+  };
+
+  static String normalizePlateNumber(final String plateNumber) {
+    return plateNumber.toUpperCase().split('\\s').join();
+  }
+  
+  static ScanResults checkPlateNumber(final String plateNumber) {
+    final normalizedPlateNumber = normalizePlateNumber(plateNumber);
+    if (knownPlateNumbers.containsKey(normalizedPlateNumber)) {
+      return ScanResults(knownPlateNumbers[normalizedPlateNumber]);
+    } else {
+      return ScanResults.invalidPass;
+    }
+  }
+
+  static final knownControlCodes = {
+    '09TK6VJ2': QrData(PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
+  };
+
+
+  static ScanResults checkControlCode(final String controlCode) {
+    final String normalizedControlCode = controlCode.toUpperCase();
+    if (knownControlCodes.containsKey(normalizedControlCode)) {
+      return ScanResults(knownControlCodes[normalizedControlCode]);
+    } else {
+      return ScanResults.invalidPass;
+    }
   }
 }

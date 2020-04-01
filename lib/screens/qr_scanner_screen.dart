@@ -10,7 +10,8 @@ class QrScannerScreen extends StatefulWidget {
   _QrScannerScreenState createState() => _QrScannerScreenState();
 }
 
-class _QrScannerScreenState extends State<QrScannerScreen> with WidgetsBindingObserver {
+class _QrScannerScreenState extends State<QrScannerScreen>
+    with WidgetsBindingObserver {
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController _controller;
 
@@ -76,13 +77,14 @@ class _QrScannerScreenState extends State<QrScannerScreen> with WidgetsBindingOb
   void _checkPermission() async {
     if (await Permission.camera.isPermanentlyDenied && Platform.isAndroid) {
       _onCameraDeniedPermanently();
-    } else if (await Permission.camera.isUndetermined || await Permission.camera.isDenied) {
+    } else if (await Permission.camera.isUndetermined ||
+        await Permission.camera.isDenied) {
       _requestPermission();
     } else {
       _onCameraGranted();
     }
   }
-  
+
   void _requestPermission() async {
     final PermissionStatus status = await Permission.camera.request();
     if (status == PermissionStatus.denied) {
@@ -100,20 +102,21 @@ class _QrScannerScreenState extends State<QrScannerScreen> with WidgetsBindingOb
 
   void _onCameraDeniedPermanently() {
     DialogHelper.showAlertDialog(context,
-      title: 'Camera access denied permanently',
-      message: 'To use this feature, you must OPEN SETTINGS and grant the CAMERA permission.',
-      confirmText: 'OPEN SETTINGS',
-      onWillPop: () async => Navigator.pop(context),
-      onCancel: () => Navigator.pop(context),
-      onConfirm: () {
-        _isFromAppSettings = true;
-        openAppSettings();
-      }
-    );
+        title: 'Camera access denied permanently',
+        message:
+            'To use this feature, you must OPEN SETTINGS and grant the CAMERA permission.',
+        confirmText: 'OPEN SETTINGS',
+        onWillPop: () async => Navigator.pop(context),
+        onCancel: () => Navigator.pop(context),
+        onConfirm: () {
+          _isFromAppSettings = true;
+          openAppSettings();
+        });
   }
 
   void _onCameraDenied() {
-    DialogHelper.showAlertDialog(context,
+    DialogHelper.showAlertDialog(
+      context,
       title: 'Camera access denied',
       message: 'We need to access your camera to use this feature.',
       confirmText: 'REQUEST ACCESS',

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 enum CheckPlateOrControlScreenModeType { plate, control }
@@ -23,6 +25,7 @@ class CheckPlateOrControlScreen extends StatefulWidget {
 class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _formFieldTextEditingController;
+
   CheckPlateOrControlScreenArgs get _args => widget.args;
 
   bool _formHasErrors = false;
@@ -125,6 +128,15 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               setState(() {
                                 _formHasErrors = false;
                               });
+                              final ScanResults scanResults = (_args
+                                          .screenModeType ==
+                                      CheckPlateOrControlScreenModeType.plate)
+                                  ? PassValidationService.checkPlateNumber(
+                                      value)
+                                  : PassValidationService.checkControlCode(
+                                      value);
+                              Navigator.pushNamed(context, '/checkPlateOrCodeResults',
+                                  arguments: scanResults);
                             }
                             return null;
                           },
