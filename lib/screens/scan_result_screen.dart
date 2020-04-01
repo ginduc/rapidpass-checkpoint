@@ -107,13 +107,8 @@ class ScanResultScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-<<<<<<< HEAD
-                     if (scanResults.isValid() == true)
-                       Padding(
-=======
                     if (scanResults.isValid() == true)
                       Padding(
->>>>>>> develop
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 20.0),
                         child: SizedBox(
