@@ -143,7 +143,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
-                            Navigator.popUntil(context, ModalRoute.withName('/main'));
+                            Navigator.popUntil(context, ModalRoute.withName('/menu'));
                           },
                           child: Text('Return to checker page',
                               style: TextStyle(

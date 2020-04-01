@@ -107,7 +107,7 @@ class ScanResultScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                     if (scanResults.isValid() == true) 
+                     if (scanResults.isValid() == true)
                        Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 20.0),
@@ -128,6 +128,30 @@ class ScanResultScreen extends StatelessWidget {
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 20.0,
+                      ),
+                      child: SizedBox(
+                        height: 58,
+                        child: FlatButton(
+                          color: green300,
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(34.0),
+                            side: BorderSide(color: green300)
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Scan another QR',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 20.0),
                       child: SizedBox(
                         height: 58,
@@ -136,7 +160,7 @@ class ScanResultScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.popUntil(context, ModalRoute.withName('/menu'));
                           },
                           child: Text('Return to checker page',
                               style: TextStyle(
