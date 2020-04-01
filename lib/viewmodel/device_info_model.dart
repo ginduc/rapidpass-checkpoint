@@ -1,6 +1,7 @@
 import 'package:device_id/device_id.dart';
 import 'package:flutter/material.dart';
 import 'package:imei_plugin/imei_plugin.dart';
+import 'package:flutter/services.dart';
 
 class DeviceInfoModel extends ChangeNotifier {
   String _imei;
@@ -13,7 +14,13 @@ class DeviceInfoModel extends ChangeNotifier {
   }
   
   Future<String> initPermission() async {
-      return platformImei = await ImeiPlugin.getImei( shouldShowRequestPermissionRationale: false );
+     try {
+      platformImei = await ImeiPlugin.getImei( shouldShowRequestPermissionRationale: false );
+
+    } on PlatformException {
+      platformImei = 'Failed to get platform version.';
+    }
+      return platformImei;
   }
 
   Future<String> getImei() async {
