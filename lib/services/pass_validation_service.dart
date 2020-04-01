@@ -58,17 +58,18 @@ class PassValidationService {
     }
     return results;
   }
-  
+
   static final skip32key = AsciiEncoder().convert('SKIP32_SECRET_KEY');
-  
+
   static final knownPlateNumbers = {
-    'NAZ2070': QrData(PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
+    'NAZ2070': QrData(
+        PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
   };
 
   static String normalizePlateNumber(final String plateNumber) {
     return plateNumber.toUpperCase().split('\\s').join();
   }
-  
+
   static ScanResults checkPlateNumber(final String plateNumber) {
     final normalizedPlateNumber = normalizePlateNumber(plateNumber);
     if (knownPlateNumbers.containsKey(normalizedPlateNumber)) {
@@ -79,9 +80,9 @@ class PassValidationService {
   }
 
   static final knownControlCodes = {
-    '09TK6VJ2': QrData(PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
+    '09TK6VJ2': QrData(
+        PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
   };
-
 
   static ScanResults checkControlCode(final String controlCode) {
     final String normalizedControlCode = controlCode.toUpperCase();

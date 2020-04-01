@@ -21,8 +21,9 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     final tableData = qrData != null
         ? {
-            RapidPassField.passType:
-            (qrData.passType == PassType.Vehicle) ? "V - Vehicle" : "I - Individual",
+            RapidPassField.passType: (qrData.passType == PassType.Vehicle)
+                ? "V - Vehicle"
+                : "I - Individual",
             RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
             RapidPassField.idOrPlate: qrData.idOrPlate,
             RapidPassField.apor: qrData.purpose(),
@@ -103,7 +104,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                                 Navigator.pushNamed(context, "/viewMoreInfo"),
                             child: Text('View more info',
                                 style: TextStyle(
-                                  // Not sure how to get rid of color: Colors.white here
+                                    // Not sure how to get rid of color: Colors.white here
                                     color: Colors.white,
                                     fontSize: 16.0)),
                           ),
@@ -119,7 +120,8 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(34.0),
                               side: BorderSide(color: green300)),
                           onPressed: () {
-                            Navigator.popUntil(context, ModalRoute.withName('/menu'));
+                            Navigator.popUntil(
+                                context, ModalRoute.withName('/menu'));
                           },
                           child: Text('Return to checker page',
                               style: TextStyle(

@@ -10,7 +10,6 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
 
-
 /// Pass or Fail screen
 class ScanResultScreen extends StatelessWidget {
   ScanResults scanResults;
@@ -22,8 +21,9 @@ class ScanResultScreen extends StatelessWidget {
     final qrData = scanResults.qrData;
     final tableData = qrData != null
         ? {
-            RapidPassField.passType:
-            (qrData.passType == PassType.Vehicle) ? "V - Vehicle" : "I - Individual",
+            RapidPassField.passType: (qrData.passType == PassType.Vehicle)
+                ? "V - Vehicle"
+                : "I - Individual",
             RapidPassField.controlCode: '${qrData.controlCodeAsString()}',
             RapidPassField.idOrPlate: qrData.idOrPlate,
             RapidPassField.apor: qrData.purpose(),
@@ -107,8 +107,8 @@ class ScanResultScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                     if (scanResults.isValid() == true) 
-                       Padding(
+                    if (scanResults.isValid() == true)
+                      Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 20.0),
                         child: SizedBox(
@@ -117,7 +117,8 @@ class ScanResultScreen extends StatelessWidget {
                           child: RaisedButton(
                             shape: new RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(34.0)),
-                            onPressed: () =>   Navigator.pushNamed(context, "/viewMoreInfo"),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, "/viewMoreInfo"),
                             child: Text('View more info',
                                 style: TextStyle(
                                     // Not sure how to get rid of color: Colors.white here

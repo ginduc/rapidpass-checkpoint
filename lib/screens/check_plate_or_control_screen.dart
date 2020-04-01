@@ -135,7 +135,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                       value)
                                   : PassValidationService.checkControlCode(
                                       value);
-                              Navigator.pushNamed(context, '/checkPlateOrCodeResults',
+                              Navigator.pushNamed(
+                                  context, '/checkPlateOrCodeResults',
                                   arguments: scanResults);
                             }
                             return null;
