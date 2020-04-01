@@ -124,7 +124,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Check another Control Number',
+                          child: Text('Check another Plate Number',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.0
