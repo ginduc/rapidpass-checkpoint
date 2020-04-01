@@ -147,45 +147,25 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 64.0, bottom: 40.0),
-                child: InkWell(
-                  onTap: () {
+              Container(
+                padding: EdgeInsets.all(26.0),
+                child: FlatButton(
+                  child: Text(_getSubmitCtaText(), style: TextStyle(fontSize: 16),),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  color: green300,
+                  textColor: Colors.white,
+                  padding: EdgeInsets.all(16.0),
+                  onPressed: () {
                     _formKey.currentState.validate();
 
-                    // TODO: Initial validation
                     if (_formFieldTextEditingController.text ==
                             _hardCodedValue &&
                         !_formHasErrors) {
                       // TODO: Add route to the success / invalid screen
                     }
                   },
-                  child: Container(
-                    margin: EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(16.0),
-                          height: 48,
-                          width: size.width * 0.80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24.0),
-                            color: green300,
-                          ),
-                          child: Center(
-                            child: Text(
-                              _getSubmitCtaText(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ),
             ],
