@@ -11,14 +11,31 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 const borderRadius = 12.0;
 
 /// Pass or Fail screen
-class ScanResultScreen extends StatelessWidget {
-  ScanResults scanResults;
+class ScanResultScreen extends StatefulWidget {
+  final ScanResults scanResults;
 
-  ScanResultScreen(this.scanResults);
+  const ScanResultScreen(this.scanResults);
+
+  @override
+  _ScanResultScreenState createState() => _ScanResultScreenState();
+}
+
+class _ScanResultScreenState extends State<ScanResultScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.scanResults.isValid()) {
+      _playNotificationApproved();
+    } else {
+      _playNotificationRejected();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final qrData = scanResults.qrData;
+    final qrData = widget.scanResults.qrData;
     final tableData = qrData != null
         ? {
             RapidPassField.passType: (qrData.passType == PassType.Vehicle)
@@ -45,7 +62,7 @@ class ScanResultScreen extends StatelessWidget {
           : getFieldName(field);
 
       String errorMessage;
-      final error = scanResults.findErrorForSource(field);
+      final error = widget.scanResults.findErrorForSource(field);
       if (error != null) {
         errorMessage = error.errorMessage;
       }
@@ -60,25 +77,19 @@ class ScanResultScreen extends StatelessWidget {
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
-    if (scanResults.isValid()) {
-      playNotificationApproved();
-    } else {
-      playNotificationRegected();
-    }
-
-    final card = scanResults.isValid()
+    final card = widget.scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: scanResults.resultMessage,
+            headerText: widget.scanResults.resultMessage,
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: scanResults.resultMessage,
-            subHeaderText: scanResults.resultSubMessage,
+            headerText: widget.scanResults.resultMessage,
+            subHeaderText: widget.scanResults.resultSubMessage,
             data: passResultsData,
             color: Colors.red,
-            allRed: scanResults.allRed,
+            allRed: widget.scanResults.allRed,
           );
     return Theme(
       data: Green.buildFor(context),
@@ -97,7 +108,7 @@ class ScanResultScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          if (scanResults.isValid() == true)
+                          if (widget.scanResults.isValid() == true)
                             RaisedButton(
                               child: Text('View more info', style: TextStyle(fontSize: 16)),
                               shape: RoundedRectangleBorder(
@@ -108,7 +119,7 @@ class ScanResultScreen extends StatelessWidget {
                               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
                               onPressed: () => Navigator.pushNamed(context, '/viewMoreInfo'),
                             ),
-                          if (scanResults.isValid() == true)
+                          if (widget.scanResults.isValid() == true)
                             Padding(padding: EdgeInsets.only(top: 16.0)),
                           RaisedButton(
                             child: Text('Scan another QR code', style: TextStyle(fontSize: 16)),
@@ -145,15 +156,17 @@ class ScanResultScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    if (scanResults is ScanResults) {
+      Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    }
   }
 
-  Future<AudioPlayer> playNotificationApproved() async {
+  Future<AudioPlayer> _playNotificationApproved() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_approved.mp3");
   }
 
-  Future<AudioPlayer> playNotificationRegected() async {
+  Future<AudioPlayer> _playNotificationRejected() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_denied.mp3");
   }
