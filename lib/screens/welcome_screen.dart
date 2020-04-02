@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
@@ -9,7 +10,6 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
-
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -77,10 +77,11 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 32.0),
                   child: InkWell(
-                    onDoubleTap: () => Navigator.of(context).push(CreditsScreen()),
+                    onDoubleTap: () =>
+                        Navigator.of(context).push(CreditsScreen()),
                     borderRadius: BorderRadius.circular(100),
-                    child: Image(
-                      image: const AssetImage("assets/rapidpass_logo.png"),
+                    child: SvgPicture.asset(
+                      "assets/rapidpass_logo.svg",
                     ),
                   ),
                 ),
