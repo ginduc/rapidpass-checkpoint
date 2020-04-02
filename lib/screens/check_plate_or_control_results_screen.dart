@@ -98,26 +98,28 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                     card,
                     const Padding(padding: EdgeInsets.only(top: 10.0)),
                     Container(
-                      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
+                      padding:
+                          EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          if (scanResults.isValid() == true)
-                            RaisedButton(
-                              child: Text('View more info',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
-                              ),
-                              color: green300,
-                              textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, '/viewMoreInfo'),
+                          OutlineButton(
+                            borderSide: BorderSide(color: green300),
+                            focusColor: green300,
+                            child: Text('View more Information',
+                                style: TextStyle(fontSize: 16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(34.0),
                             ),
-                          if (scanResults.isValid() == true)
-                            Padding(padding: EdgeInsets.only(top: 16.0)),
+                            color: green300,
+                            textColor: green300,
+                            highlightedBorderColor: green300,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 20.0),
+                            onPressed: () => Navigator.popUntil(
+                                context, ModalRoute.withName('/viewMoreInfo')),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: RaisedButton(
