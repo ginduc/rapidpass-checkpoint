@@ -117,7 +117,10 @@ class PassResultsCard extends StatelessWidget {
                       SizedBox(
                         height: 10,
                       ),
-                      if (this.subHeaderText != null)
+                      if (this.subHeaderText != null) ...[
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           this.subHeaderText.toUpperCase(),
                           style: TextStyle(
@@ -125,6 +128,7 @@ class PassResultsCard extends StatelessWidget {
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold),
                         )
+                      ]
                     ],
                   ),
                 ),
