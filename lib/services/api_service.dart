@@ -19,7 +19,7 @@ class ApiService extends IApiService {
   ApiService({
     @required this.client,
     @required this.baseUrl,
-  })
+  });
 
   @override
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum) {
