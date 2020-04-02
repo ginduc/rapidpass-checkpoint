@@ -47,7 +47,8 @@ class PassValidationService {
           source: RapidPassField.validFrom);
     }
     if (now.isAfter(qrData.validUntilDateTime())) {
-      results.resultMessage = 'PASS EXPIRED';
+      results.resultMessage = 'ENTRY DENIED';
+      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
           source: RapidPassField.validUntil);
     }

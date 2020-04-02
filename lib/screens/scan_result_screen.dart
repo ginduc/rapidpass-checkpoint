@@ -75,6 +75,7 @@ class ScanResultScreen extends StatelessWidget {
         : PassResultsCard(
             iconName: 'error',
             headerText: scanResults.resultMessage,
+            subHeaderText: scanResults.resultSubMessage,
             data: passResultsData,
             color: Colors.red,
             allRed: scanResults.allRed,
