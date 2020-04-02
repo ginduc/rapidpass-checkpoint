@@ -120,6 +120,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
                             onPressed: () => Navigator.pushNamed(context, '/viewMoreInfo'),
                           ),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
                           OutlineButton(
                             borderSide: BorderSide(color: green300),
                             focusColor: green300,
