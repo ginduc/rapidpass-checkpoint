@@ -98,20 +98,24 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           if (scanResults.isValid() == true)
-                          RaisedButton(
-                            child: Text('View more info', style: TextStyle(fontSize: 16)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0),
+                            RaisedButton(
+                              child: Text('View more info',
+                                  style: TextStyle(fontSize: 16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(34.0),
+                              ),
+                              color: green300,
+                              textColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 20.0),
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, '/viewMoreInfo'),
                             ),
-                            color: green300,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                            onPressed: () => Navigator.pushNamed(context, '/viewMoreInfo'),
-                          ),
                           if (scanResults.isValid() == true)
-                          Padding(padding: EdgeInsets.only(top: 16.0)),
+                            Padding(padding: EdgeInsets.only(top: 16.0)),
                           RaisedButton(
-                            child: Text('Check another Plate Number', style: TextStyle(fontSize: 16)),
+                            child: Text('Check another Plate Number',
+                                style: TextStyle(fontSize: 16)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(34.0),
                             ),
@@ -124,15 +128,18 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                           OutlineButton(
                             borderSide: BorderSide(color: green300),
                             focusColor: green300,
-                            child: Text('Return to checker page', style: TextStyle(fontSize: 16)),
+                            child: Text('Return to checker page',
+                                style: TextStyle(fontSize: 16)),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(34.0),
                             ),
                             color: green300,
                             textColor: green300,
                             highlightedBorderColor: green300,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                            onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/menu')),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 20.0),
+                            onPressed: () => Navigator.popUntil(
+                                context, ModalRoute.withName('/menu')),
                           )
                         ],
                       ),
