@@ -82,8 +82,9 @@ class CreditsScreen extends ModalRoute<void> {
                 itemBuilder: (_, index) {
                   return Container(
                     padding: EdgeInsets.only(bottom: 5),
+                    alignment: Alignment.center,
                     child: Text(
-                      _developers[index]['name'],
+                      _developers[index],
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -101,49 +102,17 @@ class CreditsScreen extends ModalRoute<void> {
   }
 
   static const _developers = [
-    {
-      'name': 'Alistair Israel',
-      'email': 'aisrael@gmail.com',
-    },
-    {
-      'name': 'Joshua Maiquez de Guzman',
-      'email': 'joshua.maiquez.deguzman@gmail.com',
-    },
-    {
-      'name': 'Jonathan Mayol',
-      'email': 'mayoljonathan@rocketmail.com',
-    },
-    {
-      'name': 'Jan Salvador Sebastian',
-      'email': 'sebastian@mclinica.com',
-    },
-    {
-      'name': 'Josef Solon',
-      'email': 'josefsolon@gmail.com',
-    },
-    {
-      'name': 'Atik',
-      'email': 'atik@live.com.ph',
-    },
-    {
-      'name': 'Ned Palacios',
-      'email': 'npdoesmc@gmail.com',
-    },
-    {
-      'name': 'Ryan Jan Borja',
-      'email': 'ryanjan18@outlook.ph',
-    },
-    {
-      'name': 'Vince Ramces Oliveros',
-      'email': 'blusea231@gmail.com',
-    },
-    {
-      'name': 'Jan Salvador Sebastian',
-      'email': 'jansalvadorsebastian@gmail.com',
-    },
-    {
-      'name': 'Jonel Dominic Tapang',
-      'email': 'dneljo@yahoo.com',
-    },
+    'DCTx',
+    'DevCon.ph',
+    'Alistair Israel',
+    'Joshua Maiquez de Guzman',
+    'Jonathan Mayol',
+    'Jan Salvador Sebastian',
+    'Josef Solon',
+    'Atik',
+    'Ned Palacios',
+    'Ryan Jan Borja',
+    'Vince Ramces Oliveros',
+    'Jonel Dominic Tapang'
   ];
 }
