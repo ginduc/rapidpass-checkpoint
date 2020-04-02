@@ -38,11 +38,11 @@ class ScanResults {
   bool allRed = false;
 
   static final invalidPass =
-      ScanResults(null, resultMessage: 'Invalid Pass', allRed: true)
-          .addError('Invalid Pass');
+      ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true)
+          .addError('ENTRY DENIED');
 
   ScanResults(this.qrData,
-      {this.resultMessage = 'Pass Ok', this.allRed = false});
+      {this.resultMessage = 'ENTRY APPROVED', this.allRed = false});
 
   ScanResults addError(String errorMessage, {RapidPassField source}) {
     this.errors.add(ValidationError(errorMessage, source: source));
