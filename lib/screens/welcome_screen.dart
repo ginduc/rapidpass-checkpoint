@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -81,7 +82,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         Navigator.of(context).push(CreditsScreen()),
                     borderRadius: BorderRadius.circular(100),
                     child: SvgPicture.asset(
-                      "assets/rapidpass_logo.svg",
+                    RapidAssetConstants.rapidPassLogo,
                     ),
                   ),
                 ),
