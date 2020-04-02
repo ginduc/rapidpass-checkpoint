@@ -88,7 +88,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
       data: Green.buildFor(context),
       child: Scaffold(
           appBar: AppBar(title: Text('Result')),
-          body: Container(
+          body: SingleChildScrollView(
               padding:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Center(
@@ -98,8 +98,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                     card,
                     const Padding(padding: EdgeInsets.only(top: 10.0)),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
@@ -136,10 +135,10 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                               textColor: Colors.white,
                               padding: EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => Navigator.pushNamed(
-                                  context, '/checkPlateNumber'),
+                              onPressed: () => Navigator.pop(context),
                             ),
                           ),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
                           OutlineButton(
                             borderSide: BorderSide(color: green300),
                             focusColor: green300,
