@@ -9,6 +9,7 @@ import 'package:rapidpass_checkpoint/repository/api_respository.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
@@ -18,6 +19,8 @@ import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:http/http.dart';
+
+import 'models/check_plate_or_control_args.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,25 +110,15 @@ class RapidPassCheckpointApp extends StatelessWidget {
             case '/checkPlateNumber':
               return CupertinoPageRoute(
                 builder: (_) {
-                  final CheckPlateOrControlScreenArgs args =
-                      CheckPlateOrControlScreenArgs(
-                    screenModeType: CheckPlateOrControlScreenModeType.plate,
-                  );
                   return CheckPlateOrControlScreen(
-                    args: args,
-                  );
+                      CheckPlateOrControlScreenModeType.plate);
                 },
               );
             case '/checkControlCode':
               return CupertinoPageRoute(
                 builder: (_) {
-                  final CheckPlateOrControlScreenArgs args =
-                      CheckPlateOrControlScreenArgs(
-                    screenModeType: CheckPlateOrControlScreenModeType.control,
-                  );
                   return CheckPlateOrControlScreen(
-                    args: args,
-                  );
+                      CheckPlateOrControlScreenModeType.control);
                 },
               );
             case '/scanQrCode':
