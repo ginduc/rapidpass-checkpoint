@@ -1,8 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
+import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -11,11 +18,39 @@ class WelcomeScreen extends StatefulWidget {
   }
 }
 
-class WelcomeScreenState extends State<WelcomeScreen> {
+class WelcomeScreenState extends State<WelcomeScreen>
+    with WidgetsBindingObserver {
+  // A list of required permissions to be accepted in order for app to properly run
+  List<Permission> _requiredPermissions = [
+    Permission.phone,
+    Permission.location,
+    Permission.camera
+  ];
+
+  // A flag to determined if app was navigated away (background) using openAppSettings()
+  bool _isFromAppSettings = false;
+
   @override
   void initState() {
     super.initState();
-    Provider.of<DeviceInfoModel>(context, listen: false)..getImei();
+    WidgetsBinding.instance.addObserver(this);
+
+    _checkRequiredPermissions();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    // Will be called when app is in foreground & if it triggered the background activity using openAppSettings()
+    if (state == AppLifecycleState.resumed && _isFromAppSettings) {
+      _isFromAppSettings = false;
+      _checkRequiredPermissions();
+    }
   }
 
   @override
@@ -41,8 +76,12 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  child: Image(
-                    image: AssetImage("assets/rapidpass_logo.png"),
+                  child: InkWell(
+                    onDoubleTap: () => Navigator.of(context).push(CreditsScreen()),
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image(
+                      image: const AssetImage("assets/rapidpass_logo.png"),
+                    ),
                   ),
                 ),
                 Text('Welcome to',
@@ -92,6 +131,57 @@ class WelcomeScreenState extends State<WelcomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _checkRequiredPermissions() async {
+    final Map<Permission, PermissionStatus> permissions =
+        await _requiredPermissions.request();
+    debugPrint('permissions => $permissions');
+
+    bool isDeniedPermanently = permissions.values
+        .any((PermissionStatus status) => status.isPermanentlyDenied);
+    if (isDeniedPermanently) return _onPermissionDeniedPermanently();
+
+    bool isAllGranted =
+        permissions.values.every((PermissionStatus status) => status.isGranted);
+    if (!isAllGranted) return _onPermissionDenied();
+
+    _onAllPermissionGranted();
+  }
+
+  void _onAllPermissionGranted() {
+    Provider.of<DeviceInfoModel>(context, listen: false).getImei();
+  }
+
+  void _onPermissionDeniedPermanently() {
+    DialogHelper.showAlertDialog(context,
+        title: 'Some permission was denied permanently',
+        message:
+            'In order for the app to run properly, you must tap OPEN SETTINGS and grant the CAMERA, LOCATION, and PHONE permission.',
+        dismissible: false,
+        onWillPop: () async => false,
+        cancelText: 'EXIT APP',
+        onCancel: () => SystemNavigator.pop(),
+        confirmText: 'OPEN SETTINGS',
+        onConfirm: () {
+          _isFromAppSettings = true;
+          openAppSettings();
+        });
+  }
+
+  void _onPermissionDenied() {
+    DialogHelper.showAlertDialog(
+      context,
+      title: 'Some permission was denied',
+      message:
+          'In order for the app to run properly, we need you to allow all permissions requested.',
+      dismissible: false,
+      onWillPop: () async => false,
+      cancelText: 'EXIT APP',
+      onCancel: () => SystemNavigator.pop(),
+      confirmText: 'ALLOW PERMISSIONS',
+      onConfirm: () => _checkRequiredPermissions(),
     );
   }
 }

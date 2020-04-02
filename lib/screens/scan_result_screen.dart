@@ -11,14 +11,31 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 const borderRadius = 12.0;
 
 /// Pass or Fail screen
-class ScanResultScreen extends StatelessWidget {
-  ScanResults scanResults;
+class ScanResultScreen extends StatefulWidget {
+  final ScanResults scanResults;
 
-  ScanResultScreen(this.scanResults);
+  const ScanResultScreen(this.scanResults);
+
+  @override
+  _ScanResultScreenState createState() => _ScanResultScreenState();
+}
+
+class _ScanResultScreenState extends State<ScanResultScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.scanResults.isValid()) {
+      _playNotificationApproved();
+    } else {
+      _playNotificationRejected();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final qrData = scanResults.qrData;
+    final qrData = widget.scanResults.qrData;
     final tableData = qrData != null
         ? {
             RapidPassField.passType: (qrData.passType == PassType.Vehicle)
@@ -45,7 +62,7 @@ class ScanResultScreen extends StatelessWidget {
           : getFieldName(field);
 
       String errorMessage;
-      final error = scanResults.findErrorForSource(field);
+      final error = widget.scanResults.findErrorForSource(field);
       if (error != null) {
         errorMessage = error.errorMessage;
       }
@@ -60,24 +77,19 @@ class ScanResultScreen extends StatelessWidget {
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
-    if (scanResults.isValid()) {
-      playNotificationApproved();
-    } else {
-      playNotificationRegected();
-    }
-
-    final card = scanResults.isValid()
+    final card = widget.scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
-            headerText: scanResults.resultMessage,
+            headerText: widget.scanResults.resultMessage,
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: scanResults.resultMessage,
+            headerText: widget.scanResults.resultMessage,
+            subHeaderText: widget.scanResults.resultSubMessage,
             data: passResultsData,
             color: Colors.red,
-            allRed: scanResults.allRed,
+            allRed: widget.scanResults.allRed,
           );
     return Theme(
       data: Green.buildFor(context),
@@ -90,87 +102,52 @@ class ScanResultScreen extends StatelessWidget {
                 child: ListView(
                   children: <Widget>[
                     card,
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 12),
-                      child: SizedBox(
-                        height: 58,
-                        width: 300.0,
-                        child: RaisedButton(
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0)),
-                          onPressed: () => _scanAndNavigate(context),
-                          child: Text('Scan another QR code',
-                              style: TextStyle(
-                                  // Not sure how to get rid of color: Colors.white here
-                                  color: Colors.white,
-                                  fontSize: 16.0)),
-                        ),
-                      ),
-                    ),
-                    if (scanResults.isValid() == true)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 20.0),
-                        child: SizedBox(
-                          height: 58,
-                          width: 300.0,
-                          child: RaisedButton(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0)),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, "/viewMoreInfo"),
-                            child: Text('View more info',
-                                style: TextStyle(
-                                    // Not sure how to get rid of color: Colors.white here
-                                    color: Colors.white,
-                                    fontSize: 16.0)),
-                          ),
-                        ),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 20.0,
-                      ),
-                      child: SizedBox(
-                        height: 58,
-                        child: FlatButton(
-                          color: green300,
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(34.0),
-                            side: BorderSide(color: green300)
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text('Scan another QR',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0
+                    const Padding(padding: EdgeInsets.only(top: 10.0)),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          if (widget.scanResults.isValid() == true)
+                            RaisedButton(
+                              child: Text('View more info', style: TextStyle(fontSize: 16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(34.0),
+                              ),
+                              color: green300,
+                              textColor: Colors.white,
+                              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                              onPressed: () => Navigator.pushNamed(context, '/viewMoreInfo'),
                             ),
+                          if (widget.scanResults.isValid() == true)
+                            Padding(padding: EdgeInsets.only(top: 16.0)),
+                          RaisedButton(
+                            child: Text('Scan another QR code', style: TextStyle(fontSize: 16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(34.0),
+                            ),
+                            color: green300,
+                            textColor: Colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                            onPressed: () => _scanAndNavigate(context),
                           ),
-                        ),
+                          Padding(padding: EdgeInsets.only(top: 16.0)),
+                          OutlineButton(
+                            borderSide: BorderSide(color: green300),
+                            focusColor: green300,
+                            child: Text('Return to checker page', style: TextStyle(fontSize: 16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(34.0),
+                            ),
+                            color: green300,
+                            textColor: green300,
+                            highlightedBorderColor: green300,
+                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                            onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/menu')),
+                          )
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 20.0),
-                      child: SizedBox(
-                        height: 58,
-                        child: FlatButton(
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0),
-                              side: BorderSide(color: green300)),
-                          onPressed: () {
-                            Navigator.popUntil(context, ModalRoute.withName('/menu'));
-                          },
-                          child: Text('Return to checker page',
-                              style: TextStyle(
-                                  // Not sure how to get rid of color: Colors.white here
-                                  color: green300,
-                                  fontSize: 16.0)),
-                        ),
-                      ),
-                    )
                   ],
                 ),
               ))),
@@ -179,15 +156,17 @@ class ScanResultScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    if (scanResults is ScanResults) {
+      Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    }
   }
 
-  Future<AudioPlayer> playNotificationApproved() async {
+  Future<AudioPlayer> _playNotificationApproved() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_approved.mp3");
   }
 
-  Future<AudioPlayer> playNotificationRegected() async {
+  Future<AudioPlayer> _playNotificationRejected() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_denied.mp3");
   }

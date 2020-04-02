@@ -10,7 +10,7 @@ class DeviceInfoModel extends ChangeNotifier {
   String platformImei;
 
   DeviceInfoModel() {
-    Future<String> platformImei = initPermission();
+    // Future<String> platformImei = initPermission();
     debugPrint('initialized imei => $_imei');
   }
 
