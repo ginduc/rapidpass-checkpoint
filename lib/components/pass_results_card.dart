@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 const borderRadius = 12.0;
 
@@ -34,31 +35,29 @@ class PassResultsCard extends StatelessWidget {
       if (this.allRed || row.errorMessage != null) {
         return TableRow(children: [
           GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text(
-                row.label,
-                style: tableTextStyle.copyWith(color: Colors.red),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Text(
+                  row.label,
+                  style: tableTextStyle.copyWith(color: Colors.red),
+                ),
               ),
-            ),
-            onTap: () => _showDialog(context,
-                title: this.headerText,
-                body: row.errorMessage ?? this.headerText),
-          ),
+              onTap: () => DialogHelper.showAlertDialog(context,
+                  title: this.headerText,
+                  message: row.errorMessage ?? this.headerText)),
           GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text(
-                row.value,
-                textAlign: TextAlign.right,
-                style: tableTextStyle.copyWith(
-                    color: Colors.red, fontWeight: FontWeight.bold),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Text(
+                  row.value,
+                  textAlign: TextAlign.right,
+                  style: tableTextStyle.copyWith(
+                      color: Colors.red, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            onTap: () => _showDialog(context,
-                title: this.headerText,
-                body: row.errorMessage ?? this.headerText),
-          )
+              onTap: () => DialogHelper.showAlertDialog(context,
+                  title: this.headerText,
+                  message: row.errorMessage ?? this.headerText))
         ]);
       } else {
         return TableRow(children: [
@@ -139,26 +138,4 @@ class PassResultsCard extends StatelessWidget {
             ])));
   }
 
-  void _showDialog(BuildContext context, {String title, String body}) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(body),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }
