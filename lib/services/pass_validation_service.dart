@@ -25,13 +25,13 @@ class PassValidationService {
         return scanResults;
       } else {
         final sr =
-            ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+            ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
         sr.addError('Invalid QR Data');
         return sr;
       }
     } catch (e) {
       print(e.toString());
-      final sr = ScanResults(null, resultMessage: 'Invalid Pass', allRed: true);
+      final sr = ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
       sr.addError('Invalid QR Data');
       return sr;
     }
@@ -41,7 +41,8 @@ class PassValidationService {
     final results = ScanResults(qrData);
     final DateTime now = DateTime.now();
     if (now.isBefore(qrData.validFromDateTime())) {
-      results.resultMessage = 'INVALID PASS';
+      results.resultMessage = 'ENTRY DENIED';
+      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
       results.addError(
           'Pass is only valid starting on ${qrData.validFromDisplayDate()}',
           source: RapidPassField.validFrom);
@@ -53,7 +54,8 @@ class PassValidationService {
           source: RapidPassField.validUntil);
     }
     if (qrData.idOrPlate.isEmpty) {
-      results.resultMessage = 'INVALID PASS';
+      results.resultMessage = 'ENTRY DENIED';
+      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
       results.addError('Invalid Plate Number',
           source: RapidPassField.idOrPlate);
     }

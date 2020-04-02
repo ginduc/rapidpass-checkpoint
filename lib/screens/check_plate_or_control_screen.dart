@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
-enum CheckPlateOrControlScreenModeType { plate, control }
-
-class CheckPlateOrControlScreenArgs {
+class CheckPlateOrControlScreen extends StatefulWidget {
   final CheckPlateOrControlScreenModeType screenModeType;
 
-  CheckPlateOrControlScreenArgs({@required this.screenModeType});
-}
-
-class CheckPlateOrControlScreen extends StatefulWidget {
-  final CheckPlateOrControlScreenArgs args;
-
-  const CheckPlateOrControlScreen({Key key, this.args}) : super(key: key);
+  const CheckPlateOrControlScreen(this.screenModeType);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,7 +20,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _formFieldTextEditingController;
 
-  CheckPlateOrControlScreenArgs get _args => widget.args;
+  CheckPlateOrControlScreenModeType get _screenModeType =>
+      widget.screenModeType;
 
   bool _formHasErrors = false;
 
@@ -48,7 +42,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   String _getAppBarText() {
-    if (_args.screenModeType == CheckPlateOrControlScreenModeType.plate) {
+    if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
     } else {
       return "Check Control Number";
@@ -56,7 +50,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   String _getHelpText() {
-    if (_args.screenModeType == CheckPlateOrControlScreenModeType.plate) {
+    if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Type the vehicle's plate number or conduction sticker below:";
     } else {
       return "Type the person's control number receive via SMS below:";
@@ -64,7 +58,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   String _getFormFieldLabel() {
-    if (_args.screenModeType == CheckPlateOrControlScreenModeType.plate) {
+    if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Plate Number / Conduction Sticker";
     } else {
       return "Control Number";
@@ -72,7 +66,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   String _getSubmitCtaText() {
-    if (_args.screenModeType == CheckPlateOrControlScreenModeType.plate) {
+    if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
     } else {
       return "Check Control Number";
@@ -120,13 +114,14 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                           ),
-                          maxLength: _args.screenModeType ==
+                          maxLength: _screenModeType ==
                                   CheckPlateOrControlScreenModeType.plate
                               ? 11
                               : 10,
                           maxLengthEnforced: true,
                           inputFormatters: [
-                            WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]"))
+                            WhitelistingTextInputFormatter(
+                                RegExp("[a-zA-Z0-9]"))
                           ],
                           autofocus: true,
                           validator: (String value) {
@@ -139,16 +134,21 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               setState(() {
                                 _formHasErrors = false;
                               });
-                              final ScanResults scanResults = (_args
-                                          .screenModeType ==
-                                      CheckPlateOrControlScreenModeType.plate)
-                                  ? PassValidationService.checkPlateNumber(
-                                      value)
-                                  : PassValidationService.checkControlCode(
-                                      value);
+                              final ScanResults scanResults =
+                                  (_screenModeType ==
+                                          CheckPlateOrControlScreenModeType
+                                              .plate)
+                                      ? PassValidationService.checkPlateNumber(
+                                          value)
+                                      : PassValidationService.checkControlCode(
+                                          value);
+                              final CheckPlateOrControlScreenResults
+                                  checkResults =
+                                  CheckPlateOrControlScreenResults(
+                                      _screenModeType, scanResults);
                               Navigator.pushNamed(
                                   context, '/checkPlateOrCodeResults',
-                                  arguments: scanResults);
+                                  arguments: checkResults);
                             }
                             return null;
                           },
@@ -161,7 +161,10 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
               Container(
                 padding: EdgeInsets.all(26.0),
                 child: FlatButton(
-                  child: Text(_getSubmitCtaText(), style: TextStyle(fontSize: 16),),
+                  child: Text(
+                    _getSubmitCtaText(),
+                    style: TextStyle(fontSize: 16),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
                   ),
