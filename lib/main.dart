@@ -89,44 +89,44 @@ class RapidPassCheckpointApp extends StatelessWidget {
           ),
         ),
         initialRoute: "/",
-        routes: {'/': (_) => WelcomeScreen()},
+        routes: {WelcomeScreen.routeName: (_) => WelcomeScreen()},
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
-            case '/menu':
+            case MainMenuScreen.routeName:
               return CupertinoPageRoute(
                 builder: (_) => MainMenuScreen(),
                 settings: settings,
               );
-            case '/scanResults':
+            case ScanResultScreen.routeName:
               return CupertinoPageRoute(
                 builder: (_) => ScanResultScreen(settings.arguments),
                 settings: settings,
               );
-            case '/checkPlateOrCodeResults':
+            case CheckPlateOrControlCodeResultsScreen.routeName:
               return CupertinoPageRoute(
                   builder: (_) =>
                       CheckPlateOrControlCodeResultsScreen(settings.arguments),
                   settings: settings);
-            case '/checkPlateNumber':
+            case CheckPlateOrControlScreen.routeNamePlateNumber:
               return CupertinoPageRoute(
                 builder: (_) {
                   return CheckPlateOrControlScreen(
                       CheckPlateOrControlScreenModeType.plate);
                 },
               );
-            case '/checkControlCode':
+            case CheckPlateOrControlScreen.routeNameControlCode:
               return CupertinoPageRoute(
                 builder: (_) {
                   return CheckPlateOrControlScreen(
                       CheckPlateOrControlScreenModeType.control);
                 },
               );
-            case '/scanQrCode':
+            case QrScannerScreen.routeName:
               return CupertinoPageRoute(
                 builder: (_) => QrScannerScreen(),
                 settings: settings,
               );
-            case '/viewMoreInfo':
+            case ViewMoreInfoScreen.routeName:
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),
                 settings: settings,

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class CheckPlateOrControlScreen extends StatefulWidget {
+  static const routeNamePlateNumber = '/checkPlateNumber';
+  static const routeNameControlCode = '/checkControlCode';
+
   final CheckPlateOrControlScreenModeType screenModeType;
 
   const CheckPlateOrControlScreen(this.screenModeType);
@@ -147,7 +151,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                   CheckPlateOrControlScreenResults(
                                       _screenModeType, scanResults);
                               Navigator.pushNamed(
-                                  context, '/checkPlateOrCodeResults',
+                                  context, CheckPlateOrControlCodeResultsScreen.routeName,
                                   arguments: checkResults);
                             }
                             return null;

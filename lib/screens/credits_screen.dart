@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CreditsScreen extends ModalRoute<void> {
+
   @override
   Duration get transitionDuration => Duration(milliseconds: 500);
 

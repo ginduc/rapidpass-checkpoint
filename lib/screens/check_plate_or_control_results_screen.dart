@@ -7,12 +7,16 @@ import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
+import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
 
 /// Pass or Fail screen
 class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
+  static const routeName = '/checkPlateOrCodeResults';
+
   final CheckPlateOrControlScreenModeType screenModeType;
 
   final ScanResults scanResults;
@@ -114,7 +118,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 16.0, vertical: 20.0),
                               onPressed: () =>
-                                  Navigator.pushNamed(context, '/viewMoreInfo'),
+                                  Navigator.pushNamed(context, ViewMoreInfoScreen.routeName),
                             ),
                           if (scanResults.isValid() == true)
                             Padding(padding: EdgeInsets.only(top: 16.0)),
@@ -153,7 +157,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 16.0, vertical: 20.0),
                             onPressed: () => Navigator.popUntil(
-                                context, ModalRoute.withName('/menu')),
+                                context, ModalRoute.withName(MainMenuScreen.routeName)),
                           )
                         ],
                       ),
@@ -166,7 +170,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
+    Navigator.popAndPushNamed(context, ScanResultScreen.routeName, arguments: scanResults);
   }
 
   Future<AudioPlayer> playNotificationApproved() async {

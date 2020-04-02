@@ -6,12 +6,15 @@ import 'package:rapidpass_checkpoint/models/apor.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
 
 /// Pass or Fail screen
 class ScanResultScreen extends StatefulWidget {
+  static const routeName = '/scanResults';
+
   final ScanResults scanResults;
 
   const ScanResultScreen(this.scanResults);
@@ -96,88 +99,88 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
           appBar: AppBar(title: Text('Result')),
           body: SingleChildScrollView(
               child: Center(
-                child: Column(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
+                  child: card,
+                ),
+                const Padding(padding: EdgeInsets.only(top: 10.0)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0, vertical: 10.0),
-                      child: card,
+                    if (widget.scanResults.isValid() == true)
+                      InkWell(
+                        onTap: () =>
+                            Navigator.pushNamed(context, ViewMoreInfoScreen.routeName),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 20.0),
+                          child: RaisedButton(
+                            child: Text('View more info',
+                                style: TextStyle(fontSize: 16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(34.0),
+                            ),
+                            color: green300,
+                            textColor: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 20.0),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, ViewMoreInfoScreen.routeName),
+                          ),
+                        ),
+                      ),
+                    if (widget.scanResults.isValid() == true)
+                      Padding(padding: EdgeInsets.only(top: 16.0)),
+                    InkWell(
+                      onTap: () => _scanAndNavigate(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 20.0),
+                        child: RaisedButton(
+                          child: Text('Scan another QR code',
+                              style: TextStyle(fontSize: 16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(34.0),
+                          ),
+                          color: green300,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 20.0),
+                          onPressed: () => _scanAndNavigate(context),
+                        ),
+                      ),
                     ),
-                    const Padding(padding: EdgeInsets.only(top: 10.0)),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        if (widget.scanResults.isValid() == true)
-                          InkWell(
-                            onTap: () =>
-                                Navigator.pushNamed(context, '/viewMoreInfo'),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 20.0),
-                              child: RaisedButton(
-                                child: Text('View more info',
-                                    style: TextStyle(fontSize: 16)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(34.0),
-                                ),
-                                color: green300,
-                                textColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.0, vertical: 20.0),
-                                onPressed: () =>
-                                    Navigator.pushNamed(context, '/viewMoreInfo'),
-                              ),
-                            ),
+                    InkWell(
+                      onTap: () => Navigator.popUntil(
+                          context, ModalRoute.withName(MainMenuScreen.routeName)),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 20.0),
+                        child: OutlineButton(
+                          borderSide: BorderSide(color: green300),
+                          focusColor: green300,
+                          child: Text('Return to checker page',
+                              style: TextStyle(fontSize: 16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(34.0),
                           ),
-                        if (widget.scanResults.isValid() == true)
-                          Padding(padding: EdgeInsets.only(top: 16.0)),
-                        InkWell(
-                          onTap: () => _scanAndNavigate(context),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 20.0),
-                            child: RaisedButton(
-                              child: Text('Scan another QR code',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
-                              ),
-                              color: green300,
-                              textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => _scanAndNavigate(context),
-                            ),
-                          ),
+                          color: green300,
+                          textColor: green300,
+                          highlightedBorderColor: green300,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 20.0),
+                          onPressed: () => Navigator.popUntil(
+                              context, ModalRoute.withName(MainMenuScreen.routeName)),
                         ),
-                        InkWell(
-                          onTap: () => Navigator.popUntil(
-                              context, ModalRoute.withName('/menu')),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 20.0),
-                            child: OutlineButton(
-                              borderSide: BorderSide(color: green300),
-                              focusColor: green300,
-                              child: Text('Return to checker page',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
-                              ),
-                              color: green300,
-                              textColor: green300,
-                              highlightedBorderColor: green300,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => Navigator.popUntil(
-                                  context, ModalRoute.withName('/menu')),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
+              ],
+            ),
           ))),
     );
   }
@@ -185,7 +188,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
     if (scanResults is ScanResults) {
-      Navigator.popAndPushNamed(context, '/scanResults',
+      Navigator.popAndPushNamed(context, ScanResultScreen.routeName,
           arguments: scanResults);
     }
   }

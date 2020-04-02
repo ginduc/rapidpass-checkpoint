@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
+import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
+   static const routeName = '/menu';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +111,7 @@ class MainMenu extends StatelessWidget {
             iconPath: RapidAssetConstants.icControlCode,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
             onPressed: () {
-              Navigator.pushNamed(context, '/checkControlCode');
+              Navigator.pushNamed(context, CheckPlateOrControlScreen.routeNameControlCode);
             },
           ),
         ],
@@ -118,7 +122,7 @@ class MainMenu extends StatelessWidget {
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
     if (scanResults is ScanResults) {
-      Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
+      Navigator.pushNamed(context, ScanResultScreen.routeName, arguments: scanResults);
     }
   }
 

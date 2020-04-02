@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ViewMoreInfoScreen extends StatelessWidget {
+  static const routeName = '/viewMoreInfo';
+
   const ViewMoreInfoScreen({Key key}) : super(key: key);
 
   @override

@@ -9,6 +9,8 @@ import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 @Deprecated(
     'Some devices has been crashing using this QrScannerScreen, this is most likely related to the native plugin used `qr_code_scanner`. Please use `barcode_scan` implementation for now.')
 class QrScannerScreen extends StatefulWidget {
+   static const routeName = '/scanQrCode';
+
   @override
   _QrScannerScreenState createState() => _QrScannerScreenState();
 }

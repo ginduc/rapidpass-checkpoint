@@ -13,6 +13,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  static const routeName = '/';
+
   @override
   State<StatefulWidget> createState() {
     return WelcomeScreenState();
@@ -82,7 +84,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         Navigator.of(context).push(CreditsScreen()),
                     borderRadius: BorderRadius.circular(100),
                     child: SvgPicture.asset(
-                    RapidAssetConstants.rapidPassLogo,
+                      RapidAssetConstants.rapidPassLogo,
                     ),
                   ),
                 ),
