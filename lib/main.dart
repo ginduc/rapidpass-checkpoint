@@ -30,7 +30,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
   // TODO: Create separate runnable environment for the main app
   // REST
   Client _client = Client();
-  String _rapidPassApiUrl = 'https://api.test.rapidpass.amihan.net/api/v1/';
+  String _rapidPassApiUrl = 'https://api.test.rapidpass.amihan.net/api/v1';
 
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
