@@ -23,7 +23,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
   // A list of required permissions to be accepted in order for app to properly run
   List<Permission> _requiredPermissions = [
     Permission.phone,
-    Permission.location
+    Permission.location,
+    Permission.camera
   ];
 
   // A flag to determined if app was navigated away (background) using openAppSettings()
@@ -157,7 +158,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
     DialogHelper.showAlertDialog(context,
         title: 'Some permission was denied permanently',
         message:
-            'In order for the app to run properly, you must tap OPEN SETTINGS and grant the PHONE and LOCATION permission.',
+            'In order for the app to run properly, you must tap OPEN SETTINGS and grant the CAMERA, LOCATION, and PHONE permission.',
         dismissible: false,
         onWillPop: () async => false,
         cancelText: 'EXIT APP',
