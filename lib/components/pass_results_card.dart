@@ -15,12 +15,14 @@ class PassResultsTableRow {
 class PassResultsCard extends StatelessWidget {
   final String iconName;
   final String headerText;
+  final String subHeaderText;
   final List<PassResultsTableRow> data;
   final Color color;
   final bool allRed;
   PassResultsCard(
       {this.iconName,
       this.headerText,
+      this.subHeaderText,
       this.data,
       this.color,
       this.allRed = false});
@@ -109,7 +111,15 @@ class PassResultsCard extends StatelessWidget {
                         this.headerText.toUpperCase(),
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22.0,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10,),
+                      Text(
+                        this.subHeaderText.toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
                             fontWeight: FontWeight.bold),
                       )
                     ],
