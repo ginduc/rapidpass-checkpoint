@@ -6,7 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 // TODO: Any alternative plugin that we can embed the native QR view to a Flutter widget that has no crashing issue?
-@Deprecated('Some devices has been crashing using this QrScannerScreen, this is most likely related to the native plugin used `qr_code_scanner`. Please use `barcode_scan` implementation for now.')
+@Deprecated(
+    'Some devices has been crashing using this QrScannerScreen, this is most likely related to the native plugin used `qr_code_scanner`. Please use `barcode_scan` implementation for now.')
 class QrScannerScreen extends StatefulWidget {
   @override
   _QrScannerScreenState createState() => _QrScannerScreenState();
