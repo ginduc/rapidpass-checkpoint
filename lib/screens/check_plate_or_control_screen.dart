@@ -126,7 +126,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               : 10,
                           maxLengthEnforced: true,
                           inputFormatters: [
-                            WhitelistingTextInputFormatter(RegExp("[a-zA-Z0-9]"))
+                            WhitelistingTextInputFormatter(
+                                RegExp("[a-zA-Z0-9]"))
                           ],
                           autofocus: true,
                           validator: (String value) {
@@ -161,7 +162,10 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
               Container(
                 padding: EdgeInsets.all(26.0),
                 child: FlatButton(
-                  child: Text(_getSubmitCtaText(), style: TextStyle(fontSize: 16),),
+                  child: Text(
+                    _getSubmitCtaText(),
+                    style: TextStyle(fontSize: 16),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0),
                   ),
