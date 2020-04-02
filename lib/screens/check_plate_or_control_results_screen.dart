@@ -118,7 +118,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                             color: green300,
                             textColor: Colors.white,
                             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                            onPressed: () => Navigator.pushNamed(context, '/viewMoreInfo'),
+                            onPressed: () => Navigator.pop(context),
                           ),
                           Padding(padding: EdgeInsets.only(top: 16.0)),
                           OutlineButton(
