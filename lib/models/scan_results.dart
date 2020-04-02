@@ -34,9 +34,12 @@ class ScanResults {
   final QrData qrData;
   final List<ValidationError> errors = List();
   String resultMessage;
+  String resultSubMessage;
   bool allRed = false;
 
-  static final invalidPass = ScanResults(null, resultMessage: 'Invalid Pass', allRed: true).addError('Invalid Pass');
+  static final invalidPass =
+      ScanResults(null, resultMessage: 'Invalid Pass', allRed: true)
+          .addError('Invalid Pass');
 
   ScanResults(this.qrData,
       {this.resultMessage = 'Pass Ok', this.allRed = false});

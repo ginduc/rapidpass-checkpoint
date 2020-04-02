@@ -9,12 +9,11 @@ class ViewMoreInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('More Details')),
       body: Center(
-          child:  Padding(
-                    padding: EdgeInsets.only(top: 24.0),
-                    child: Text("Control Code"),
-                  ),
+        child: Padding(
+          padding: EdgeInsets.only(top: 24.0),
+          child: Text("Control Code"),
         ),
+      ),
     );
-    
   }
 }

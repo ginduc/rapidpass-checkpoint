@@ -37,7 +37,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
           ),
         ),
         StreamProvider(
-          create: (_) =>  LocationService().locationStream,
+          create: (_) => LocationService().locationStream,
         ),
       ],
       child: MaterialApp(
@@ -76,9 +76,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
               );
             case '/checkPlateOrCodeResults':
               return CupertinoPageRoute(
-                builder: (_) => CheckPlateOrControlCodeResultsScreen(settings.arguments),
-                settings: settings
-              );
+                  builder: (_) =>
+                      CheckPlateOrControlCodeResultsScreen(settings.arguments),
+                  settings: settings);
             case '/checkPlateNumber':
               return CupertinoPageRoute(
                 builder: (_) {
