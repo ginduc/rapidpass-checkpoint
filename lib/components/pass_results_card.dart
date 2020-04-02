@@ -19,7 +19,7 @@ class PassResultsCard extends StatelessWidget {
   final List<PassResultsTableRow> data;
   final Color color;
   final bool allRed;
-  PassResultsCard(
+  const PassResultsCard(
       {this.iconName,
       this.headerText,
       this.subHeaderText,
@@ -107,21 +107,25 @@ class PassResultsCard extends StatelessWidget {
                           image: AssetImage('assets/${this.iconName}.png'),
                         ),
                       ),
-                      Text(
-                        this.headerText.toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold),
+                      if (this.headerText != null)
+                        Text(
+                          this.headerText.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      SizedBox(
+                        height: 10,
                       ),
-                      SizedBox(height: 10,),
-                      Text(
-                        this.subHeaderText.toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold),
-                      )
+                      if (this.subHeaderText != null)
+                        Text(
+                          this.subHeaderText.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold),
+                        )
                     ],
                   ),
                 ),
