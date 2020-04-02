@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/components/pass_results_card.dart';
 import 'package:rapidpass_checkpoint/models/apor.dart';
+import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
@@ -12,9 +13,13 @@ const borderRadius = 12.0;
 
 /// Pass or Fail screen
 class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
-  ScanResults scanResults;
+  final CheckPlateOrControlScreenModeType screenModeType;
 
-  CheckPlateOrControlCodeResultsScreen(this.scanResults);
+  final ScanResults scanResults;
+
+  CheckPlateOrControlCodeResultsScreen(CheckPlateOrControlScreenResults args)
+      : this.screenModeType = args.screenModeType,
+        this.scanResults = args.scanResults;
 
   @override
   Widget build(BuildContext context) {
@@ -113,16 +118,25 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                             ),
                           if (scanResults.isValid() == true)
                             Padding(padding: EdgeInsets.only(top: 16.0)),
-                          RaisedButton(
-                            child: Text('Check another Plate Number',
-                                style: TextStyle(fontSize: 16)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: RaisedButton(
+                              child: Text(
+                                  this.screenModeType ==
+                                          CheckPlateOrControlScreenModeType
+                                              .plate
+                                      ? 'Check another Plate Number'
+                                      : 'Check another Control Code',
+                                  style: TextStyle(fontSize: 16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(34.0),
+                              ),
+                              color: green300,
+                              textColor: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 20.0),
+                              onPressed: () => Navigator.pop(context),
                             ),
-                            color: green300,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                            onPressed: () => Navigator.pop(context),
                           ),
                           Padding(padding: EdgeInsets.only(top: 16.0)),
                           OutlineButton(
