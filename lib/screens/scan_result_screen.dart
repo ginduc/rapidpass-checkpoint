@@ -153,28 +153,29 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                         ),
                       ),
                       InkWell(
-                          onTap: () => Navigator.popUntil(
-                              context, ModalRoute.withName('/menu')),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 20.0),
-                            child: OutlineButton(
-                              borderSide: BorderSide(color: green300),
-                              focusColor: green300,
-                              child: Text('Return to checker page',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
-                              ),
-                              color: green300,
-                              textColor: green300,
-                              highlightedBorderColor: green300,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => Navigator.popUntil(
-                                  context, ModalRoute.withName('/menu')),
+                        onTap: () => Navigator.popUntil(
+                            context, ModalRoute.withName('/menu')),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 20.0),
+                          child: OutlineButton(
+                            borderSide: BorderSide(color: green300),
+                            focusColor: green300,
+                            child: Text('Return to checker page',
+                                style: TextStyle(fontSize: 16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(34.0),
                             ),
-                          )),
+                            color: green300,
+                            textColor: green300,
+                            highlightedBorderColor: green300,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 20.0),
+                            onPressed: () => Navigator.popUntil(
+                                context, ModalRoute.withName('/menu')),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
