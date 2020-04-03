@@ -134,7 +134,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                           ),
                         ),
                       ),
-                    if (widget.scanResults.isValid() == true)
+                      if (widget.scanResults.isValid() == true)
+                      Padding(padding: EdgeInsets.only(top: 16.0)),
                       InkWell(
                         onTap: () => _scanAndNavigate(context),
                         child: Container(
