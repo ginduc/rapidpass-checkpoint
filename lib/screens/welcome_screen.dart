@@ -64,7 +64,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
       child: Scaffold(
         backgroundColor: deepPurple600,
         body: Container(
-          margin: const EdgeInsets.symmetric(vertical: 48.0),
+          margin: const EdgeInsets.symmetric(vertical: 40.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -76,13 +76,13 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 //       'Location: Lat${locationServiceProvider?.latitude}, Long: ${locationServiceProvider?.longitude}'),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: InkWell(
                     onDoubleTap: () =>
                         Navigator.of(context).push(CreditsScreen()),
                     borderRadius: BorderRadius.circular(100),
                     child: SvgPicture.asset(
-                    RapidAssetConstants.rapidPassLogo,
+                      RapidAssetConstants.rapidPassLogo,
                     ),
                   ),
                 ),
@@ -95,7 +95,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
                     textAlign: TextAlign.center),
                 Padding(
-                  padding: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.only(top: 28),
                   child: Text(
                     "Database updated as of\nMarch 29, 2020",
                     textAlign: TextAlign.center,
