@@ -145,6 +145,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                 RegExp("[a-zA-Z0-9]"))
                           ],
                           autofocus: true,
+                          onChanged: (String value) => setState(() {}),
                           validator: (String value) {
                             if (value.isEmpty) {
                               setState(() {
@@ -178,9 +179,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                   disabledColor: Colors.grey[300],
                   textColor: Colors.white,
                   padding: EdgeInsets.all(16.0),
-                  onPressed: _formFieldTextEditingController
-                              .value.text.length ==
-                          0
+                  onPressed: _formFieldTextEditingController.text.isEmpty
                       ? null
                       : () {
                           _formKey.currentState.validate();
