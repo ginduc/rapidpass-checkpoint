@@ -114,7 +114,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
                       CheckPlateOrControlScreenModeType.plate);
                 },
               );
-            case '/checkControlCode':
+            case '/checkControlNumber':
               return CupertinoPageRoute(
                 builder: (_) {
                   return CheckPlateOrControlScreen(
