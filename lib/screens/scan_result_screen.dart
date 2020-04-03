@@ -89,6 +89,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
             data: passResultsData,
             color: Colors.red,
             allRed: widget.scanResults.allRed,
+            headerOnly: widget.scanResults.resultSubMessage == 'QR CODE INVALID' ? true : false,
           );
     return Theme(
       data: Green.buildFor(context),

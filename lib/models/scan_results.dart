@@ -42,7 +42,7 @@ class ScanResults {
           .addError('ENTRY DENIED');
 
   ScanResults(this.qrData,
-      {this.resultMessage = 'ENTRY APPROVED', this.allRed = false});
+      {this.resultMessage = 'ENTRY APPROVED', this.allRed = false, String resultSubMessage});
 
   ScanResults addError(String errorMessage, {RapidPassField source}) {
     this.errors.add(ValidationError(errorMessage, source: source));
