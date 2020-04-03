@@ -6,7 +6,6 @@ import 'package:rapidpass_checkpoint/models/apor.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
-import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
@@ -89,37 +88,51 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
       child: Scaffold(
           appBar: AppBar(title: Text('Result')),
           body: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               child: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    card,
-                    const Padding(padding: EdgeInsets.only(top: 10.0)),
-                    Container(
-                      padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          if (scanResults.isValid() == true)
-                            RaisedButton(
-                              child: Text('View more info',
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0, vertical: 10.0),
+                      child: card,
+                    ),
+                    const SizedBox(height: 5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        if (scanResults.isValid() == true)
+                        InkWell(
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/viewMoreInfo'),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 13.0, horizontal: 20.0),
+                            child: OutlineButton(
+                              borderSide: BorderSide(color: green300),
+                              highlightedBorderColor: green300,
+                              focusColor: green300,
+                              child: Text('View More Information',
                                   style: TextStyle(fontSize: 16)),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
+                                borderRadius: BorderRadius.circular(30.0),
                               ),
                               color: green300,
-                              textColor: Colors.white,
+                              textColor: green300,
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
+                                horizontal: 16.0,
+                                vertical: 20.0,
+                              ),
                               onPressed: () =>
                                   Navigator.pushNamed(context, '/viewMoreInfo'),
                             ),
-                          if (scanResults.isValid() == true)
-                            Padding(padding: EdgeInsets.only(top: 16.0)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          ),
+                        ),
+                        if (scanResults.isValid() == true)
+                        Padding(padding: EdgeInsets.only(top: 16.0)),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                            child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                             child: RaisedButton(
                               child: Text(
                                   this.screenModeType ==
@@ -138,35 +151,38 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                               onPressed: () => Navigator.pop(context),
                             ),
                           ),
-                          Padding(padding: EdgeInsets.only(top: 16.0)),
-                          OutlineButton(
-                            borderSide: BorderSide(color: green300),
-                            focusColor: green300,
-                            child: Text('Return to checker page',
-                                style: TextStyle(fontSize: 16)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(34.0),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.popUntil(
+                          context, ModalRoute.withName('/menu')),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 20.0),
+                            child: OutlineButton(
+                              borderSide: BorderSide(color: green300),
+                              focusColor: green300,
+                              child: Text('Return to checker page',
+                                  style: TextStyle(fontSize: 16)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              color: green300,
+                              textColor: green300,
+                              highlightedBorderColor: green300,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 20.0),
+                              onPressed: () => Navigator.popUntil(
+                                  context, ModalRoute.withName('/menu')),
                             ),
-                            color: green300,
-                            textColor: green300,
-                            highlightedBorderColor: green300,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 20.0),
-                            onPressed: () => Navigator.popUntil(
-                                context, ModalRoute.withName('/menu')),
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        const SizedBox(height: 30)
+                      ],
                     ),
                   ],
                 ),
               ))),
     );
-  }
-
-  Future _scanAndNavigate(final BuildContext context) async {
-    final scanResults = await MainMenu.scanAndValidate(context);
-    Navigator.popAndPushNamed(context, '/scanResults', arguments: scanResults);
   }
 
   Future<AudioPlayer> playNotificationApproved() async {
