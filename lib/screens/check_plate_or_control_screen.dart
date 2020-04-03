@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -73,6 +74,26 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     }
   }
 
+  void _showInvalidControlNumberAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Control Number Invalid'),
+          content: Text(
+            'You\'ve entered an invalid Control Number. Kindly type again your number.',
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -134,21 +155,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               setState(() {
                                 _formHasErrors = false;
                               });
-                              final ScanResults scanResults =
-                                  (_screenModeType ==
-                                          CheckPlateOrControlScreenModeType
-                                              .plate)
-                                      ? PassValidationService.checkPlateNumber(
-                                          value)
-                                      : PassValidationService.checkControlCode(
-                                          value);
-                              final CheckPlateOrControlScreenResults
-                                  checkResults =
-                                  CheckPlateOrControlScreenResults(
-                                      _screenModeType, scanResults);
-                              Navigator.pushNamed(
-                                  context, '/checkPlateOrCodeResults',
-                                  arguments: checkResults);
                             }
                             return null;
                           },
@@ -172,15 +178,36 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                   disabledColor: Colors.grey[300],
                   textColor: Colors.white,
                   padding: EdgeInsets.all(16.0),
-                  onPressed: _formFieldTextEditingController.value.text.length == 0 ? null : () {
-                    _formKey.currentState.validate();
+                  onPressed: _formFieldTextEditingController
+                              .value.text.length ==
+                          0
+                      ? null
+                      : () {
+                          _formKey.currentState.validate();
 
-                    if (_formFieldTextEditingController.text ==
-                            _hardCodedValue &&
-                        !_formHasErrors) {
-                      // TODO: Add route to the success / invalid screen
-                    }
-                  },
+                          if (!_formHasErrors) {
+                            if (!ControlCode.isValid(
+                                _formFieldTextEditingController.text)) {
+                              _showInvalidControlNumberAlert(context);
+                              return;
+                            }
+
+                            final ScanResults scanResults = (_screenModeType ==
+                                    CheckPlateOrControlScreenModeType.plate)
+                                ? PassValidationService.checkPlateNumber(
+                                    _formFieldTextEditingController.text,
+                                  )
+                                : PassValidationService.checkControlCode(
+                                    _formFieldTextEditingController.text,
+                                  );
+                            final CheckPlateOrControlScreenResults
+                                checkResults = CheckPlateOrControlScreenResults(
+                                    _screenModeType, scanResults);
+                            Navigator.pushNamed(
+                                context, '/checkPlateOrCodeResults',
+                                arguments: checkResults);
+                          }
+                        },
                 ),
               ),
             ],
