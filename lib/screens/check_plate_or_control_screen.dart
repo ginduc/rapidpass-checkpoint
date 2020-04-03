@@ -94,6 +94,26 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     );
   }
 
+  void _showPlateNumberUnrigesteredNumberAlert(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text('Plate Number Unregistered'),
+          content: Text(
+            'The Vehicle\'s Plate Number is not yet registered to the app.',
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -183,6 +203,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           _formKey.currentState.validate();
 
                           if (!_formHasErrors) {
+                            /*
                             if (!ControlCode.isValid(
                                     _formFieldTextEditingController.text) &&
                                 _screenModeType ==
@@ -205,6 +226,39 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                             Navigator.pushNamed(
                                 context, '/checkPlateOrCodeResults',
                                 arguments: checkResults);
+                             */
+                            ScanResults scanResults;
+                            CheckPlateOrControlScreenResults checkResults;
+
+                            if (_screenModeType ==
+                                CheckPlateOrControlScreenModeType.plate) {
+                              scanResults =
+                                  PassValidationService.checkPlateNumber(
+                                      _formFieldTextEditingController.text);
+                              if (scanResults.allRed) {
+                                _showPlateNumberUnrigesteredNumberAlert(context);
+                                return;
+                              }
+                            } else if (_screenModeType ==
+                                CheckPlateOrControlScreenModeType.control) {
+                              if (!ControlCode.isValid(
+                                  _formFieldTextEditingController.text)) {
+                                _showInvalidControlNumberAlert(context);
+                                return;
+                              }
+                              scanResults =
+                                  PassValidationService.checkControlCode(
+                                      _formFieldTextEditingController.text);
+                            }
+
+                            checkResults = CheckPlateOrControlScreenResults(
+                                _screenModeType, scanResults);
+
+                            Navigator.pushNamed(
+                              context,
+                              '/checkPlateOrCodeResults',
+                              arguments: checkResults,
+                            );
                           }
                         },
                 ),
