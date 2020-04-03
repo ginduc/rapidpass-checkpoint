@@ -20,13 +20,15 @@ class PassResultsCard extends StatelessWidget {
   final List<PassResultsTableRow> data;
   final Color color;
   final bool allRed;
+  final bool headerOnly;
   const PassResultsCard(
       {this.iconName,
       this.headerText,
       this.subHeaderText,
       this.data,
       this.color,
-      this.allRed = false});
+      this.allRed = false,
+      this.headerOnly = true});
 
   @override
   Widget build(BuildContext context) {
@@ -89,10 +91,14 @@ class PassResultsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
               Container(
+                padding: this.headerOnly ? EdgeInsets.symmetric(vertical: 80.0) : null,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(borderRadius),
-                      topRight: Radius.circular(borderRadius)),
+                      topRight: Radius.circular(borderRadius),
+                      bottomLeft: Radius.circular(this.headerOnly ? borderRadius : 0),
+                      bottomRight: Radius.circular(this.headerOnly ? borderRadius : 0),
+                  ),
                   color: this.color,
                 ),
                 child: Padding(
@@ -133,6 +139,7 @@ class PassResultsCard extends StatelessWidget {
                   ),
                 ),
               ),
+              if (!this.headerOnly)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Padding(
