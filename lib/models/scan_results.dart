@@ -12,7 +12,7 @@ enum RapidPassField {
 
 final fieldNames = {
   RapidPassField.passType: 'Pass Type',
-  RapidPassField.controlCode: 'Control Code',
+  RapidPassField.controlCode: 'Control Number',
   RapidPassField.apor: 'APOR',
   RapidPassField.validFrom: 'Valid From',
   RapidPassField.validUntil: 'Valid Until',

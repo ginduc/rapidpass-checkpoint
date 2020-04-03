@@ -169,9 +169,10 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                     borderRadius: BorderRadius.circular(24.0),
                   ),
                   color: green300,
+                  disabledColor: Colors.grey[300],
                   textColor: Colors.white,
                   padding: EdgeInsets.all(16.0),
-                  onPressed: () {
+                  onPressed: _formFieldTextEditingController.value.text.length == 0 ? null : () {
                     _formKey.currentState.validate();
 
                     if (_formFieldTextEditingController.text ==

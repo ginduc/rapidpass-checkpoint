@@ -11,7 +11,7 @@ class ViewMoreInfoScreen extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: EdgeInsets.only(top: 24.0),
-          child: Text("Control Code"),
+          child: Text("Control Number"),
         ),
       ),
     );

@@ -126,7 +126,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                                           CheckPlateOrControlScreenModeType
                                               .plate
                                       ? 'Check another Plate Number'
-                                      : 'Check another Control Code',
+                                      : 'Check another Control Number',
                                   style: TextStyle(fontSize: 16)),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(34.0),

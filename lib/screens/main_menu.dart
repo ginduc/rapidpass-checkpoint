@@ -103,11 +103,11 @@ class MainMenu extends StatelessWidget {
             },
           ),
           RapidMainMenuButton(
-            title: 'Control Code',
+            title: 'Control Number',
             iconPath: RapidAssetConstants.icControlCode,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
             onPressed: () {
-              Navigator.pushNamed(context, '/checkControlCode');
+              Navigator.pushNamed(context, '/checkControlNumber');
             },
           ),
         ],
