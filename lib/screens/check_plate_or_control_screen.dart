@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
@@ -72,46 +73,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     } else {
       return "Check Control Number";
     }
-  }
-
-  void _showInvalidControlNumberAlert(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: Text('Control Number Invalid'),
-          content: Text(
-            'You\'ve entered an invalid Control Number. Kindly type again your number.',
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPlateNumberUnrigesteredNumberAlert(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: Text('Plate Number Unregistered'),
-          content: Text(
-            'The Vehicle\'s Plate Number is not yet registered to the app.',
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -203,30 +164,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           _formKey.currentState.validate();
 
                           if (!_formHasErrors) {
-                            /*
-                            if (!ControlCode.isValid(
-                                    _formFieldTextEditingController.text) &&
-                                _screenModeType ==
-                                    CheckPlateOrControlScreenModeType.control) {
-                              _showInvalidControlNumberAlert(context);
-                              return;
-                            }
-
-                            final ScanResults scanResults = (_screenModeType ==
-                                    CheckPlateOrControlScreenModeType.plate)
-                                ? PassValidationService.checkPlateNumber(
-                                    _formFieldTextEditingController.text,
-                                  )
-                                : PassValidationService.checkControlCode(
-                                    _formFieldTextEditingController.text,
-                                  );
-                            final CheckPlateOrControlScreenResults
-                                checkResults = CheckPlateOrControlScreenResults(
-                                    _screenModeType, scanResults);
-                            Navigator.pushNamed(
-                                context, '/checkPlateOrCodeResults',
-                                arguments: checkResults);
-                             */
                             ScanResults scanResults;
                             CheckPlateOrControlScreenResults checkResults;
 
@@ -236,14 +173,25 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                   PassValidationService.checkPlateNumber(
                                       _formFieldTextEditingController.text);
                               if (scanResults.allRed) {
-                                _showPlateNumberUnrigesteredNumberAlert(context);
+
+                                DialogHelper.showAlertDialog(
+                                  context,
+                                  title: 'Plate Number Unregistered',
+                                  message:
+                                      'The Vehicle\'s Plate Number is not yet registered to the app.',
+                                );
                                 return;
                               }
                             } else if (_screenModeType ==
                                 CheckPlateOrControlScreenModeType.control) {
                               if (!ControlCode.isValid(
                                   _formFieldTextEditingController.text)) {
-                                _showInvalidControlNumberAlert(context);
+                                DialogHelper.showAlertDialog(
+                                  context,
+                                  title: 'Control Number Invalid',
+                                  message:
+                                      'You\'ve entered an invalid Control Number. Kindly type again your number.',
+                                );
                                 return;
                               }
                               scanResults =
