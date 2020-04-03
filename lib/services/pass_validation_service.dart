@@ -25,8 +25,8 @@ class PassValidationService {
         return scanResults;
       } else {
         final sr =
-            ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
-        sr.addError('Invalid QR Data');
+          ScanResults(null, resultMessage: 'ENTRY DENIED', resultSubMessage: 'QR CODE INVALID', allRed: true);
+          sr.addError('Invalid QR Data');
         return sr;
       }
     } catch (e) {
