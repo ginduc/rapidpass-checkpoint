@@ -28,7 +28,7 @@ class PassResultsCard extends StatelessWidget {
       this.data,
       this.color,
       this.allRed = false,
-      this.headerOnly = true});
+      this.headerOnly = false});
 
   @override
   Widget build(BuildContext context) {
