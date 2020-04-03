@@ -187,7 +187,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
 
                           if (!_formHasErrors) {
                             if (!ControlCode.isValid(
-                                _formFieldTextEditingController.text)) {
+                                    _formFieldTextEditingController.text) &&
+                                _screenModeType ==
+                                    CheckPlateOrControlScreenModeType.control) {
                               _showInvalidControlNumberAlert(context);
                               return;
                             }
