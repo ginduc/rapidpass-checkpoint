@@ -97,8 +97,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final CheckPlateOrControlScreenArgs args =
-        ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
