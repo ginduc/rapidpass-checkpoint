@@ -6,9 +6,12 @@ class ControlCode {
 
   ControlCode(this.value);
 
+  int get checkDigit => Damm32.compute(this.value);
+
   @override
   String toString() {
-    return 'ControlCode($value)';
+    return crockford.encode(this.value).padLeft(7, '0') +
+        crockford.encode(checkDigit);
   }
 
   @override
