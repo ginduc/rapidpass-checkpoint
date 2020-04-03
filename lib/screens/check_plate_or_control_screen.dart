@@ -42,6 +42,18 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _formFieldTextEditingController.clear();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _formFieldTextEditingController.dispose();
+  }
+
   String _getAppBarText() {
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
