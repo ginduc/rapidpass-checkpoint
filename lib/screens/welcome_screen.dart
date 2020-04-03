@@ -2,14 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
-
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -23,7 +24,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
   // A list of required permissions to be accepted in order for app to properly run
   List<Permission> _requiredPermissions = [
     Permission.phone,
-    Permission.location
+    Permission.location,
+    Permission.camera
   ];
 
   // A flag to determined if app was navigated away (background) using openAppSettings()
@@ -62,7 +64,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
       child: Scaffold(
         backgroundColor: deepPurple600,
         body: Container(
-          margin: const EdgeInsets.symmetric(vertical: 48.0),
+          margin: const EdgeInsets.symmetric(vertical: 40.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,12 +76,13 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 //       'Location: Lat${locationServiceProvider?.latitude}, Long: ${locationServiceProvider?.longitude}'),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: InkWell(
-                    onDoubleTap: () => Navigator.of(context).push(CreditsScreen()),
+                    onDoubleTap: () =>
+                        Navigator.of(context).push(CreditsScreen()),
                     borderRadius: BorderRadius.circular(100),
-                    child: Image(
-                      image: const AssetImage("assets/rapidpass_logo.png"),
+                    child: SvgPicture.asset(
+                      RapidAssetConstants.rapidPassLogo,
                     ),
                   ),
                 ),
@@ -92,7 +95,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
                     textAlign: TextAlign.center),
                 Padding(
-                  padding: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.only(top: 28),
                   child: Text(
                     "Database updated as of\nMarch 29, 2020",
                     textAlign: TextAlign.center,
@@ -157,7 +160,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
     DialogHelper.showAlertDialog(context,
         title: 'Some permission was denied permanently',
         message:
-            'In order for the app to run properly, you must tap OPEN SETTINGS and grant the PHONE and LOCATION permission.',
+            'In order for the app to run properly, you must tap OPEN SETTINGS and grant the CAMERA, LOCATION, and PHONE permission.',
         dismissible: false,
         onWillPop: () async => false,
         cancelText: 'EXIT APP',

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
@@ -102,11 +103,11 @@ class MainMenu extends StatelessWidget {
             },
           ),
           RapidMainMenuButton(
-            title: 'Control Code',
+            title: 'Control Number',
             iconPath: RapidAssetConstants.icControlCode,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
             onPressed: () {
-              Navigator.pushNamed(context, '/checkControlCode');
+              Navigator.pushNamed(context, '/checkControlNumber');
             },
           ),
         ],
@@ -116,38 +117,20 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
-    if (scanResults != null) {
+    if (scanResults is ScanResults) {
       Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
     }
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
-    final base64Encoded = await Navigator.pushNamed(context, '/scanQrCode');
-    if (base64Encoded != null) {
-      return PassValidationService.deserializeAndValidate(base64Encoded);
+    try {
+      final String base64Encoded = await BarcodeScanner.scan();
+      if (base64Encoded != null) {
+        return PassValidationService.deserializeAndValidate(base64Encoded);
+      }
+    } catch (e) {
+      debugPrint('Error occured: $e');
     }
-  }
-
-  static void _showDialog(BuildContext context, {String title, String body}) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(body),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    return null;
   }
 }
