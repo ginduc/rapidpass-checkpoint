@@ -133,8 +133,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                           maxLengthEnforced: true,
                           inputFormatters: [
                             WhitelistingTextInputFormatter(
-                                RegExp("[a-zA-Z0-9]"))
+                                RegExp("[A-Z0-9]"))
                           ],
+                          textCapitalization: TextCapitalization.characters,
                           autofocus: true,
                           onChanged: (String value) => setState(() {}),
                           validator: (String value) {
