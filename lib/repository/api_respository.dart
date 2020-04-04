@@ -1,16 +1,19 @@
+import 'package:flutter/cupertino.dart';
+import 'package:meta/meta.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
-import 'package:meta/meta.dart';
 
 abstract class IApiRepository {
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum);
   Future<void> registerDevice();
   Future<void> getRegisteredDeviceDetails(String deviceId);
-  Future<void> getBatchPasses();
+  Future<void> batchDownloadAndInsertPasses();
   Future<void> getBatchPass(String refId);
   Future<void> getQrCode(String refId);
   Future<void> verifyPlateNumber(String plateNumber);
-  Future<void> verifyControlNumber(String controlNumber);
+  Future<void> verifyControlNumber(int controlNumber);
 }
 
 class ApiRepository extends IApiRepository {
@@ -35,9 +38,29 @@ class ApiRepository extends IApiRepository {
   }
 
   @override
-  Future<void> getBatchPasses() {
-    // TODO: implement getBatchPasses
-    return apiService.getBatchPasses();
+  Future<void> batchDownloadAndInsertPasses() async {
+    final int before = await localDatabaseService.countPasses();
+    debugPrint('before: $before');
+    try {
+      final companions = await apiService.getBatchPasses();
+      companions.forEach((companion) async {
+        var controlCodeNumber = companion.controlCode.value;
+        final validPass = await localDatabaseService
+            .getValidPassByIntegerControlCode(controlCodeNumber);
+        if (validPass == null) {
+          debugPrint(
+              "Control code ${ControlCode.encode(controlCodeNumber)} not found in local database, inserting...");
+          await localDatabaseService.insertValidPass(companion);
+        } else {
+          debugPrint(
+              "Control code ${ControlCode.encode(controlCodeNumber)} already found in local database, skipping...");
+        }
+      });
+    } catch (e) {
+      debugPrint(e);
+    }
+    final int after = await localDatabaseService.countPasses();
+    debugPrint('after: $after');
   }
 
   @override
@@ -59,9 +82,9 @@ class ApiRepository extends IApiRepository {
   }
 
   @override
-  Future<void> verifyControlNumber(String controlNumber) {
-    // TODO: implement verifyControlNumber
-    return apiService.verifyControlNumber(controlNumber);
+  Future<ValidPass> verifyControlNumber(int controlCodeNumber) async {
+    return localDatabaseService
+        .getValidPassByIntegerControlCode(controlCodeNumber);
   }
 
   @override
