@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -41,6 +43,18 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _formFieldTextEditingController.clear();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _formFieldTextEditingController.dispose();
+  }
+
   String _getAppBarText() {
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
@@ -76,8 +90,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final CheckPlateOrControlScreenArgs args =
-        ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -124,6 +136,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                                 RegExp("[a-zA-Z0-9]"))
                           ],
                           autofocus: true,
+                          onChanged: (String value) => setState(() {}),
                           validator: (String value) {
                             if (value.isEmpty) {
                               setState(() {
@@ -134,21 +147,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                               setState(() {
                                 _formHasErrors = false;
                               });
-                              final ScanResults scanResults =
-                                  (_screenModeType ==
-                                          CheckPlateOrControlScreenModeType
-                                              .plate)
-                                      ? PassValidationService.checkPlateNumber(
-                                          value)
-                                      : PassValidationService.checkControlCode(
-                                          value);
-                              final CheckPlateOrControlScreenResults
-                                  checkResults =
-                                  CheckPlateOrControlScreenResults(
-                                      _screenModeType, scanResults);
-                              Navigator.pushNamed(
-                                  context, '/checkPlateOrCodeResults',
-                                  arguments: checkResults);
                             }
                             return null;
                           },
@@ -172,15 +170,57 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
                   disabledColor: Colors.grey[300],
                   textColor: Colors.white,
                   padding: EdgeInsets.all(16.0),
-                  onPressed: _formFieldTextEditingController.value.text.length == 0 ? null : () {
-                    _formKey.currentState.validate();
+                  onPressed: _formFieldTextEditingController.text.isEmpty
+                      ? null
+                      : () {
+                          _formKey.currentState.validate();
 
-                    if (_formFieldTextEditingController.text ==
-                            _hardCodedValue &&
-                        !_formHasErrors) {
-                      // TODO: Add route to the success / invalid screen
-                    }
-                  },
+                          if (!_formHasErrors) {
+                            ScanResults scanResults;
+                            CheckPlateOrControlScreenResults checkResults;
+
+                            if (_screenModeType ==
+                                CheckPlateOrControlScreenModeType.plate) {
+                              scanResults =
+                                  PassValidationService.checkPlateNumber(
+                                      _formFieldTextEditingController.text);
+                              if (scanResults.allRed) {
+
+                                DialogHelper.showAlertDialog(
+                                  context,
+                                  title: 'Plate Number Unregistered',
+                                  message:
+                                      'The Vehicle\'s Plate Number is not yet registered to the app.',
+                                );
+                                return;
+                              }
+                            } else if (_screenModeType ==
+                                CheckPlateOrControlScreenModeType.control) {
+                              if (!ControlCode.isValid(
+                                  _formFieldTextEditingController.text)) {
+                                DialogHelper.showAlertDialog(
+                                  context,
+                                  title: 'Control Number Invalid',
+                                  message:
+                                      'You\'ve entered an invalid Control Number. Kindly type again your number.',
+                                );
+                                return;
+                              }
+                              scanResults =
+                                  PassValidationService.checkControlCode(
+                                      _formFieldTextEditingController.text);
+                            }
+
+                            checkResults = CheckPlateOrControlScreenResults(
+                                _screenModeType, scanResults);
+
+                            Navigator.pushNamed(
+                              context,
+                              '/checkPlateOrCodeResults',
+                              arguments: checkResults,
+                            );
+                          }
+                        },
                 ),
               ),
             ],
