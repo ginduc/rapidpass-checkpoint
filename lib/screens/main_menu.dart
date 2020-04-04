@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/repository/api_respository.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -136,7 +138,11 @@ class MainMenu extends StatelessWidget {
     );
   }
 
-  Future _updateDatabase(final BuildContext context) async {}
+  Future _updateDatabase(final BuildContext context) async {
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    await apiRepository.batchDownloadAndInsertPasses();
+  }
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);

@@ -41,7 +41,7 @@ class ControlCode {
   /// Base32 Crockford and a Damm check digit
   static String encode(final int controlCodeNumber) {
     return crockford.encode(controlCodeNumber).padLeft(7, '0') +
-        crockford.encode(controlCodeNumber);
+        crockford.encode(Damm32.compute(controlCodeNumber));
   }
 
   /// Decode a control code string into its numeric value

@@ -327,11 +327,8 @@ class $ValidPassesTable extends ValidPasses
   GeneratedIntColumn get controlCode =>
       _controlCode ??= _constructControlCode();
   GeneratedIntColumn _constructControlCode() {
-    return GeneratedIntColumn(
-      'control_code',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('control_code', $tableName, false,
+        $customConstraints: 'UNIQUE');
   }
 
   final VerificationMeta _issuedOnMeta = const VerificationMeta('issuedOn');

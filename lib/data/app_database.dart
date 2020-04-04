@@ -10,7 +10,7 @@ class ValidPasses extends Table {
 
   TextColumn get apor => text()();
 
-  IntColumn get controlCode => integer()();
+  IntColumn get controlCode => integer().customConstraint('UNIQUE')();
 
   IntColumn get issuedOn => integer()();
 

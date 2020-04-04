@@ -3,7 +3,12 @@ import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 
 abstract class ILocalDatabaseService {
-  Future<ValidPass> streamValidPass(final String controlCode);
+  Future<int> countPasses();
+  Future<ValidPass> streamValidPassByStringControlCode(
+      final String controlCode);
+  Future<ValidPass> streamValidPassByIntegerControlCode(
+      final int controlNumber);
+  Future<int> insertValidPass(final ValidPassesCompanion companion);
   void dispose();
 }
 
@@ -14,14 +19,30 @@ class LocalDatabaseService implements ILocalDatabaseService {
   LocalDatabaseService({@required this.appDatabase});
 
   @override
-  Future<ValidPass> streamValidPass(final String controlCode) {
-    final int controlCodeNumber = ControlCode.decode(controlCode);
-    return appDatabase.streamValidPass(controlCodeNumber).first;
+  Future<ValidPass> streamValidPassByStringControlCode(
+      final String controlCode) {
+    return streamValidPassByIntegerControlCode(ControlCode.decode(controlCode));
+  }
+
+  @override
+  Future<ValidPass> streamValidPassByIntegerControlCode(
+      final int controlCodeAsInt) {
+    return appDatabase.streamValidPass(controlCodeAsInt).first;
   }
 
   // Close and clear all expensive resources needed as this class gets killed.
   @override
   void dispose() async {
     await appDatabase.close();
+  }
+
+  @override
+  Future<int> insertValidPass(final ValidPassesCompanion companion) async {
+    return appDatabase.insertValidPass(companion);
+  }
+
+  @override
+  Future<int> countPasses() async {
+    return appDatabase.countPasses();
   }
 }

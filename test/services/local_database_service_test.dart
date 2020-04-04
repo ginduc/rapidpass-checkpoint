@@ -17,7 +17,6 @@ void main() {
     localDatabaseService.dispose();
   });
 
-
   final controlCodeNumber = ControlCode.decode('09TK6VJ2');
 
   ValidPassesCompanion createValidPassCompanion() {
@@ -36,7 +35,8 @@ void main() {
     test('streamValidPass works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
       database.insertValidPass(validPass);
-      final ValidPass actual = await localDatabaseService.streamValidPass('09TK6VJ2');
+      final ValidPass actual = await localDatabaseService
+          .streamValidPassByStringControlCode('09TK6VJ2');
       expect(actual.controlCode, equals(controlCodeNumber));
       expect(actual.passType, equals(0));
       expect(actual.validFrom, equals(1582992000));
