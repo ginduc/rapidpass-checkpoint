@@ -36,7 +36,7 @@ void main() {
       final ValidPassesCompanion validPass = createValidPassCompanion();
       database.insertValidPass(validPass);
       final ValidPass actual = await localDatabaseService
-          .streamValidPassByStringControlCode('09TK6VJ2');
+          .getValidPassByStringControlCode('09TK6VJ2');
       expect(actual.controlCode, equals(controlCodeNumber));
       expect(actual.passType, equals(0));
       expect(actual.validFrom, equals(1582992000));

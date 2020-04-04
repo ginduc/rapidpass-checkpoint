@@ -20,6 +20,7 @@ import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
@@ -66,6 +67,10 @@ class RapidPassCheckpointApp extends StatelessWidget {
             ),
             localDatabaseService: _localDatabaseService,
           ),
+        ),
+        ProxyProvider<ApiRepository, PassValidationService>(
+          update: (_, apiRepository, __) =>
+              PassValidationService(apiRepository),
         ),
         StreamProvider(
           create: (_) => LocationService().locationStream,

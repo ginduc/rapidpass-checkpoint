@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
@@ -12,7 +13,7 @@ abstract class IApiRepository {
   Future<void> getBatchPass(String refId);
   Future<void> getQrCode(String refId);
   Future<void> verifyPlateNumber(String plateNumber);
-  Future<void> verifyControlNumber(String controlNumber);
+  Future<void> verifyControlNumber(int controlNumber);
 }
 
 class ApiRepository extends IApiRepository {
@@ -45,7 +46,7 @@ class ApiRepository extends IApiRepository {
       companions.forEach((companion) async {
         var controlCodeNumber = companion.controlCode.value;
         final validPass = await localDatabaseService
-            .streamValidPassByIntegerControlCode(controlCodeNumber);
+            .getValidPassByIntegerControlCode(controlCodeNumber);
         if (validPass == null) {
           debugPrint(
               "Control code ${ControlCode.encode(controlCodeNumber)} not found in local database, inserting...");
@@ -81,9 +82,9 @@ class ApiRepository extends IApiRepository {
   }
 
   @override
-  Future<void> verifyControlNumber(String controlNumber) {
-    // TODO: implement verifyControlNumber
-    return apiService.verifyControlNumber(controlNumber);
+  Future<ValidPass> verifyControlNumber(int controlCodeNumber) async {
+    return localDatabaseService
+        .getValidPassByIntegerControlCode(controlCodeNumber);
   }
 
   @override

@@ -4,10 +4,8 @@ import 'package:rapidpass_checkpoint/models/control_code.dart';
 
 abstract class ILocalDatabaseService {
   Future<int> countPasses();
-  Future<ValidPass> streamValidPassByStringControlCode(
-      final String controlCode);
-  Future<ValidPass> streamValidPassByIntegerControlCode(
-      final int controlNumber);
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode);
+  Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
   Future<int> insertValidPass(final ValidPassesCompanion companion);
   void dispose();
 }
@@ -19,13 +17,12 @@ class LocalDatabaseService implements ILocalDatabaseService {
   LocalDatabaseService({@required this.appDatabase});
 
   @override
-  Future<ValidPass> streamValidPassByStringControlCode(
-      final String controlCode) {
-    return streamValidPassByIntegerControlCode(ControlCode.decode(controlCode));
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode) {
+    return getValidPassByIntegerControlCode(ControlCode.decode(controlCode));
   }
 
   @override
-  Future<ValidPass> streamValidPassByIntegerControlCode(
+  Future<ValidPass> getValidPassByIntegerControlCode(
       final int controlCodeAsInt) {
     return appDatabase.streamValidPass(controlCodeAsInt).first;
   }
