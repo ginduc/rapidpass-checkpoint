@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
 import 'package:path/path.dart' as p;
@@ -35,13 +34,12 @@ void main() {
 
 class RapidPassCheckpointApp extends StatelessWidget {
   // TODO: Create separate runnable environment for the main app
-  // REST
-  Client _client = Client();
-  String _rapidPassApiUrl = 'https://api.test.rapidpass.amihan.net/api/v1';
+  static String _rapidPassApiUrl =
+      'https://rapidpass-api.azurewebsites.net/api/v1/';
 
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
-  LocalDatabaseService _localDatabaseService = LocalDatabaseService(
+  final LocalDatabaseService _localDatabaseService = LocalDatabaseService(
     appDatabase: AppDatabase(LazyDatabase(() async {
       final dbFolder = await getDatabasesPath();
       final file = File(p.join(dbFolder, 'db.sqlite'));
@@ -64,7 +62,6 @@ class RapidPassCheckpointApp extends StatelessWidget {
         Provider(
           create: (_) => ApiRepository(
             apiService: ApiService(
-              client: _client,
               baseUrl: _rapidPassApiUrl,
             ),
             localDatabaseService: _localDatabaseService,

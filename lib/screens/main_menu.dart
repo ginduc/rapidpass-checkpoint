@@ -121,6 +121,7 @@ class MainMenu extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
                   debugPrint('Update Database pressed');
+                  _updateDatabase(context);
                 },
                 child: Text('Update Database',
                     style: TextStyle(
@@ -134,6 +135,8 @@ class MainMenu extends StatelessWidget {
       ),
     );
   }
+
+  Future _updateDatabase(final BuildContext context) async {}
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);

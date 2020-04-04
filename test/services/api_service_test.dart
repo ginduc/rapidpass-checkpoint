@@ -1,9 +1,10 @@
 import 'package:csv/csv.dart';
-import 'package:dio/dio.dart';
+import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:test/test.dart';
 import 'package:vcr/vcr.dart';
 
 void main() {
+  ApiService apiService;
   setUp(() {
     // noop
   });
@@ -12,19 +13,14 @@ void main() {
   });
 
   group('ApiService test group', () {
-    test('http.get', () async {
+    test('test getBatchPasses', () async {
+      final VcrAdapter adapter = VcrAdapter();
+      adapter.useCassette('batch/access-passes');
+      apiService = ApiService(
+          httpClientAdapter: adapter,
+          baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
       try {
-        VcrAdapter adapter = VcrAdapter();
-        Dio client = Dio();
-        client.httpClientAdapter = adapter;
-        adapter.useCassette('batch/access-passes');
-        Response response = await client.get(
-            'https://rapidpass-api.azurewebsites.net/api/v1/batch/access-passes?lastSyncOn=0&pageNumber=0&pageSize=10');
-        print(response.data['meta']);
-        final csv = response.data['csv'];
-        final list = CsvToListConverter(eol: '\n').convert(csv);
-        print(list[0]);
-        print(list.length);
+        await apiService.getBatchPasses();
       } catch (e) {
         print(e);
       }
