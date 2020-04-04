@@ -92,7 +92,7 @@ class MainMenu extends StatelessWidget {
             title: 'Scan QR Code',
             iconPath: RapidAssetConstants.icQrCode,
             iconPathInverted: RapidAssetConstants.icQrCodeWhite,
-            onPressed: () => _scanAndNavigate(context),
+            onPressed: () => Navigator.pushNamed(context, '/scannerScreen'),
           ),
           RapidMainMenuButton(
             title: 'Plate Number',

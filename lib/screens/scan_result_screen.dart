@@ -95,7 +95,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                 ? true
                 : false,
           );
-    return Theme(
+    return WillPopScope(
+    onWillPop: _onBackPressed,
+    child: Theme(
       data: Green.buildFor(context),
       child: Scaffold(
         appBar: AppBar(title: Text('Result')),
@@ -142,7 +144,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                     if (widget.scanResults.isValid() == true)
                       Padding(padding: EdgeInsets.only(top: 16.0)),
                     InkWell(
-                      onTap: () => _scanAndNavigate(context),
+                      onTap: () => Navigator.popUntil(
+                          context, ModalRoute.withName('/')),
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             vertical: 15.0, horizontal: 20.0),
@@ -155,7 +158,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                           color: green300,
                           textColor: Colors.white,
                           padding: EdgeInsets.symmetric(vertical: 35.0),
-                          onPressed: () => _scanAndNavigate(context),
+                          onPressed: () => Navigator.pushNamed(context, '/scannerScreen'),
                         ),
                       ),
                     ),
@@ -193,7 +196,14 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
           ),
         ),
       ),
+      ),
     );
+  }
+
+  Future<bool> _onBackPressed() {
+
+    Navigator.pushNamed(context, '/menu');
+    return Future.value(false);
   }
 
   Future _scanAndNavigate(final BuildContext context) async {

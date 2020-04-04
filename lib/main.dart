@@ -11,6 +11,7 @@ import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart'
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
+import 'package:rapidpass_checkpoint/screens/scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
@@ -67,8 +68,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
         StreamProvider(
           create: (_) => LocationService().locationStream,
         ),
-      ],
-      child: MaterialApp(
+      ], 
+      child:MaterialApp(
         title: 'RapidPass Checkpoint',
         theme: ThemeData(
           primarySwatch: Colors.deepPurple,
@@ -129,6 +130,11 @@ class RapidPassCheckpointApp extends StatelessWidget {
             case '/viewMoreInfo':
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),
+                settings: settings,
+              );
+            case '/scannerScreen':
+              return CupertinoPageRoute(
+                builder: (_) => ScannerScreen(),
                 settings: settings,
               );
           }
