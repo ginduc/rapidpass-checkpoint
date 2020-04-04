@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class RapidMainMenuButton extends StatefulWidget {
   final String title;
@@ -58,11 +58,11 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
           Container(
             padding: const EdgeInsets.all(8.0),
             margin: EdgeInsets.only(
-              top: 16,
-              bottom: 16,
+              top: 10.0,
+              bottom: 10.0,
             ),
             child: SizedBox(
-              height: 90,
+              height: 120.0,
               width: size.width * 0.80,
               child: Container(
                 decoration: BoxDecoration(

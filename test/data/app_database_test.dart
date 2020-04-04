@@ -1,20 +1,19 @@
+import 'dart:developer';
+
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
-import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:test/test.dart';
 
 void main() {
   AppDatabase database;
-  LocalDatabaseService localDatabaseService;
 
   setUp(() {
     database = AppDatabase(VmDatabase.memory());
-    localDatabaseService = LocalDatabaseService(appDatabase: database);
   });
   tearDown(() async {
-    localDatabaseService.dispose();
+    // noop
   });
 
   final controlCodeNumber = ControlCode.decode('09TK6VJ2');
@@ -31,12 +30,32 @@ void main() {
     );
   }
 
-  group('LocalDatabaseService test group', () {
+  test('ValidPass.fromJson()', () {
+    final json = {
+      'apor': 'GR',
+      'controlCode': 383069708,
+      'idOrPlate': 'N02-10-017975',
+      'idType': 'PLT',
+      'issuedOn': 1585985763,
+      'passType': 1,
+      'status': 'APPROVED',
+      'validFrom': 1585986285,
+      'validUntil': 1586707199
+    };
+    final validPass = ValidPass.fromJson(json);
+    print(inspect(validPass));
+  });
+
+  group('AppDatabase test group', () {
+    test('insertValidPass works', () async {
+      final ValidPassesCompanion validPass = createValidPassCompanion();
+      database.insertValidPass(validPass);
+    });
     test('streamValidPass works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
       database.insertValidPass(validPass);
-      final ValidPass actual = await localDatabaseService
-          .getValidPassByStringControlCode('09TK6VJ2');
+      final ValidPass actual =
+          await database.streamValidPass(controlCodeNumber).first;
       expect(actual.controlCode, equals(controlCodeNumber));
       expect(actual.passType, equals(0));
       expect(actual.validFrom, equals(1582992000));
