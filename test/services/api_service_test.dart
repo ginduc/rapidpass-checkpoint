@@ -1,12 +1,17 @@
 import 'package:csv/csv.dart';
+import 'package:moor_ffi/moor_ffi.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:test/test.dart';
 import 'package:vcr/vcr.dart';
 
 void main() {
   ApiService apiService;
+
+  AppDatabase database;
+
   setUp(() {
-    // noop
+    database = AppDatabase(VmDatabase.memory());
   });
   tearDown(() async {
     // noop
@@ -19,11 +24,19 @@ void main() {
       apiService = ApiService(
           httpClientAdapter: adapter,
           baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
+      final int before = await database.countPasses();
+      print('before: $before');
       try {
-        await apiService.getBatchPasses();
+        final companions = await apiService.getBatchPasses();
+        companions.forEach((companion) async {
+          await database.insertValidPass(companion);
+        });
       } catch (e) {
         print(e);
       }
+      final int after = await database.countPasses();
+      print('after: $after');
+      expect(after, equals(before + 39));
     });
     test('csv decode', () {
       final rawCsv =

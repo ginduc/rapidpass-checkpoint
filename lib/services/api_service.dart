@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:csv/csv.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/data/pass_csv_to_json_converter.dart';
 
 abstract class IApiService {
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum);
@@ -21,7 +26,9 @@ class ApiService extends IApiService {
   ApiService({
     @required this.baseUrl,
     HttpClientAdapter httpClientAdapter,
-  }) : this.httpClientAdapter = httpClientAdapter != null ? httpClientAdapter : DefaultHttpClientAdapter();
+  }) : this.httpClientAdapter = httpClientAdapter != null
+            ? httpClientAdapter
+            : DefaultHttpClientAdapter();
 
   @override
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum) {
@@ -38,7 +45,7 @@ class ApiService extends IApiService {
   static const getBatchPassesPath = '/batch/access-passes';
 
   @override
-  Future<void> getBatchPasses() async {
+  Future<List<ValidPassesCompanion>> getBatchPasses() async {
     final Dio client = Dio(BaseOptions(
         baseUrl: baseUrl,
         connectTimeout: 5000,
@@ -46,13 +53,21 @@ class ApiService extends IApiService {
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
     final Response response = await client.get(getBatchPassesPath,
-        queryParameters: {'lastSyncOn': 0, 'pageNumber': 0, 'pageSize': 10});
-    print(response.data['meta']);
+        queryParameters: {'lastSyncOn': 0, 'pageNumber': 0, 'pageSize': 1000});
+    var metadata = response.data['meta'];
+    debugPrint('${inspect(metadata)}');
     final csv = response.data['csv'];
     final list = CsvToListConverter(eol: '\n').convert(csv);
-    print(list[0]);
-    print(list.length);
-    return null;
+    final listLength = list.length;
+    debugPrint('Got ${listLength - 1} rows...');
+    final List<String> headers = list[0].cast<String>().toList();
+    debugPrint('headers => $headers');
+    final passCsvToJsonConverter = PassCsvToJsonConverter(headers: headers);
+    return list.sublist(1, listLength).map((row) {
+      final json = passCsvToJsonConverter.convert(row);
+      final validPass = ValidPass.fromJson(json);
+      return validPass.createCompanion(true);
+    }).toList();
   }
 
   @override

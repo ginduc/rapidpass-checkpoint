@@ -8,17 +8,23 @@ class ValidPasses extends Table {
 
   IntColumn get passType => integer()();
 
+  TextColumn get apor => text()();
+
   IntColumn get controlCode => integer()();
+
+  IntColumn get issuedOn => integer()();
 
   IntColumn get validFrom => integer()();
 
   IntColumn get validUntil => integer()();
 
+  TextColumn get idType => text()();
+
   TextColumn get idOrPlate => text()();
 
-  TextColumn get company => text()();
+  TextColumn get company => text().nullable()();
 
-  TextColumn get homeAddress => text()();
+  TextColumn get homeAddress => text().nullable()();
 }
 
 @DataClassName('InvalidPass')
@@ -47,6 +53,11 @@ class AppDatabase extends _$AppDatabase {
         // TODO: Add implementation here when upgrading the db while on prod
       },
     );
+  }
+
+  Future<int> countPasses() async {
+    var list = (await select(validPasses).get());
+    return list.length;
   }
 
   Stream<ValidPass> streamValidPass(final int controlCode) {

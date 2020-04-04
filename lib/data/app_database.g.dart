@@ -10,21 +10,27 @@ part of 'app_database.dart';
 class ValidPass extends DataClass implements Insertable<ValidPass> {
   final int id;
   final int passType;
+  final String apor;
   final int controlCode;
+  final int issuedOn;
   final int validFrom;
   final int validUntil;
+  final String idType;
   final String idOrPlate;
   final String company;
   final String homeAddress;
   ValidPass(
       {@required this.id,
       @required this.passType,
+      @required this.apor,
       @required this.controlCode,
+      @required this.issuedOn,
       @required this.validFrom,
       @required this.validUntil,
+      @required this.idType,
       @required this.idOrPlate,
-      @required this.company,
-      @required this.homeAddress});
+      this.company,
+      this.homeAddress});
   factory ValidPass.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -34,12 +40,17 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       passType:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}pass_type']),
+      apor: stringType.mapFromDatabaseResponse(data['${effectivePrefix}apor']),
       controlCode: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}control_code']),
+      issuedOn:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}issued_on']),
       validFrom:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}valid_from']),
       validUntil: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}valid_until']),
+      idType:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}id_type']),
       idOrPlate: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}id_or_plate']),
       company:
@@ -54,9 +65,12 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
     return ValidPass(
       id: serializer.fromJson<int>(json['id']),
       passType: serializer.fromJson<int>(json['passType']),
+      apor: serializer.fromJson<String>(json['apor']),
       controlCode: serializer.fromJson<int>(json['controlCode']),
+      issuedOn: serializer.fromJson<int>(json['issuedOn']),
       validFrom: serializer.fromJson<int>(json['validFrom']),
       validUntil: serializer.fromJson<int>(json['validUntil']),
+      idType: serializer.fromJson<String>(json['idType']),
       idOrPlate: serializer.fromJson<String>(json['idOrPlate']),
       company: serializer.fromJson<String>(json['company']),
       homeAddress: serializer.fromJson<String>(json['homeAddress']),
@@ -68,9 +82,12 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'passType': serializer.toJson<int>(passType),
+      'apor': serializer.toJson<String>(apor),
       'controlCode': serializer.toJson<int>(controlCode),
+      'issuedOn': serializer.toJson<int>(issuedOn),
       'validFrom': serializer.toJson<int>(validFrom),
       'validUntil': serializer.toJson<int>(validUntil),
+      'idType': serializer.toJson<String>(idType),
       'idOrPlate': serializer.toJson<String>(idOrPlate),
       'company': serializer.toJson<String>(company),
       'homeAddress': serializer.toJson<String>(homeAddress),
@@ -84,15 +101,21 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       passType: passType == null && nullToAbsent
           ? const Value.absent()
           : Value(passType),
+      apor: apor == null && nullToAbsent ? const Value.absent() : Value(apor),
       controlCode: controlCode == null && nullToAbsent
           ? const Value.absent()
           : Value(controlCode),
+      issuedOn: issuedOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(issuedOn),
       validFrom: validFrom == null && nullToAbsent
           ? const Value.absent()
           : Value(validFrom),
       validUntil: validUntil == null && nullToAbsent
           ? const Value.absent()
           : Value(validUntil),
+      idType:
+          idType == null && nullToAbsent ? const Value.absent() : Value(idType),
       idOrPlate: idOrPlate == null && nullToAbsent
           ? const Value.absent()
           : Value(idOrPlate),
@@ -108,18 +131,24 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
   ValidPass copyWith(
           {int id,
           int passType,
+          String apor,
           int controlCode,
+          int issuedOn,
           int validFrom,
           int validUntil,
+          String idType,
           String idOrPlate,
           String company,
           String homeAddress}) =>
       ValidPass(
         id: id ?? this.id,
         passType: passType ?? this.passType,
+        apor: apor ?? this.apor,
         controlCode: controlCode ?? this.controlCode,
+        issuedOn: issuedOn ?? this.issuedOn,
         validFrom: validFrom ?? this.validFrom,
         validUntil: validUntil ?? this.validUntil,
+        idType: idType ?? this.idType,
         idOrPlate: idOrPlate ?? this.idOrPlate,
         company: company ?? this.company,
         homeAddress: homeAddress ?? this.homeAddress,
@@ -129,9 +158,12 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
     return (StringBuffer('ValidPass(')
           ..write('id: $id, ')
           ..write('passType: $passType, ')
+          ..write('apor: $apor, ')
           ..write('controlCode: $controlCode, ')
+          ..write('issuedOn: $issuedOn, ')
           ..write('validFrom: $validFrom, ')
           ..write('validUntil: $validUntil, ')
+          ..write('idType: $idType, ')
           ..write('idOrPlate: $idOrPlate, ')
           ..write('company: $company, ')
           ..write('homeAddress: $homeAddress')
@@ -145,22 +177,33 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       $mrjc(
           passType.hashCode,
           $mrjc(
-              controlCode.hashCode,
+              apor.hashCode,
               $mrjc(
-                  validFrom.hashCode,
+                  controlCode.hashCode,
                   $mrjc(
-                      validUntil.hashCode,
-                      $mrjc(idOrPlate.hashCode,
-                          $mrjc(company.hashCode, homeAddress.hashCode))))))));
+                      issuedOn.hashCode,
+                      $mrjc(
+                          validFrom.hashCode,
+                          $mrjc(
+                              validUntil.hashCode,
+                              $mrjc(
+                                  idType.hashCode,
+                                  $mrjc(
+                                      idOrPlate.hashCode,
+                                      $mrjc(company.hashCode,
+                                          homeAddress.hashCode)))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is ValidPass &&
           other.id == this.id &&
           other.passType == this.passType &&
+          other.apor == this.apor &&
           other.controlCode == this.controlCode &&
+          other.issuedOn == this.issuedOn &&
           other.validFrom == this.validFrom &&
           other.validUntil == this.validUntil &&
+          other.idType == this.idType &&
           other.idOrPlate == this.idOrPlate &&
           other.company == this.company &&
           other.homeAddress == this.homeAddress);
@@ -169,18 +212,24 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
 class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
   final Value<int> id;
   final Value<int> passType;
+  final Value<String> apor;
   final Value<int> controlCode;
+  final Value<int> issuedOn;
   final Value<int> validFrom;
   final Value<int> validUntil;
+  final Value<String> idType;
   final Value<String> idOrPlate;
   final Value<String> company;
   final Value<String> homeAddress;
   const ValidPassesCompanion({
     this.id = const Value.absent(),
     this.passType = const Value.absent(),
+    this.apor = const Value.absent(),
     this.controlCode = const Value.absent(),
+    this.issuedOn = const Value.absent(),
     this.validFrom = const Value.absent(),
     this.validUntil = const Value.absent(),
+    this.idType = const Value.absent(),
     this.idOrPlate = const Value.absent(),
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
@@ -188,34 +237,44 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
   ValidPassesCompanion.insert({
     this.id = const Value.absent(),
     @required int passType,
+    @required String apor,
     @required int controlCode,
+    @required int issuedOn,
     @required int validFrom,
     @required int validUntil,
+    @required String idType,
     @required String idOrPlate,
-    @required String company,
-    @required String homeAddress,
+    this.company = const Value.absent(),
+    this.homeAddress = const Value.absent(),
   })  : passType = Value(passType),
+        apor = Value(apor),
         controlCode = Value(controlCode),
+        issuedOn = Value(issuedOn),
         validFrom = Value(validFrom),
         validUntil = Value(validUntil),
-        idOrPlate = Value(idOrPlate),
-        company = Value(company),
-        homeAddress = Value(homeAddress);
+        idType = Value(idType),
+        idOrPlate = Value(idOrPlate);
   ValidPassesCompanion copyWith(
       {Value<int> id,
       Value<int> passType,
+      Value<String> apor,
       Value<int> controlCode,
+      Value<int> issuedOn,
       Value<int> validFrom,
       Value<int> validUntil,
+      Value<String> idType,
       Value<String> idOrPlate,
       Value<String> company,
       Value<String> homeAddress}) {
     return ValidPassesCompanion(
       id: id ?? this.id,
       passType: passType ?? this.passType,
+      apor: apor ?? this.apor,
       controlCode: controlCode ?? this.controlCode,
+      issuedOn: issuedOn ?? this.issuedOn,
       validFrom: validFrom ?? this.validFrom,
       validUntil: validUntil ?? this.validUntil,
+      idType: idType ?? this.idType,
       idOrPlate: idOrPlate ?? this.idOrPlate,
       company: company ?? this.company,
       homeAddress: homeAddress ?? this.homeAddress,
@@ -249,6 +308,18 @@ class $ValidPassesTable extends ValidPasses
     );
   }
 
+  final VerificationMeta _aporMeta = const VerificationMeta('apor');
+  GeneratedTextColumn _apor;
+  @override
+  GeneratedTextColumn get apor => _apor ??= _constructApor();
+  GeneratedTextColumn _constructApor() {
+    return GeneratedTextColumn(
+      'apor',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _controlCodeMeta =
       const VerificationMeta('controlCode');
   GeneratedIntColumn _controlCode;
@@ -258,6 +329,18 @@ class $ValidPassesTable extends ValidPasses
   GeneratedIntColumn _constructControlCode() {
     return GeneratedIntColumn(
       'control_code',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _issuedOnMeta = const VerificationMeta('issuedOn');
+  GeneratedIntColumn _issuedOn;
+  @override
+  GeneratedIntColumn get issuedOn => _issuedOn ??= _constructIssuedOn();
+  GeneratedIntColumn _constructIssuedOn() {
+    return GeneratedIntColumn(
+      'issued_on',
       $tableName,
       false,
     );
@@ -287,6 +370,18 @@ class $ValidPassesTable extends ValidPasses
     );
   }
 
+  final VerificationMeta _idTypeMeta = const VerificationMeta('idType');
+  GeneratedTextColumn _idType;
+  @override
+  GeneratedTextColumn get idType => _idType ??= _constructIdType();
+  GeneratedTextColumn _constructIdType() {
+    return GeneratedTextColumn(
+      'id_type',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _idOrPlateMeta = const VerificationMeta('idOrPlate');
   GeneratedTextColumn _idOrPlate;
   @override
@@ -307,7 +402,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'company',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -321,7 +416,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'home_address',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -329,9 +424,12 @@ class $ValidPassesTable extends ValidPasses
   List<GeneratedColumn> get $columns => [
         id,
         passType,
+        apor,
         controlCode,
+        issuedOn,
         validFrom,
         validUntil,
+        idType,
         idOrPlate,
         company,
         homeAddress
@@ -355,11 +453,23 @@ class $ValidPassesTable extends ValidPasses
     } else if (isInserting) {
       context.missing(_passTypeMeta);
     }
+    if (d.apor.present) {
+      context.handle(
+          _aporMeta, apor.isAcceptableValue(d.apor.value, _aporMeta));
+    } else if (isInserting) {
+      context.missing(_aporMeta);
+    }
     if (d.controlCode.present) {
       context.handle(_controlCodeMeta,
           controlCode.isAcceptableValue(d.controlCode.value, _controlCodeMeta));
     } else if (isInserting) {
       context.missing(_controlCodeMeta);
+    }
+    if (d.issuedOn.present) {
+      context.handle(_issuedOnMeta,
+          issuedOn.isAcceptableValue(d.issuedOn.value, _issuedOnMeta));
+    } else if (isInserting) {
+      context.missing(_issuedOnMeta);
     }
     if (d.validFrom.present) {
       context.handle(_validFromMeta,
@@ -373,6 +483,12 @@ class $ValidPassesTable extends ValidPasses
     } else if (isInserting) {
       context.missing(_validUntilMeta);
     }
+    if (d.idType.present) {
+      context.handle(
+          _idTypeMeta, idType.isAcceptableValue(d.idType.value, _idTypeMeta));
+    } else if (isInserting) {
+      context.missing(_idTypeMeta);
+    }
     if (d.idOrPlate.present) {
       context.handle(_idOrPlateMeta,
           idOrPlate.isAcceptableValue(d.idOrPlate.value, _idOrPlateMeta));
@@ -382,14 +498,10 @@ class $ValidPassesTable extends ValidPasses
     if (d.company.present) {
       context.handle(_companyMeta,
           company.isAcceptableValue(d.company.value, _companyMeta));
-    } else if (isInserting) {
-      context.missing(_companyMeta);
     }
     if (d.homeAddress.present) {
       context.handle(_homeAddressMeta,
           homeAddress.isAcceptableValue(d.homeAddress.value, _homeAddressMeta));
-    } else if (isInserting) {
-      context.missing(_homeAddressMeta);
     }
     return context;
   }
@@ -411,14 +523,23 @@ class $ValidPassesTable extends ValidPasses
     if (d.passType.present) {
       map['pass_type'] = Variable<int, IntType>(d.passType.value);
     }
+    if (d.apor.present) {
+      map['apor'] = Variable<String, StringType>(d.apor.value);
+    }
     if (d.controlCode.present) {
       map['control_code'] = Variable<int, IntType>(d.controlCode.value);
+    }
+    if (d.issuedOn.present) {
+      map['issued_on'] = Variable<int, IntType>(d.issuedOn.value);
     }
     if (d.validFrom.present) {
       map['valid_from'] = Variable<int, IntType>(d.validFrom.value);
     }
     if (d.validUntil.present) {
       map['valid_until'] = Variable<int, IntType>(d.validUntil.value);
+    }
+    if (d.idType.present) {
+      map['id_type'] = Variable<String, StringType>(d.idType.value);
     }
     if (d.idOrPlate.present) {
       map['id_or_plate'] = Variable<String, StringType>(d.idOrPlate.value);
