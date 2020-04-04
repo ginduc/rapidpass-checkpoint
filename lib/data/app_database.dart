@@ -55,6 +55,6 @@ class AppDatabase extends _$AppDatabase {
         .watchSingle();
   }
 
-  Future insertQrCode(final ValidPassesCompanion validPassesCompanion) =>
+  Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
       into(validPasses).insert(validPassesCompanion);
 }

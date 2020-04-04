@@ -1,5 +1,7 @@
+import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:test/test.dart';
 
@@ -15,100 +17,30 @@ void main() {
     localDatabaseService.dispose();
   });
 
+
+  final controlCodeNumber = ControlCode.decode('09TK6VJ2');
+
+  ValidPassesCompanion createValidPassCompanion() {
+    return ValidPassesCompanion(
+      controlCode: Value(controlCodeNumber),
+      passType: Value(0),
+      validFrom: Value(1582992000),
+      validUntil: Value(1588262400),
+      idOrPlate: Value('NAZ2070'),
+      company: Value('DCTx'),
+      homeAddress: Value('Manila'),
+    );
+  }
+
   group('LocalDatabaseService test group', () {
-    test('QrDataEntry can be created', () async {
-      // Arrange
-      final entry = QrDataEntry(
-        id: 1,
-        controlCode: 1,
-        validFrom: 1,
-        validUntil: 1,
-        idOrPlate: 1,
-        company: 'Malacañang',
-        homeAddress: "Manila",
-      );
-
-      // Act
-      final entryStored = await localDatabaseService.insertQrCode(entry);
-      final entryRetrieved =
-          await localDatabaseService.streamQrDataEntry(entryStored.id).first;
-
-      // Assert
-      expect(entryRetrieved, entry);
-    });
-
-    test('QrDataEntry can be updated', () async {
-      // Arrange
-      final entryOld = QrDataEntry(
-        id: 1, // Primary ID must be the same
-        controlCode: 1,
-        validFrom: 1,
-        validUntil: 1,
-        idOrPlate: 1,
-        company: 'Malacañang',
-        homeAddress: "Metro",
-      );
-
-      final entryNew = QrDataEntry(
-        id: 1, // Primary ID must be the same
-        controlCode: 2,
-        validFrom: 2,
-        validUntil: 2,
-        idOrPlate: 2,
-        company: 'Palace',
-        homeAddress: "Manila",
-      );
-
-      // Act
-      // Insert old record
-      await localDatabaseService.insertQrCode(entryOld);
-
-      // Update of the old record
-      final entryUpdatedNew = await localDatabaseService.updateQrCode(entryNew);
-      final entryUpdatedRetrieved = await localDatabaseService
-          .streamQrDataEntry(entryUpdatedNew.id)
-          .first;
-
-      // Assert
-      expect(
-        entryUpdatedRetrieved,
-        entryUpdatedNew,
-      );
-    });
-
-    test('QrDataEntry can be deleted', () async {
-      // Arrange
-      final entry = QrDataEntry(
-        id: 1, // Primary ID must be the same
-        controlCode: 1,
-        validFrom: 1,
-        validUntil: 1,
-        idOrPlate: 1,
-        company: 'Malacañang',
-        homeAddress: "Metro",
-      );
-
-      // Act
-      // Insert old record
-      final entryStored = await localDatabaseService.insertQrCode(entry);
-      final entryStoredInitially =
-          await localDatabaseService.streamQrDataEntry(entryStored.id).first;
-
-      // Delete the record
-      final entryDeleted = await localDatabaseService.deleteQrCode(entryStored);
-      final entryStoredAfterDeletion =
-          await localDatabaseService.streamQrDataEntry(entryStored.id).first;
-
-      // Assert
-      expect(entry, entryDeleted);
-      expect(
-        entryStoredInitially,
-        entry,
-      );
-      expect(
-        entryStoredAfterDeletion,
-        null,
-      );
+    test('streamValidPass works', () async {
+      final ValidPassesCompanion validPass = createValidPassCompanion();
+      database.insertValidPass(validPass);
+      final ValidPass actual = await localDatabaseService.streamValidPass('09TK6VJ2');
+      expect(actual.controlCode, equals(controlCodeNumber));
+      expect(actual.passType, equals(0));
+      expect(actual.validFrom, equals(1582992000));
+      expect(actual.validUntil, equals(1588262400));
     });
   });
 }

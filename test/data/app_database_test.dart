@@ -31,11 +31,11 @@ void main() {
   group('AppDatabase test group', () {
     test('insertValidPass works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
-      database.insertQrCode(validPass);
+      database.insertValidPass(validPass);
     });
     test('streamValidPass works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
-      database.insertQrCode(validPass);
+      database.insertValidPass(validPass);
       final ValidPass actual =
           await database.streamValidPass(controlCodeNumber).first;
       expect(actual.controlCode, equals(controlCodeNumber));
