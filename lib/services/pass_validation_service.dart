@@ -42,7 +42,7 @@ class PassValidationService {
     final DateTime now = DateTime.now();
     if (now.isBefore(qrData.validFromDateTime())) {
       results.resultMessage = 'ENTRY DENIED';
-      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
+      results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError(
           'Pass is only valid starting on ${qrData.validFromDisplayDate()}',
           source: RapidPassField.validFrom);
