@@ -89,7 +89,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
             data: passResultsData,
             color: Colors.red,
             allRed: widget.scanResults.allRed,
-            headerOnly: widget.scanResults.resultSubMessage == 'QR CODE INVALID' ? true : false,
+            headerOnly: widget.scanResults.resultSubMessage == 'QR CODE INVALID'
+                ? true
+                : false,
           );
     return Theme(
       data: Green.buildFor(context),
@@ -135,26 +137,26 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                           ),
                         ),
                       ),
-                      if (widget.scanResults.isValid() == true)
+                    if (widget.scanResults.isValid() == true)
                       Padding(padding: EdgeInsets.only(top: 16.0)),
-                      InkWell(
-                        onTap: () => _scanAndNavigate(context),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 20.0),
-                          child: FlatButton(
-                            child: Text('Scan another QR',
-                                style: TextStyle(fontSize: 16)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            color: green300,
-                            textColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 35.0),
-                            onPressed: () => _scanAndNavigate(context),
+                    InkWell(
+                      onTap: () => _scanAndNavigate(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 20.0),
+                        child: FlatButton(
+                          child: Text('Scan another QR',
+                              style: TextStyle(fontSize: 16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
                           ),
+                          color: green300,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 35.0),
+                          onPressed: () => _scanAndNavigate(context),
                         ),
                       ),
+                    ),
                     InkWell(
                       onTap: () => Navigator.popUntil(
                           context, ModalRoute.withName('/menu')),
@@ -194,6 +196,10 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
+    if (scanResults == null) {
+      Navigator.popUntil(context, ModalRoute.withName("/menu"));
+      return;
+    }
     if (scanResults is ScanResults) {
       Navigator.popAndPushNamed(context, '/scanResults',
           arguments: scanResults);
