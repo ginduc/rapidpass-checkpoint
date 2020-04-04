@@ -32,10 +32,11 @@ class DeviceInfoModel extends ChangeNotifier {
     //_imei = await ImeiPlugin.getImei();
 
     // refactor or crash detection suggestion welcome
+    // SharedPreferences survived app update, not survived data on app uninstall.
+    // maybe we can use sqflite or moor
 
     if (Platform.isAndroid) {
-      final prefs = await SharedPreferences
-          .getInstance(); // it survived app update, not survived data on app uninstall.
+      final prefs = await SharedPreferences.getInstance();
 
       AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
 
@@ -49,6 +50,7 @@ class DeviceInfoModel extends ChangeNotifier {
       } else {
         debugPrint("No IMEI found, query for one");
 
+        // _imei = (sdkInt < 29 && sdkInt >= 26) // to handle ticket #20
         _imei = (sdkInt < 29)
             ? await ImeiPlugin.getImei()
             : IMEIGenerator.generateIMEI();
