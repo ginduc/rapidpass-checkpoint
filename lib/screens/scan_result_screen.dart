@@ -201,7 +201,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
   Future<bool> _onBackPressed() {
 
-    Navigator.pushNamed(context, '/menu');
+    Navigator.pushNamed(context, '/scannerScreen');
     return Future.value(false);
   }
 
