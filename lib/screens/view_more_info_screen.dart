@@ -23,6 +23,10 @@ class ViewMoreInfoScreen extends StatelessWidget {
                     title: 'OAH981JK',
                   ),
                   InfoDetails(
+                    subtitle: 'Plate Number',
+                    title: 'AOZ 1531',
+                  ),
+                  InfoDetails(
                     subtitle: 'Access Type',
                     title: 'Medical Services',
                   ),
@@ -73,7 +77,11 @@ class ViewMoreInfoScreen extends StatelessWidget {
                   SectionDivider(),
                   SectionHeading('Origin'),
                   InfoDetails(
-                    subtitle: 'St. Jude Street',
+                    subtitle: 'Street',
+                    title: 'St. Jude Street',
+                  ),
+                  InfoDetails(
+                    subtitle: 'City',
                     title: 'Quezon City',
                   ),
                   InfoDetails(
