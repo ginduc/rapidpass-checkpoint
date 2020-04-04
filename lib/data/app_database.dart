@@ -1,11 +1,12 @@
 import 'package:moor/moor.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('QrDataEntry')
-class QrData extends Table {
+@DataClassName('ValidPass')
+class ValidPasses extends Table {
   IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get passType => integer()();
 
   IntColumn get controlCode => integer()();
 
@@ -13,14 +14,23 @@ class QrData extends Table {
 
   IntColumn get validUntil => integer()();
 
-  IntColumn get idOrPlate => integer()();
+  TextColumn get idOrPlate => text()();
 
   TextColumn get company => text()();
 
   TextColumn get homeAddress => text()();
 }
 
-@UseMoor(tables: [QrData])
+@DataClassName('InvalidPass')
+class InvalidPasses extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get controlCode => integer()();
+
+  TextColumn get status => text()();
+}
+
+@UseMoor(tables: [ValidPasses, InvalidPasses])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
@@ -39,17 +49,12 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<List<QrDataEntry>> getAllQrData() => select(qrData).get();
-
-  Stream<List<QrDataEntry>> streamQrData() => select(qrData).watch();
-
-  Stream<QrDataEntry> streamQrDataEntry(int id) {
-    return (select(qrData)..where((u) => u.id.equals(id))).watchSingle();
+  Stream<ValidPass> streamValidPass(final int controlCode) {
+    return (select(validPasses)
+          ..where((u) => u.controlCode.equals(controlCode)))
+        .watchSingle();
   }
 
-  Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
-
-  Future updateQrCode(QrDataEntry entry) => update(qrData).replace(entry);
-
-  Future deleteQrCode(QrDataEntry entry) => delete(qrData).delete(entry);
+  Future insertQrCode(final ValidPassesCompanion validPassesCompanion) =>
+      into(validPasses).insert(validPassesCompanion);
 }
