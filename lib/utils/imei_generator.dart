@@ -1,8 +1,10 @@
-// quick dirty code, please enhance if needed
+// please enhance if needed
 
 import 'dart:math';
 
 class IMEIGenerator {
+  // https://en.wikipedia.org/wiki/Luhn_algorithm
+
   static int luhnChecksum(String digits) {
     int sum = 0;
     int length = digits.length;
@@ -35,6 +37,6 @@ class IMEIGenerator {
 
     int checkdigit = (checksum == 0) ? 0 : 10 - checksum;
 
-    return digits + checkdigit.toString(); // generated imei with checkdigit
+    return digits + checkdigit.toString(); // return 15digits imei including checkdigit
   }
 }

@@ -31,11 +31,11 @@ class DeviceInfoModel extends ChangeNotifier {
   Future<String> getImei() async {
     //_imei = await ImeiPlugin.getImei();
 
-    // refactor or crach detection suggestion welcome
+    // refactor or crash detection suggestion welcome
 
     if (Platform.isAndroid) {
       final prefs = await SharedPreferences
-          .getInstance(); // not survived data on uninstall
+          .getInstance(); // it survived app update, not survived data on app uninstall.
 
       AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
 
