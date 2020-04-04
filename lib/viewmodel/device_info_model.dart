@@ -43,7 +43,10 @@ class DeviceInfoModel extends ChangeNotifier {
 
       String storedIMEI = prefs.getString("IMEI");
 
-      if (storedIMEI == null) {
+      if (storedIMEI != null) {
+        debugPrint("Stored IMEI found");
+        _imei = storedIMEI;
+      } else {
         debugPrint("No IMEI found, query for one");
 
         _imei = (sdkInt < 29)
@@ -51,10 +54,6 @@ class DeviceInfoModel extends ChangeNotifier {
             : IMEIGenerator.generateIMEI();
 
         prefs.setString("IMEI", _imei); // Store it for future uses
-
-      } else {
-        debugPrint("Stored IMEI found");
-        _imei = storedIMEI;
       }
     }
 
