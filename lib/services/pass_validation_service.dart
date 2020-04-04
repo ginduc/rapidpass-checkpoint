@@ -55,7 +55,7 @@ class PassValidationService {
     }
     if (qrData.idOrPlate.isEmpty) {
       results.resultMessage = 'ENTRY DENIED';
-      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
+      results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError('Invalid Plate Number',
           source: RapidPassField.idOrPlate);
     }
