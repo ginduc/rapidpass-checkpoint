@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
 import 'package:rapidpass_checkpoint/utils/damm32.dart';
@@ -15,11 +16,22 @@ class QrData {
   final String idOrPlate;
   final int signature;
 
-  QrData(this.passType, this.apor, this.controlCode, this.validFrom,
-      this.validUntil, this.idOrPlate,
-      {this.signature});
+  QrData(
+      {@required this.passType,
+      @required this.apor,
+      @required this.controlCode,
+      @required this.validFrom,
+      @required this.validUntil,
+      @required this.idOrPlate,
+      this.signature});
 
-  static final QrData empty = QrData(null, '', 0, 0, 0, '');
+  static final QrData empty = QrData(
+      passType: null,
+      apor: '',
+      controlCode: 0,
+      validFrom: 0,
+      validUntil: 0,
+      idOrPlate: '');
 
   @override
   String toString() {

@@ -4,11 +4,15 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/repository/api_respository.dart';
 import 'package:rapidpass_checkpoint/utils/hmac_sha256.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
-import 'package:rapidpass_checkpoint/utils/skip32.dart';
 
 class PassValidationService {
+  final ApiRepository apiRepository;
+
+  PassValidationService(this.apiRepository);
+
   static ScanResults deserializeAndValidate(final String base64Encoded) {
     try {
       final decodedFromBase64 = base64.decode(base64Encoded);
@@ -25,14 +29,16 @@ class PassValidationService {
         return scanResults;
       } else {
         final sr =
-          ScanResults(null, resultMessage: 'ENTRY DENIED', resultSubMessage: 'QR CODE INVALID', allRed: true);
-          sr.addError('Invalid QR Data');
+            ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
+        sr.addError('Invalid QR Data');
         return sr;
       }
     } catch (e) {
       print(e.toString());
       final sr = ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
+      sr.resultSubMessage = 'QR CODE INVALID';
       sr.addError('Invalid QR Data');
+      print(sr.resultSubMessage);
       return sr;
     }
   }
@@ -40,9 +46,10 @@ class PassValidationService {
   static ScanResults validate(final QrData qrData) {
     final results = ScanResults(qrData);
     final DateTime now = DateTime.now();
+
     if (now.isBefore(qrData.validFromDateTime())) {
       results.resultMessage = 'ENTRY DENIED';
-      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
+      results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError(
           'Pass is only valid starting on ${qrData.validFromDisplayDate()}',
           source: RapidPassField.validFrom);
@@ -55,7 +62,7 @@ class PassValidationService {
     }
     if (qrData.idOrPlate.isEmpty) {
       results.resultMessage = 'ENTRY DENIED';
-      results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
+      results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError('Invalid Plate Number',
           source: RapidPassField.idOrPlate);
     }
@@ -66,7 +73,12 @@ class PassValidationService {
 
   static final knownPlateNumbers = {
     'NAZ2070': QrData(
-        PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
+        passType: PassType.Vehicle,
+        apor: 'PI',
+        controlCode: 329882482,
+        validFrom: 1582992000,
+        validUntil: 1588262400,
+        idOrPlate: 'NAZ2070')
   };
 
   static String normalizePlateNumber(final String plateNumber) {
@@ -82,15 +94,20 @@ class PassValidationService {
     }
   }
 
-  static final knownControlCodes = {
-    '09TK6VJ2': QrData(
-        PassType.Vehicle, 'PI', 329882482, 1582992000, 1588262400, 'NAZ2070')
-  };
-
-  static ScanResults checkControlCode(final String controlCode) {
+  Future<ScanResults> checkControlCode(final String controlCode) async {
     final String normalizedControlCode = controlCode.toUpperCase();
-    if (knownControlCodes.containsKey(normalizedControlCode)) {
-      return ScanResults(knownControlCodes[normalizedControlCode]);
+    final validPass = await apiRepository.localDatabaseService
+        .getValidPassByStringControlCode(normalizedControlCode);
+    if (validPass != null) {
+      final QrData qrData = QrData(
+          passType:
+              validPass.passType == 1 ? PassType.Vehicle : PassType.Individual,
+          apor: validPass.apor,
+          controlCode: validPass.controlCode,
+          validFrom: validPass.validFrom,
+          validUntil: validPass.validUntil,
+          idOrPlate: validPass.idOrPlate);
+      return ScanResults(qrData);
     } else {
       return ScanResults.invalidPass;
     }

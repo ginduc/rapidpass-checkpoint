@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/repository/api_respository.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -110,9 +112,36 @@ class MainMenu extends StatelessWidget {
               Navigator.pushNamed(context, '/checkControlNumber');
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: SizedBox(
+              height: 48.0,
+              width: 300.0,
+              child: RaisedButton(
+                color: green300,
+                shape: new RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0)),
+                onPressed: () {
+                  debugPrint('Update Database pressed');
+                  _updateDatabase(context);
+                },
+                child: Text('Update Database',
+                    style: TextStyle(
+                        // Not sure how to get rid of color: Colors.white here
+                        color: Colors.white,
+                        fontSize: 18.0)),
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  Future _updateDatabase(final BuildContext context) async {
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    await apiRepository.batchDownloadAndInsertPasses();
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
