@@ -110,6 +110,26 @@ class MainMenu extends StatelessWidget {
               Navigator.pushNamed(context, '/checkControlNumber');
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+            child: SizedBox(
+              height: 48.0,
+              width: 300.0,
+              child: RaisedButton(
+                color: green300,
+                shape: new RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0)),
+                onPressed: () {
+                  debugPrint('Update Database pressed');
+                },
+                child: Text('Update Database',
+                    style: TextStyle(
+                        // Not sure how to get rid of color: Colors.white here
+                        color: Colors.white,
+                        fontSize: 18.0)),
+              ),
+            ),
+          ),
         ],
       ),
     );
