@@ -64,11 +64,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
       child: Scaffold(
         backgroundColor: deepPurple600,
         body: Container(
-          margin: const EdgeInsets.symmetric(vertical: 40.0),
+          margin: const EdgeInsets.only(top: 50.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // Sample implementation of the GPS Location
                 // Center(
@@ -101,37 +100,72 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    height: 48,
-                    width: 300.0,
-                    child: RaisedButton(
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0)),
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/menu");
-                      },
-                      child: Text("Start",
-                          style: TextStyle(
-                              // Not sure how to get rid of color: Colors.white here
-                              color: Colors.white,
-                              fontSize: 18.0)),
-                    ),
+                //Spacer(),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SizedBox(
+                          height: 48,
+                          width: 300.0,
+                          child: RaisedButton(
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0)),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/menu");
+                            },
+                            child: Text("Start",
+                                style: TextStyle(
+                                    // Not sure how to get rid of color: Colors.white here
+                                    color: Colors.white,
+                                    fontSize: 18.0)),
+                          ),
+                        ),
+                      ),
+                      Selector<DeviceInfoModel, String>(
+                        selector: (_, model) => model.imei,
+                        builder: (_, String imei, __) {
+                          if (imei == null) return Text('Retrieving IMEI...');
+                          return Text('IMEI: $imei');
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                Selector<DeviceInfoModel, String>(
-                  selector: (_, model) => model.imei,
-                  builder: (_, String imei, __) {
-                    if (imei == null) return Text('Retrieving IMEI...');
-                    return Text('IMEI: $imei');
-                  },
-                )
+                Container(
+                  height: 80,
+                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _buildFooter('About'),
+                      _buildFooter('FAQs'),
+                      _buildFooter('Contact Us'),
+                      _buildFooter('Privacy Policy'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFooter(String title) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, "/${title.replaceAll(' ', '_').toLowerCase()}"),
+      child: Text(
+        title,
+        style: TextStyle(
+            color: Colors.white70,
+            //fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0,
+            decoration: TextDecoration.underline),
       ),
     );
   }
