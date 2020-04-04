@@ -56,8 +56,10 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
           };
     final passResultsData = tableData.entries.map((e) {
       var field = e.key;
-      final String label = field == RapidPassField.idOrPlate
-          ? 'Plate Number'
+      final String label = (field == RapidPassField.idOrPlate)
+          ? (qrData?.passType == PassType.Vehicle)
+              ? 'Plate Number'
+              : 'ID Number'
           : getFieldName(field);
 
       String errorMessage;
