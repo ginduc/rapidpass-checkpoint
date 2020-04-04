@@ -45,7 +45,7 @@ class ContactUs extends StatelessWidget {
             SizedBox(height: 25),
             _buildSocial(
               ctx: context,
-              socialname: 'rapidrass-dctx@devcon.ph',
+              socialname: 'rapidpass-dctx@devcon.ph',
               socialIcon: FontAwesomeIcons.envelope,
             ),
             SizedBox(height: 15),
