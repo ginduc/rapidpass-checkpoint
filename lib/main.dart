@@ -35,7 +35,6 @@ class RapidPassCheckpointApp extends StatelessWidget {
   // REST
   Client _client = Client();
   String _rapidPassApiUrl = 'https://api.test.rapidpass.amihan.net/api/v1';
-
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
   LocalDatabaseService _localDatabaseService = LocalDatabaseService(

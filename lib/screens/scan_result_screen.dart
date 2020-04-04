@@ -24,7 +24,6 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
   @override
   void initState() {
     super.initState();
-
     if (widget.scanResults.isValid()) {
       _playNotificationApproved();
     } else {

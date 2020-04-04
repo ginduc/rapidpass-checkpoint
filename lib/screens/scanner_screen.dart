@@ -23,10 +23,8 @@ class _ScannerScreenState extends State<ScannerScreen> with TickerProviderStateM
     super.initState();
 
     _captureController.onCapture((data) {
-     
       if(scanned == false)
         validate(data);
-
     });
   }
 

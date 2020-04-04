@@ -115,6 +115,7 @@ class MainMenu extends StatelessWidget {
     );
   }
 
+
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await scanAndValidate(context);
     if (scanResults is ScanResults) {
