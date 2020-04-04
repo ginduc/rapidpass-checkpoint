@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:http/http.dart';
+import 'package:moor/moor.dart';
+import 'package:moor_ffi/moor_ffi.dart';
+import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/repository/api_respository.dart';
@@ -13,12 +18,11 @@ import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
-import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
-import 'package:http/http.dart';
+import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 import 'models/check_plate_or_control_args.dart';
 
@@ -38,9 +42,11 @@ class RapidPassCheckpointApp extends StatelessWidget {
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
   LocalDatabaseService _localDatabaseService = LocalDatabaseService(
-    appDatabase: AppDatabase(
-      FlutterQueryExecutor.inDatabaseFolder(path: databaseName),
-    ),
+    appDatabase: AppDatabase(LazyDatabase(() async {
+      final dbFolder = await getDatabasesPath();
+      final file = File(p.join(dbFolder, 'db.sqlite'));
+      return VmDatabase(file);
+    })),
   );
 
   // This widget is the root of your application.
