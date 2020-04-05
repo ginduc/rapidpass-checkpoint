@@ -9,9 +9,8 @@ class PrivacyPolicy extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: ListView(
-        // mainAxisAlignment: MainAxisAlignment.start,
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.fromLTRB(16, 25, 16, 0),
+        padding: EdgeInsets.fromLTRB(20, 25, 20, 25),
         children: <Widget>[
           Text(
             'We, at DevCon, respect your right to privacy and want you to understand how we collect, use, and share information ' +
