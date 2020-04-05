@@ -8,19 +8,17 @@ class ValidPasses extends Table {
 
   IntColumn get passType => integer()();
 
-  TextColumn get apor => text()();
+  TextColumn get apor => text().nullable()();
 
   IntColumn get controlCode => integer().customConstraint('UNIQUE')();
 
-  IntColumn get issuedOn => integer()();
+  IntColumn get validFrom => integer().nullable()();
 
-  IntColumn get validFrom => integer()();
+  IntColumn get validUntil => integer().nullable()();
 
-  IntColumn get validUntil => integer()();
+  TextColumn get idType => text().nullable()();
 
-  TextColumn get idType => text()();
-
-  TextColumn get idOrPlate => text()();
+  TextColumn get idOrPlate => text().nullable()();
 
   TextColumn get company => text().nullable()();
 
@@ -60,12 +58,22 @@ class AppDatabase extends _$AppDatabase {
     return list.length;
   }
 
-  Future<ValidPass> getValidPass(final int controlCode) {
-    return (select(validPasses)
+  Future<ValidPass> getValidPass(final int controlCode) async {
+    return await (select(validPasses)
           ..where((u) => u.controlCode.equals(controlCode)))
         .getSingle();
   }
 
   Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
       into(validPasses).insert(validPassesCompanion);
+
+  Future insertAll(final List<ValidPassesCompanion> forInsertion) {
+    return transaction(() {
+      List<Future> futures = List();
+      for (final vpc in forInsertion) {
+        futures.add(insertValidPass(vpc));
+      }
+      return Future.wait(futures);
+    });
+  }
 }

@@ -13,7 +13,8 @@ class HmacShac256 {
       return false;
     }
     final unsignedData = decodedFromBase64.sublist(0, length - 4);
-    final digest = computeSignature(Env.hmacSha256SigningKey, unsignedData);
+    final digest = computeSignature(
+        Uint8List.fromList(Env.hmacSha256SigningKey), unsignedData);
     final ffDigest = digest.bytes.sublist(0, 4);
     print('ffDigest: $ffDigest');
     final ffInput = decodedFromBase64.sublist(length - 4, length);
