@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
-import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -56,9 +53,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final UserLocation locationServiceProvider =
-        Provider.of<UserLocation>(context);
-
     return Theme(
       data: Purple.buildFor(context),
       child: Scaffold(
@@ -69,11 +63,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // Sample implementation of the GPS Location
-                // Center(
-                //   child: Text(
-                //       'Location: Lat${locationServiceProvider?.latitude}, Long: ${locationServiceProvider?.longitude}'),
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: InkWell(
@@ -100,7 +89,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     textAlign: TextAlign.center,
                   ),
                 ),
-                //Spacer(),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +106,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
                             },
                             child: Text("Start",
                                 style: TextStyle(
-                                    // Not sure how to get rid of color: Colors.white here
                                     color: Colors.white,
                                     fontSize: 18.0)),
                           ),
@@ -162,7 +149,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
         title,
         style: TextStyle(
             color: Colors.white70,
-            //fontSize: 12,
             fontWeight: FontWeight.w600,
             letterSpacing: 1.0,
             decoration: TextDecoration.underline),
