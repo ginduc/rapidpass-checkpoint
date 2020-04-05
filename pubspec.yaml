@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.16.0
   location: ^2.3.5
   moor: ^2.4.2
+  moor_flutter:
   moor_ffi: ^0.4.0
   mockito: ^4.1.1
   path_provider: ^1.6.5

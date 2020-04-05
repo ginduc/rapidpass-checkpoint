@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:meta/meta.dart';
+import 'package:moor/moor.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 
@@ -7,6 +10,7 @@ abstract class ILocalDatabaseService {
   Future<ValidPass> getValidPassByStringControlCode(final String controlCode);
   Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
   Future<int> insertValidPass(final ValidPassesCompanion companion);
+  Future bulkInsert(final List<ValidPassesCompanion> forInserting);
   void dispose();
 }
 
@@ -41,5 +45,23 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Future<int> countPasses() async {
     return appDatabase.countPasses();
+  }
+
+  @override
+  Future bulkInsert(final List<ValidPassesCompanion> forInserting) async {
+    final List<ValidPassesCompanion> noExisting = List();
+    await appDatabase.batch((batch) {
+      print('x: ${inspect(batch)} (${batch.runtimeType})');
+      for (final fi in forInserting) {
+        getValidPassByIntegerControlCode(fi.controlCode.value).then((existing) {
+          print('existing: $existing');
+          if (existing == null) {
+            noExisting.add(fi);
+          }
+        });
+      }
+    });
+    print('bulkInsert.noExisting: $noExisting (${noExisting.length})');
+    return await appDatabase.insertAll(noExisting);
   }
 }

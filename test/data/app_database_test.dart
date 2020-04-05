@@ -23,7 +23,6 @@ void main() {
       apor: Value('GO'),
       controlCode: Value(controlCodeNumber),
       passType: Value(0),
-      issuedOn: Value(1582992000),
       validFrom: Value(1582992000),
       validUntil: Value(1588262400),
       idType: Value('P'),
@@ -52,16 +51,23 @@ void main() {
   group('AppDatabase test group', () {
     test('insertValidPass works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
-      database.insertValidPass(validPass);
+      final res = await database.insertValidPass(validPass);
+      print('res: $res (${res.runtimeType})');
     });
-    test('getValidPas works', () async {
+    test('getValidPass works', () async {
+      final before = await database.countPasses();
+      print('before: $before (${before.runtimeType})');
       final ValidPassesCompanion validPass = createValidPassCompanion();
-      database.insertValidPass(validPass);
+      final res = await database.insertValidPass(validPass);
+      print('res: $res (${res.runtimeType})');
       final ValidPass actual = await database.getValidPass(controlCodeNumber);
       expect(actual.controlCode, equals(controlCodeNumber));
       expect(actual.passType, equals(0));
       expect(actual.validFrom, equals(1582992000));
       expect(actual.validUntil, equals(1588262400));
+      final after = await database.countPasses();
+      print('after: $after (${after.runtimeType})');
+      expect(after, equals(before + 1));
     });
   });
 }
