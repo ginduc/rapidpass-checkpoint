@@ -96,9 +96,12 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     textAlign: TextAlign.center),
                 Padding(
                   padding: EdgeInsets.only(top: 28),
-                  child: Text(
-                    "Database updated as of\nMarch 29, 2020",
-                    textAlign: TextAlign.center,
+                  child: InkWell(
+                    onTap: () => Navigator.pushNamed(context, '/updateDatabase'),
+                    child: Text(
+                      "Database updated as of\nMarch 29, 2020",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 Spacer(),
