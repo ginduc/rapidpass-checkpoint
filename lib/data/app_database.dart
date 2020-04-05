@@ -8,17 +8,17 @@ class ValidPasses extends Table {
 
   IntColumn get passType => integer()();
 
-  TextColumn get apor => text()();
+  TextColumn get apor => text().nullable()();
 
   IntColumn get controlCode => integer().customConstraint('UNIQUE')();
 
-  IntColumn get validFrom => integer()();
+  IntColumn get validFrom => integer().nullable()();
 
-  IntColumn get validUntil => integer()();
+  IntColumn get validUntil => integer().nullable()();
 
-  TextColumn get idType => text()();
+  TextColumn get idType => text().nullable()();
 
-  TextColumn get idOrPlate => text()();
+  TextColumn get idOrPlate => text().nullable()();
 
   TextColumn get company => text().nullable()();
 

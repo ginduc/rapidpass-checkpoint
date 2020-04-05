@@ -21,12 +21,12 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
   ValidPass(
       {@required this.id,
       @required this.passType,
-      @required this.apor,
+      this.apor,
       @required this.controlCode,
-      @required this.validFrom,
-      @required this.validUntil,
-      @required this.idType,
-      @required this.idOrPlate,
+      this.validFrom,
+      this.validUntil,
+      this.idType,
+      this.idOrPlate,
       this.company,
       this.homeAddress});
   factory ValidPass.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -220,21 +220,16 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
   ValidPassesCompanion.insert({
     this.id = const Value.absent(),
     @required int passType,
-    @required String apor,
+    this.apor = const Value.absent(),
     @required int controlCode,
-    @required int validFrom,
-    @required int validUntil,
-    @required String idType,
-    @required String idOrPlate,
+    this.validFrom = const Value.absent(),
+    this.validUntil = const Value.absent(),
+    this.idType = const Value.absent(),
+    this.idOrPlate = const Value.absent(),
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
   })  : passType = Value(passType),
-        apor = Value(apor),
-        controlCode = Value(controlCode),
-        validFrom = Value(validFrom),
-        validUntil = Value(validUntil),
-        idType = Value(idType),
-        idOrPlate = Value(idOrPlate);
+        controlCode = Value(controlCode);
   ValidPassesCompanion copyWith(
       {Value<int> id,
       Value<int> passType,
@@ -295,7 +290,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'apor',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -318,7 +313,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedIntColumn(
       'valid_from',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -330,7 +325,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedIntColumn(
       'valid_until',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -342,7 +337,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'id_type',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -354,7 +349,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'id_or_plate',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -419,8 +414,6 @@ class $ValidPassesTable extends ValidPasses
     if (d.apor.present) {
       context.handle(
           _aporMeta, apor.isAcceptableValue(d.apor.value, _aporMeta));
-    } else if (isInserting) {
-      context.missing(_aporMeta);
     }
     if (d.controlCode.present) {
       context.handle(_controlCodeMeta,
@@ -431,26 +424,18 @@ class $ValidPassesTable extends ValidPasses
     if (d.validFrom.present) {
       context.handle(_validFromMeta,
           validFrom.isAcceptableValue(d.validFrom.value, _validFromMeta));
-    } else if (isInserting) {
-      context.missing(_validFromMeta);
     }
     if (d.validUntil.present) {
       context.handle(_validUntilMeta,
           validUntil.isAcceptableValue(d.validUntil.value, _validUntilMeta));
-    } else if (isInserting) {
-      context.missing(_validUntilMeta);
     }
     if (d.idType.present) {
       context.handle(
           _idTypeMeta, idType.isAcceptableValue(d.idType.value, _idTypeMeta));
-    } else if (isInserting) {
-      context.missing(_idTypeMeta);
     }
     if (d.idOrPlate.present) {
       context.handle(_idOrPlateMeta,
           idOrPlate.isAcceptableValue(d.idOrPlate.value, _idOrPlateMeta));
-    } else if (isInserting) {
-      context.missing(_idOrPlateMeta);
     }
     if (d.company.present) {
       context.handle(_companyMeta,

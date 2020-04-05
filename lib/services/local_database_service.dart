@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:moor/moor.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
@@ -31,7 +32,10 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Future<ValidPass> getValidPassByIntegerControlCode(
       final int controlCodeAsInt) {
+    debugPrint(
+        'getValidPassByIntegerControlCode($controlCodeAsInt [${ControlCode.encode(controlCodeAsInt)}])');
     return appDatabase.getValidPass(controlCodeAsInt).then((validPass) async {
+      debugPrint('validPass: $validPass');
       if (validPass == null) {
         return null;
       } else {
@@ -58,6 +62,15 @@ class LocalDatabaseService implements ILocalDatabaseService {
 
   ValidPassesCompanion encryptIdOrPlate(
       final Uint8List encryptionKey, final ValidPassesCompanion companion) {
+    if (companion == null) {
+      return null;
+    }
+    debugPrint('companion.idOrPlate.value: ${companion?.idOrPlate?.value}');
+    if (companion.idOrPlate == null ||
+        companion.idOrPlate == Value.absent() ||
+        companion.idOrPlate.value == null) {
+      return companion.copyWith(idOrPlate: Value(''));
+    }
     final Uint8List plainText = utf8.encode(companion.idOrPlate.value);
     final Uint8List encrypted =
         Aes.encrypt(key: encryptionKey, plainText: plainText);
@@ -67,6 +80,12 @@ class LocalDatabaseService implements ILocalDatabaseService {
 
   ValidPass decryptIdOrPlate(
       final Uint8List encryptionKey, final ValidPass validPass) {
+    if (validPass == null) {
+      return validPass;
+    }
+    if (validPass.idOrPlate == null || validPass.idOrPlate.isEmpty) {
+      return validPass;
+    }
     final Uint8List cipherText = Base64Decoder().convert(validPass.idOrPlate);
     final Uint8List decrypted =
         Aes.decrypt(key: encryptionKey, cipherText: cipherText);

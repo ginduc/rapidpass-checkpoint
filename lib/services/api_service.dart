@@ -45,7 +45,7 @@ class ApiService extends IApiService {
     }
     final Dio client = Dio(BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 5000,
+        connectTimeout: 30000,
         receiveTimeout: 60000,
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
