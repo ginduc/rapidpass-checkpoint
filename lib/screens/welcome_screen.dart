@@ -123,9 +123,9 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       _buildFooter('About'),
                       _buildFooter('FAQs'),
