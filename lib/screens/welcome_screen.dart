@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_route_constants.dart';
 import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
@@ -111,7 +112,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       shape: new RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24.0)),
                       onPressed: () {
-                        Navigator.pushNamed(context, "/menu");
+                        Navigator.pushNamed(context, RapidPassRoutes.MENU);
                       },
                       child: Text("Start",
                           style: TextStyle(

@@ -4,6 +4,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_route_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
@@ -103,17 +104,15 @@ class MainMenu extends StatelessWidget {
             title: 'Plate Number',
             iconPath: RapidAssetConstants.icPlateNumber,
             iconPathInverted: RapidAssetConstants.icPlateNumberWhite,
-            onPressed: () {
-              Navigator.pushNamed(context, "/checkPlateNumber");
-            },
+            onPressed: () => Navigator.pushNamed(
+                context, RapidPassRoutes.CHECK_PLATE_NUMBER),
           ),
           RapidMainMenuButton(
             title: 'Control Number',
             iconPath: RapidAssetConstants.icControlCode,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
-            onPressed: () {
-              Navigator.pushNamed(context, '/checkControlNumber');
-            },
+            onPressed: () => Navigator.pushNamed(
+                context, RapidPassRoutes.CHECK_CONTROL_NUMBER),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0),

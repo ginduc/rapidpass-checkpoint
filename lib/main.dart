@@ -27,6 +27,7 @@ import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 import 'env.dart' as Env;
 import 'models/check_plate_or_control_args.dart';
+import 'package:rapidpass_checkpoint/common/constants/rapid_route_constants.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -95,50 +96,56 @@ class RapidPassCheckpointApp extends StatelessWidget {
             Theme.of(context).textTheme,
           ),
         ),
-        initialRoute: "/",
-        routes: {'/': (_) => WelcomeScreen()},
+        initialRoute: RapidPassRoutes.WELCOME_SCREEN,
+        routes: {RapidPassRoutes.WELCOME_SCREEN: (_) => WelcomeScreen()},
+
+        /// Similar to 404 not found.
+        onUnknownRoute: (settings) => CupertinoPageRoute(
+          builder: (_) => MainMenuScreen(),
+          settings: settings,
+        ),
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
-            case '/menu':
+            case RapidPassRoutes.WELCOME_SCREEN:
               return CupertinoPageRoute(
                 builder: (_) => MainMenuScreen(),
                 settings: settings,
               );
-            case '/scanResults':
+            case RapidPassRoutes.SCAN_RESULT_SCREEN:
               return CupertinoPageRoute(
                 builder: (_) => ScanResultScreen(settings.arguments),
                 settings: settings,
               );
-            case '/checkPlateOrCodeResults':
+            case RapidPassRoutes.CHECK_PLATE_OR_CODE_RESULTS:
               return CupertinoPageRoute(
                   builder: (_) =>
                       CheckPlateOrControlCodeResultsScreen(settings.arguments),
                   settings: settings);
-            case '/checkPlateNumber':
+            case RapidPassRoutes.CHECK_PLATE_NUMBER:
               return CupertinoPageRoute(
                 builder: (_) {
                   return CheckPlateOrControlScreen(
                       CheckPlateOrControlScreenModeType.plate);
                 },
               );
-            case '/checkControlNumber':
+            case RapidPassRoutes.CHECK_CONTROL_NUMBER:
               return CupertinoPageRoute(
                 builder: (_) {
                   return CheckPlateOrControlScreen(
                       CheckPlateOrControlScreenModeType.control);
                 },
               );
-            case '/scanQrCode':
+            case RapidPassRoutes.SCAN_QR_CODE:
               return CupertinoPageRoute(
                 builder: (_) => QrScannerScreen(),
                 settings: settings,
               );
-            case '/viewMoreInfo':
+            case RapidPassRoutes.VIEW_MORE_INFO:
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),
                 settings: settings,
               );
-            case '/about':
+            case RapidPassRoutes.ABOUT:
               return CupertinoPageRoute(
                 builder: (_) => About(),
               );
