@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:moor/moor.dart';
 
 class AppStorage {
   // Create storage
@@ -10,22 +11,23 @@ class AppStorage {
 
   static const _databaseEncryptionKeyKey = 'rapidPass.databaseEncryptionKey';
 
-  static Future<String> getDatabaseEncryptionKey() async {
+  static Future<Uint8List> getDatabaseEncryptionKey() async {
     return secureStorage.read(key: _databaseEncryptionKeyKey).then((value) {
       if (value != null) {
-        return value;
+        return Base64Codec().decode(value);
       } else {
-        final String key = generateRandomEncryptionKey();
+        final Uint8List key = _generateRandomEncryptionKey();
+        final String encodedKey = Base64Codec().encode(key);
         debugPrint('Generated key: $key');
-        secureStorage.write(key: _databaseEncryptionKeyKey, value: key);
+        secureStorage.write(key: _databaseEncryptionKeyKey, value: encodedKey);
         return key;
       }
     });
   }
 
-  static String generateRandomEncryptionKey() {
+  static Uint8List _generateRandomEncryptionKey() {
     final Random random = Random.secure();
-    var list = List<int>.generate(16, (i) => random.nextInt(256));
-    return Base64Codec().encode(list);
+    return Uint8List.fromList(
+        List<int>.generate(16, (i) => random.nextInt(256)));
   }
 }
