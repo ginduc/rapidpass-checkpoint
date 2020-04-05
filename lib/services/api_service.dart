@@ -12,11 +12,7 @@ import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 
 abstract class IApiService {
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum);
-  Future<void> registerDevice();
-  Future<void> getRegisteredDeviceDetails(String deviceId);
   Future<DatabaseSyncState> getBatchPasses(DatabaseSyncState state);
-  Future<void> getBatchPass(String refId);
-  Future<void> getQrCode(String refId);
   Future<void> verifyPlateNumber(String plateNumber);
   Future<void> verifyControlNumber(String controlNumber);
 }
@@ -35,12 +31,6 @@ class ApiService extends IApiService {
   @override
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum) {
     // TODO: implement authenticateDevice
-    return null;
-  }
-
-  @override
-  Future<void> getBatchPass(String refId) {
-    // TODO: implement getBatchPass
     return null;
   }
 
@@ -98,24 +88,6 @@ class ApiService extends IApiService {
     state.passesForInsert = validPasses;
     state.pageNumber = state.pageNumber + 1;
     return state;
-  }
-
-  @override
-  Future<void> getQrCode(String refId) {
-    // TODO: implement getQrCode
-    return null;
-  }
-
-  @override
-  Future<void> getRegisteredDeviceDetails(String deviceId) {
-    // TODO: implement getRegisteredDeviceDetails
-    return null;
-  }
-
-  @override
-  Future<void> registerDevice() {
-    // TODO: implement registerDevice
-    return null;
   }
 
   @override

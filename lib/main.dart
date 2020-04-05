@@ -9,10 +9,11 @@ import 'package:moor_ffi/moor_ffi.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
-import 'package:rapidpass_checkpoint/repository/api_respository.dart';
+import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/about_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
+import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
@@ -23,10 +24,10 @@ import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
-import 'package:rapidpass_checkpoint/urls.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
+import 'env.dart' as Env;
 import 'models/check_plate_or_control_args.dart';
 
 void main() {
@@ -50,7 +51,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    debugPrint('apiBaseUrl: $apiBaseUrl');
+    debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -63,7 +64,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
         Provider(
           create: (_) => ApiRepository(
             apiService: ApiService(
-              baseUrl: apiBaseUrl,
+              baseUrl: Env.apiBaseUrl,
             ),
             localDatabaseService: _localDatabaseService,
           ),
@@ -143,6 +144,10 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(
                 builder: (_) => UpdateDatabaseScreen(),
                 settings: settings,
+              );
+            case '/contact_us':
+              return CupertinoPageRoute(
+                builder: (_) => ContactUs(),
               );
             case '/about':
               return CupertinoPageRoute(
