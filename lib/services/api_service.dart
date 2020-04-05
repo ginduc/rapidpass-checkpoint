@@ -8,24 +8,7 @@ import 'package:meta/meta.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/data/pass_csv_to_json_converter.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
-
-class DatabaseSyncState {
-  final int lastSyncOn;
-  final int pageSize;
-  int totalPages = 0;
-  int totalRows = 0;
-  int pageNumber = 0;
-  int insertedRowsCount = 0;
-  String statusMessage;
-  Exception exception;
-  List<ValidPassesCompanion> passesForInsert = List();
-  DatabaseSyncState({@required this.lastSyncOn, this.pageSize = 100});
-
-  @override
-  String toString() {
-    return 'DatabaseSyncState(lastSyncOn: $lastSyncOn, pageSize: $pageSize, totalPages: $totalPages, totalRows: $totalRows, pageNumber: $pageNumber, insertedRowsCount: $insertedRowsCount)';
-  }
-}
+import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 
 abstract class IApiService {
   Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum);
@@ -66,6 +49,7 @@ class ApiService extends IApiService {
   @override
   Future<DatabaseSyncState> getBatchPasses(
       final DatabaseSyncState state) async {
+    debugPrint('state: ${state}');
     if (state.totalPages > 0 && state.pageNumber > state.totalPages) {
       state.passesForInsert = List();
       return state;
@@ -91,6 +75,9 @@ class ApiService extends IApiService {
     final csv = response.data['csv'];
     final list = CsvToListConverter(eol: '\n').convert(csv);
     final listLength = list.length;
+    if (list.length < 2) {
+      return state;
+    }
     debugPrint('Got ${listLength - 1} rows...');
     final List<String> headers = list[0].cast<String>().toList();
     debugPrint('headers => $headers');

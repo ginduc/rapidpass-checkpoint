@@ -1,6 +1,7 @@
 import 'package:csv/csv.dart';
 import 'package:moor_ffi/moor_ffi.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:test/test.dart';
 import 'package:vcr/vcr.dart';
