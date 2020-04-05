@@ -45,9 +45,14 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void deactivate(){
+    super.deactivate();
     _formFieldTextEditingController.clear();
+  }
+  @override
+  void didChangeDependencies() {
+    _formFieldTextEditingController.clear();
+    super.didChangeDependencies();
   }
 
   @override
@@ -55,7 +60,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     super.dispose();
     _formFieldTextEditingController.dispose();
   }
-
+  
   String _getAppBarText() {
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
@@ -221,7 +226,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
 
     checkResults =
         CheckPlateOrControlScreenResults(_screenModeType, scanResults);
-
     Navigator.pushNamed(
       context,
       '/checkPlateOrCodeResults',
