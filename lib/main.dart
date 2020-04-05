@@ -13,6 +13,7 @@ import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/about_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
+import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
@@ -138,9 +139,13 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => ViewMoreInfoScreen(),
                 settings: settings,
               );
+            case '/contact_us':
+              return CupertinoPageRoute(
+                builder: (_) => ContactUs()
+              );
             case '/about':
               return CupertinoPageRoute(
-                builder: (_) => About(),
+                builder: (_) => About()
               );
           }
           return null;
