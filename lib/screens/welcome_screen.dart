@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
-import 'package:rapidpass_checkpoint/models/user_location.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -56,25 +53,16 @@ class WelcomeScreenState extends State<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final UserLocation locationServiceProvider =
-        Provider.of<UserLocation>(context);
-
     return Theme(
       data: Purple.buildFor(context),
       child: Scaffold(
         backgroundColor: deepPurple600,
         body: Container(
-          margin: const EdgeInsets.symmetric(vertical: 40.0),
+          margin: const EdgeInsets.only(top: 50.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // Sample implementation of the GPS Location
-                // Center(
-                //   child: Text(
-                //       'Location: Lat${locationServiceProvider?.latitude}, Long: ${locationServiceProvider?.longitude}'),
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: InkWell(
@@ -101,37 +89,69 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     textAlign: TextAlign.center,
                   ),
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    height: 48,
-                    width: 300.0,
-                    child: RaisedButton(
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24.0)),
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/menu");
-                      },
-                      child: Text("Start",
-                          style: TextStyle(
-                              // Not sure how to get rid of color: Colors.white here
-                              color: Colors.white,
-                              fontSize: 18.0)),
-                    ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SizedBox(
+                          height: 48,
+                          width: 300.0,
+                          child: RaisedButton(
+                            shape: new RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24.0)),
+                            onPressed: () {
+                              Navigator.pushNamed(context, "/menu");
+                            },
+                            child: Text("Start",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0)),
+                          ),
+                        ),
+                      ),
+                      Selector<DeviceInfoModel, String>(
+                        selector: (_, model) => model.imei,
+                        builder: (_, String imei, __) {
+                          if (imei == null) return Text('Retrieving IMEI...');
+                          return Text('IMEI: $imei');
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                Selector<DeviceInfoModel, String>(
-                  selector: (_, model) => model.imei,
-                  builder: (_, String imei, __) {
-                    if (imei == null) return Text('Retrieving IMEI...');
-                    return Text('IMEI: $imei');
-                  },
-                )
+                Container(
+                  height: 80,
+                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _buildFooter('About'),
+                      _buildFooter('FAQs'),
+                      _buildFooter('Contact Us'),
+                      _buildFooter('Privacy Policy'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFooter(String title) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, "/${title.replaceAll(' ', '_').toLowerCase()}"),
+      child: Text(
+        title,
+        style: TextStyle(
+            color: Colors.white70,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0,
+            decoration: TextDecoration.underline),
       ),
     );
   }
