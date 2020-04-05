@@ -8,7 +8,7 @@ class UpdateDatabaseScreen extends StatefulWidget {
 }
 
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
-  bool _hasConnection = false;
+  bool _hasConnection = true;
   bool _isUpdating = false;
 
   Map<String, Object> _latestUpdateInfo = {
@@ -167,10 +167,10 @@ final _dummyRecord = [
   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
