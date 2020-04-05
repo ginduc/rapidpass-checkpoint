@@ -16,7 +16,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     'dateTime': DateTime.parse("2020-04-03 16:40:00")
   };
 
-  Widget _buildRecordTable() {
+  Widget _buildRecordListView() {
     return Expanded(
       child: LayoutBuilder(
         builder: (bContext, constraints) {
@@ -28,7 +28,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                     itemBuilder: (bContext, index) => Container(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 20),
+                            horizontal: 30, vertical: 20),
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey[200])),
                         child: Row(
@@ -153,7 +153,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       ),
       body: Column(
         children: <Widget>[
-          if (!_isUpdating) _buildRecordTable(),
+          if (!_isUpdating) _buildRecordListView(),
           if (!_hasConnection) _buildOfflineContent(screenSize),
           if (_isUpdating) _showProgressBar(),
           _buildFooterContent(),
