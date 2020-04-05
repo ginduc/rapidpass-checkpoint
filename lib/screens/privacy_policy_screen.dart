@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/helpers/url_launcher_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicy extends StatelessWidget {
 
-  void _openMail(String email) async {
-    final url = 'mailto:$email?subject=Questions/Concerns';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  // void _openMail(String email) async {
+  //   final url = 'mailto:$email?subject=Questions/Concerns';
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +184,7 @@ class PrivacyPolicy extends StatelessWidget {
             style: TextStyle(fontSize: 16),
           ),
           InkWell(
-            onTap: () => _openMail('RapidPass-dctx@devcon.ph') ,
+            onTap: () => URLLauncherHelper.launchMail('RapidPass-dctx@devcon.ph') ,
             child: Text(
               'RapidPass-dctx@devcon.ph',
               style: TextStyle(
