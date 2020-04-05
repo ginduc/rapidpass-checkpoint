@@ -7,7 +7,7 @@ class About extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contact Us'),
+        title: Text('About Us'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
