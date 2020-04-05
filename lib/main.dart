@@ -21,6 +21,7 @@ import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
@@ -52,6 +53,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
+    AppStorage.getDatabaseEncryptionKey().then((value) {
+      debugPrint('databaseEncryptionKey: $value');
+    });
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -141,13 +145,9 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 settings: settings,
               );
             case '/contact_us':
-              return CupertinoPageRoute(
-                builder: (_) => ContactUs()
-              );
+              return CupertinoPageRoute(builder: (_) => ContactUs());
             case '/about':
-              return CupertinoPageRoute(
-                builder: (_) => About()
-              );
+              return CupertinoPageRoute(builder: (_) => About());
             case '/privacy_policy':
               return CupertinoPageRoute(
                 builder: (_) => PrivacyPolicy(),
