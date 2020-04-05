@@ -5,28 +5,32 @@ import 'package:test/test.dart';
 void main() {
   test('PassCsvToJsonConverter.convert() works', () {
     final headers = [
-      'APORTYPE',
-      'CONTROLCODE',
-      'IDENTIFIERNUMBER',
-      'IDTYPE',
-      'ISSUEDON',
-      'PASSTYPE',
-      'STATUS',
-      'VALIDFROM',
-      'VALIDUNTIL'
+      'passType',
+      'aporType',
+      'controlCode',
+      'name',
+      'status',
+      'idType',
+      'identifierNumber',
+      'plateNumber',
+      'validFrom',
+      'validTo',
+      'issuedBy'
     ];
     final PassCsvToJsonConverter converter =
         PassCsvToJsonConverter(headers: headers);
     final json = converter.convert([
-      'GR',
-      '1P0PAADK',
-      'BPC 179',
-      'PersonalID',
-      1585894092,
-      'INDIVIDUAL',
+      'VEHICLE',
+      'ME',
+      '20HAYPV9',
+      'Isabel Namoro',
       'APPROVED',
-      1585898891,
-      1586707199
+      'PLT',
+      '987654322',
+      'TST1234',
+      1586082395,
+      1586707199,
+      null
     ]);
     print(json);
     final validPass = ValidPass.fromJson(json);

@@ -23,8 +23,10 @@ void main() {
     return ValidPassesCompanion(
       controlCode: Value(controlCodeNumber),
       passType: Value(0),
+      apor: Value('GO'),
       validFrom: Value(1582992000),
       validUntil: Value(1588262400),
+      idType: Value('PLT'),
       idOrPlate: Value('NAZ2070'),
       company: Value('DCTx'),
       homeAddress: Value('Manila'),

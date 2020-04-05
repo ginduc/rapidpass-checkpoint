@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:csv/csv.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,14 +38,14 @@ class ApiService extends IApiService {
   @override
   Future<DatabaseSyncState> getBatchPasses(
       final DatabaseSyncState state) async {
-    debugPrint('state: ${state}');
+    debugPrint('getBatchPasses.state: $state');
     if (state.totalPages > 0 && state.pageNumber > state.totalPages) {
       state.passesForInsert = List();
       return state;
     }
     final Dio client = Dio(BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 5000,
+        connectTimeout: 30000,
         receiveTimeout: 60000,
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
@@ -56,14 +55,13 @@ class ApiService extends IApiService {
       'pageNumber': state.pageNumber,
       'pageSize': state.pageSize
     });
-    final metadata = response.data['meta'];
-    debugPrint('${inspect(metadata)}');
+    final data = response.data;
+    debugPrint('${inspect(data)}');
     if (state.totalPages == 0) {
-      state.totalPages = metadata['totalPages'];
-      state.totalRows = metadata['totalRows'];
+      state.totalPages = data['totalPages'];
+      state.totalRows = data['totalRows'];
     }
-    final csv = response.data['csv'];
-    final list = CsvToListConverter(eol: '\n').convert(csv);
+    final list = response.data['data'];
     final listLength = list.length;
     if (list.length < 2) {
       return state;
@@ -72,20 +70,20 @@ class ApiService extends IApiService {
     final List<String> headers = list[0].cast<String>().toList();
     debugPrint('headers => $headers');
     final passCsvToJsonConverter = PassCsvToJsonConverter(headers: headers);
-    final List<ValidPassesCompanion> validPasses =
-        list.sublist(1, listLength).map((row) {
+    final List<ValidPassesCompanion> receivedPasses = List();
+
+    for (final row in list.sublist(1, listLength)) {
       try {
         final json = passCsvToJsonConverter.convert(row);
         debugPrint('Got pass ${ControlCode.encode(json['controlCode'])}');
         final validPass = ValidPass.fromJson(json);
-        return validPass.createCompanion(true);
+        final companion = validPass.createCompanion(true);
+        receivedPasses.add(companion);
       } on FormatException catch (e) {
         debugPrint(e.toString());
-        return null;
       }
-    }).toList()
-          ..removeWhere((e) => e == null);
-    state.passesForInsert = validPasses;
+    }
+    state.passesForInsert = receivedPasses;
     state.pageNumber = state.pageNumber + 1;
     return state;
   }
