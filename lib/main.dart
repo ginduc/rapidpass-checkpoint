@@ -22,10 +22,10 @@ import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
-import 'package:rapidpass_checkpoint/urls.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
+import 'env.dart' as Env;
 import 'models/check_plate_or_control_args.dart';
 
 void main() {
@@ -49,7 +49,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    debugPrint('apiBaseUrl: $apiBaseUrl');
+    debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -62,7 +62,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
         Provider(
           create: (_) => ApiRepository(
             apiService: ApiService(
-              baseUrl: apiBaseUrl,
+              baseUrl: Env.apiBaseUrl,
             ),
             localDatabaseService: _localDatabaseService,
           ),

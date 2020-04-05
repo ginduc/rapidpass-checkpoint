@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/block/aes_fast.dart';
 import 'package:pointycastle/stream/ctr.dart';
+import 'package:rapidpass_checkpoint/env.dart' as Env;
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
@@ -28,7 +29,9 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
     final List<int> signature =
         rawBuffer.sublist(rawBuffer.length - 4, rawBuffer.length);
     print('signature: ${hex.encode(signature)} (${signature.length})');
-    final key = hex.decode('d099294ebdae6763ba75d386eae517aa') as Uint8List;
+    final key = Env.aesSecretKey as Uint8List;
+    // Please don't do this if you need _real_ cryptographic security!
+    // Use a _real_, one-time use initialization vector
     final iv = hex.decode('00') as Uint8List;
     final aes = AESFastEngine();
     final cipher = CTRStreamCipher(aes);
