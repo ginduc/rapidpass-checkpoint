@@ -1,26 +1,42 @@
 import 'package:moor/moor.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('QrDataEntry')
-class QrData extends Table {
+@DataClassName('ValidPass')
+class ValidPasses extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get controlCode => integer()();
+  IntColumn get passType => integer()();
+
+  TextColumn get apor => text()();
+
+  IntColumn get controlCode => integer().customConstraint('UNIQUE')();
+
+  IntColumn get issuedOn => integer()();
 
   IntColumn get validFrom => integer()();
 
   IntColumn get validUntil => integer()();
 
-  IntColumn get idOrPlate => integer()();
+  TextColumn get idType => text()();
 
-  TextColumn get company => text()();
+  TextColumn get idOrPlate => text()();
 
-  TextColumn get homeAddress => text()();
+  TextColumn get company => text().nullable()();
+
+  TextColumn get homeAddress => text().nullable()();
 }
 
-@UseMoor(tables: [QrData])
+@DataClassName('InvalidPass')
+class InvalidPasses extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get controlCode => integer()();
+
+  TextColumn get status => text()();
+}
+
+@UseMoor(tables: [ValidPasses, InvalidPasses])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
@@ -39,17 +55,17 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<List<QrDataEntry>> getAllQrData() => select(qrData).get();
-
-  Stream<List<QrDataEntry>> streamQrData() => select(qrData).watch();
-
-  Stream<QrDataEntry> streamQrDataEntry(int id) {
-    return (select(qrData)..where((u) => u.id.equals(id))).watchSingle();
+  Future<int> countPasses() async {
+    var list = (await select(validPasses).get());
+    return list.length;
   }
 
-  Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
+  Future<ValidPass> getValidPass(final int controlCode) {
+    return (select(validPasses)
+          ..where((u) => u.controlCode.equals(controlCode)))
+        .getSingle();
+  }
 
-  Future updateQrCode(QrDataEntry entry) => update(qrData).replace(entry);
-
-  Future deleteQrCode(QrDataEntry entry) => delete(qrData).delete(entry);
+  Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
+      into(validPasses).insert(validPassesCompanion);
 }

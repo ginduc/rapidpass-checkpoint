@@ -1,13 +1,12 @@
 import 'package:meta/meta.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
 
 abstract class ILocalDatabaseService {
-  Future<List<QrDataEntry>> getAllQrData();
-  Stream<List<QrDataEntry>> streamQrData();
-  Stream<QrDataEntry> streamQrDataEntry(int id);
-  Future<QrDataEntry> insertQrCode(QrDataEntry entry);
-  Future<QrDataEntry> updateQrCode(QrDataEntry entry);
-  Future<QrDataEntry> deleteQrCode(QrDataEntry entry);
+  Future<int> countPasses();
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode);
+  Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
+  Future<int> insertValidPass(final ValidPassesCompanion companion);
   void dispose();
 }
 
@@ -17,54 +16,30 @@ class LocalDatabaseService implements ILocalDatabaseService {
 
   LocalDatabaseService({@required this.appDatabase});
 
-  // Retrieves all QR code data from the database per method call.
-  // Please see [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
   @override
-  Future<List<QrDataEntry>> getAllQrData() {
-    return appDatabase.getAllQrData();
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode) {
+    return getValidPassByIntegerControlCode(ControlCode.decode(controlCode));
   }
 
-  // Subscribes and listens to the latest changes in the database.
-  // Please see [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
   @override
-  Stream<List<QrDataEntry>> streamQrData() {
-    return appDatabase.streamQrData();
-  }
-
-  // Subscribes and listens to the latest changes of a single record in the database.
-  // Please see [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
-  @override
-  Stream<QrDataEntry> streamQrDataEntry(int id) {
-    return appDatabase.streamQrDataEntry(id);
-  }
-
-  // Inserts new record to the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> insertQrCode(QrDataEntry entry) async {
-    await appDatabase.insertQrCode(entry);
-    return entry;
-  }
-
-  // Replaces an existing record from the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> updateQrCode(QrDataEntry entry) async {
-    await appDatabase.updateQrCode(entry);
-    return entry;
-  }
-
-  // Deletes an existing record from the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> deleteQrCode(QrDataEntry entry) async {
-    await appDatabase.deleteQrCode(entry);
-    return entry;
+  Future<ValidPass> getValidPassByIntegerControlCode(
+      final int controlCodeAsInt) {
+    return appDatabase.getValidPass(controlCodeAsInt);
   }
 
   // Close and clear all expensive resources needed as this class gets killed.
   @override
   void dispose() async {
     await appDatabase.close();
+  }
+
+  @override
+  Future<int> insertValidPass(final ValidPassesCompanion companion) async {
+    return appDatabase.insertValidPass(companion);
+  }
+
+  @override
+  Future<int> countPasses() async {
+    return appDatabase.countPasses();
   }
 }

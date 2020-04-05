@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:moor/moor.dart';
+import 'package:moor_ffi/moor_ffi.dart';
+import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/repository/api_respository.dart';
+import 'package:rapidpass_checkpoint/screens/about_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
@@ -14,12 +19,13 @@ import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
-import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 import 'package:rapidpass_checkpoint/services/location_service.dart';
+import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
+import 'package:rapidpass_checkpoint/urls.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
-import 'package:http/http.dart';
+import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 import 'models/check_plate_or_control_args.dart';
 
@@ -31,22 +37,20 @@ void main() {
 }
 
 class RapidPassCheckpointApp extends StatelessWidget {
-  // TODO: Create separate runnable environment for the main app
-  // REST
-  Client _client = Client();
-  String _rapidPassApiUrl = 'https://api.test.rapidpass.amihan.net/api/v1';
-
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
-  LocalDatabaseService _localDatabaseService = LocalDatabaseService(
-    appDatabase: AppDatabase(
-      FlutterQueryExecutor.inDatabaseFolder(path: databaseName),
-    ),
+  final LocalDatabaseService _localDatabaseService = LocalDatabaseService(
+    appDatabase: AppDatabase(LazyDatabase(() async {
+      final dbFolder = await getDatabasesPath();
+      final file = File(p.join(dbFolder, 'db.sqlite'));
+      return VmDatabase(file);
+    })),
   );
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    debugPrint('apiBaseUrl: $apiBaseUrl');
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -59,11 +63,14 @@ class RapidPassCheckpointApp extends StatelessWidget {
         Provider(
           create: (_) => ApiRepository(
             apiService: ApiService(
-              client: _client,
-              baseUrl: _rapidPassApiUrl,
+              baseUrl: apiBaseUrl,
             ),
             localDatabaseService: _localDatabaseService,
           ),
+        ),
+        ProxyProvider<ApiRepository, PassValidationService>(
+          update: (_, apiRepository, __) =>
+              PassValidationService(apiRepository),
         ),
         StreamProvider(
           create: (_) => LocationService().locationStream,
@@ -136,6 +143,10 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(
                 builder: (_) => UpdateDatabaseScreen(),
                 settings: settings,
+              );
+            case '/about':
+              return CupertinoPageRoute(
+                builder: (_) => About(),
               );
           }
           return null;
