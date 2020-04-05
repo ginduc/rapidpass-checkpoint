@@ -107,24 +107,6 @@ class ApiRepository extends IApiRepository {
   }
 
   @override
-  Future<void> getQrCode(String refId) {
-    // TODO: implement getQrCode
-    return apiService.getQrCode(refId);
-  }
-
-  @override
-  Future<void> getRegisteredDeviceDetails(String deviceId) {
-    // TODO: implement getRegisteredDeviceDetails
-    return apiService.getRegisteredDeviceDetails(deviceId);
-  }
-
-  @override
-  Future<void> registerDevice() {
-    // TODO: implement registerDevice
-    return apiService.registerDevice();
-  }
-
-  @override
   Future<ValidPass> verifyControlNumber(int controlCodeNumber) async {
     return localDatabaseService
         .getValidPassByIntegerControlCode(controlCodeNumber);
