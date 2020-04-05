@@ -20,10 +20,13 @@ void main() {
 
   ValidPassesCompanion createValidPassCompanion() {
     return ValidPassesCompanion(
+      apor: Value('GO'),
       controlCode: Value(controlCodeNumber),
       passType: Value(0),
+      issuedOn: Value(1582992000),
       validFrom: Value(1582992000),
       validUntil: Value(1588262400),
+      idType: Value('P'),
       idOrPlate: Value('NAZ2070'),
       company: Value('DCTx'),
       homeAddress: Value('Manila'),
@@ -51,11 +54,10 @@ void main() {
       final ValidPassesCompanion validPass = createValidPassCompanion();
       database.insertValidPass(validPass);
     });
-    test('streamValidPass works', () async {
+    test('getValidPas works', () async {
       final ValidPassesCompanion validPass = createValidPassCompanion();
       database.insertValidPass(validPass);
-      final ValidPass actual =
-          await database.streamValidPass(controlCodeNumber).first;
+      final ValidPass actual = await database.getValidPass(controlCodeNumber);
       expect(actual.controlCode, equals(controlCodeNumber));
       expect(actual.passType, equals(0));
       expect(actual.validFrom, equals(1582992000));

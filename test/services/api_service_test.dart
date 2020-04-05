@@ -11,7 +11,7 @@ void main() {
   AppDatabase database;
 
   setUp(() {
-    database = AppDatabase(VmDatabase.memory());
+    database = AppDatabase(VmDatabase.memory(logStatements: false));
   });
   tearDown(() async {
     // noop
@@ -26,17 +26,28 @@ void main() {
           baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
       final int before = await database.countPasses();
       print('before: $before');
+      final List<Future<dynamic>> futures = List();
       try {
-        final companions = await apiService.getBatchPasses();
-        companions.forEach((companion) async {
-          await database.insertValidPass(companion);
-        });
+        final DatabaseSyncState state =
+            await apiService.getBatchPasses(DatabaseSyncState(lastSyncOn: 0));
+        print('state: $state');
+        for (final companion in state.passesForInsert) {
+          print('companion.controlCode: ${companion.controlCode.value}');
+          database.getValidPass(companion.controlCode.value).then((existing) {
+            print('existing: $existing');
+            if (existing == null) {
+              futures.add(database.insertValidPass(companion));
+            }
+          }, onError: (e) => print(e));
+        }
       } catch (e) {
         print(e);
       }
+      print('futures.length: ${futures.length}');
+      await Future.wait(futures);
       final int after = await database.countPasses();
       print('after: $after');
-      expect(after, equals(before + 39));
+      expect(after, equals(39));
     });
     test('csv decode', () {
       final rawCsv =

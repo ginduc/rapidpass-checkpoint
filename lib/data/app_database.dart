@@ -60,10 +60,10 @@ class AppDatabase extends _$AppDatabase {
     return list.length;
   }
 
-  Stream<ValidPass> streamValidPass(final int controlCode) {
+  Future<ValidPass> getValidPass(final int controlCode) {
     return (select(validPasses)
           ..where((u) => u.controlCode.equals(controlCode)))
-        .watchSingle();
+        .getSingle();
   }
 
   Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
