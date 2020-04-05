@@ -10,8 +10,7 @@ class ControlCode {
 
   @override
   String toString() {
-    return crockford.encode(this.value).padLeft(7, '0') +
-        crockford.encode(checkDigit);
+    return ControlCode.encode(this.value);
   }
 
   @override
@@ -34,7 +33,19 @@ class ControlCode {
 
   /// Parse a control code string into a ControlCode
   /// Throws a FormatException if the given control code string is invalid
-  static ControlCode parse(String controlCode) {
+  static ControlCode parse(final String controlCode) {
+    return ControlCode(ControlCode.decode(controlCode));
+  }
+
+  /// Encode a control code int as an 8 character string using
+  /// Base32 Crockford and a Damm check digit
+  static String encode(final int controlCodeNumber) {
+    return crockford.encode(controlCodeNumber).padLeft(7, '0') +
+        crockford.encode(Damm32.compute(controlCodeNumber));
+  }
+
+  /// Decode a control code string into its numeric value
+  static int decode(final String controlCode) {
     final int length = controlCode.length;
     if (length != 8)
       throw FormatException('ControlCode "$controlCode" has invalid length');
@@ -46,6 +57,6 @@ class ControlCode {
     if (checkDigit != actual)
       throw FormatException(
           'ControlCode "$controlCode" has invalid check digit');
-    return ControlCode(controlCodeNumber);
+    return controlCodeNumber;
   }
 }
