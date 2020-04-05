@@ -4,6 +4,8 @@ class RapidAssetConstants {
   /// Logo
   static const rapidPassLogo = '$baseAssetFont/rapidpass_logo.svg';
   static const rapidPassLogoPurple = '$baseAssetFont/rapidpass_logo_purple.svg';
+  static const dctxLogo = '$baseAssetFont/dctx_logo.svg';
+  static const devconLogo = '$baseAssetFont/devcon_logo.png';
 
   /// Purple
   static const icQrCode = '$baseAssetFont/qrcode-purple.svg';

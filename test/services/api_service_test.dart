@@ -1,6 +1,8 @@
 import 'package:csv/csv.dart';
+import 'package:dio/dio.dart';
 import 'package:moor_ffi/moor_ffi.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:test/test.dart';
 import 'package:vcr/vcr.dart';
@@ -11,7 +13,7 @@ void main() {
   AppDatabase database;
 
   setUp(() {
-    database = AppDatabase(VmDatabase.memory());
+    database = AppDatabase(VmDatabase.memory(logStatements: false));
   });
   tearDown(() async {
     // noop
@@ -26,17 +28,39 @@ void main() {
           baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
       final int before = await database.countPasses();
       print('before: $before');
+      final List<Future<dynamic>> futures = List();
       try {
-        final companions = await apiService.getBatchPasses();
-        companions.forEach((companion) async {
-          await database.insertValidPass(companion);
-        });
+        final DatabaseSyncState state =
+            await apiService.getBatchPasses(DatabaseSyncState(lastSyncOn: 0));
+        print('state: $state');
+        for (final companion in state.passesForInsert) {
+          print('companion.controlCode: ${companion.controlCode.value}');
+          database.getValidPass(companion.controlCode.value).then((existing) {
+            print('existing: $existing');
+            if (existing == null) {
+              futures.add(database.insertValidPass(companion));
+            }
+          }, onError: (e) => print(e));
+        }
       } catch (e) {
         print(e);
       }
+      print('futures.length: ${futures.length}');
+      await Future.wait(futures);
       final int after = await database.countPasses();
       print('after: $after');
-      expect(after, equals(before + 39));
+      expect(after, equals(39));
+    });
+    test('test getBatchPasses on error 500', () {
+      final VcrAdapter adapter = VcrAdapter();
+      adapter.useCassette('batch/access-passes-500');
+      apiService = ApiService(
+          httpClientAdapter: adapter,
+          baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
+      expect(() async {
+        final DatabaseSyncState state =
+            await apiService.getBatchPasses(DatabaseSyncState(lastSyncOn: 0));
+      }, throwsA(TypeMatcher<DioError>()));
     });
     test('csv decode', () {
       final rawCsv =
