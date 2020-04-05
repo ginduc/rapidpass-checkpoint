@@ -8,7 +8,7 @@ class UpdateDatabaseScreen extends StatefulWidget {
 }
 
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
-  bool _hasConnection = true;
+  bool _hasConnection = false;
   bool _isUpdating = false;
 
   Map<String, Object> _latestUpdateInfo = {
@@ -21,10 +21,34 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       child: LayoutBuilder(
         builder: (bContext, constraints) {
           return Container(
+            margin: EdgeInsets.symmetric(vertical: 20),
             height: constraints.maxHeight,
-            child: Center(
-              child: Text('Record goes here...'),
-            ),
+            child: _dummyRecord.isNotEmpty
+                ? ListView.builder(
+                    itemBuilder: (bContext, index) => Container(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey[200])),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              '${_dummyRecord[index]['count']} Records Added',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              '${DateFormat('MM dd, yyyy').format(_dummyRecord[index]['dateTime'])} ${DateFormat.jm().format(_dummyRecord[index]['dateTime'])}',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    itemCount: _dummyRecord.length,
+                  )
+                : null,
           );
         },
       ),
@@ -46,7 +70,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             ),
           ),
           Container(
-            height: 120,
+            height: 90,
             child: Center(
               child: Text(
                 'OFFLINE',
@@ -140,7 +164,13 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 }
 
 final _dummyRecord = [
-  {'count': 2000, 'date': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'date': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'date': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
