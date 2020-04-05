@@ -17,7 +17,7 @@ class PassValidationService {
     try {
       final decodedFromBase64 = base64.decode(base64Encoded);
       final asHex = hex.encode(decodedFromBase64);
-      print('barcode => $asHex (${asHex.length} codes)');
+      print('QR Code as hex => $asHex (${asHex.length} codes)');
       final buffer = decodedFromBase64 is Uint8List
           ? decodedFromBase64.buffer
           : Uint8List.fromList(decodedFromBase64).buffer;
