@@ -47,6 +47,7 @@ dependencies:
   qr_code_scanner: ^0.0.12
   shared_preferences: ^0.5.6+3
   sqflite: ^1.1.7
+  url_launcher: ^5.4.2
 
 dev_dependencies:
   flutter_test:

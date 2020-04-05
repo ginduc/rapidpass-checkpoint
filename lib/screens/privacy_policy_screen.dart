@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicy extends StatelessWidget {
+
+  void _openMail(String email) async {
+    final url = 'mailto:$email?subject=Questions/Concerns';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,14 +182,16 @@ class PrivacyPolicy extends StatelessWidget {
             'If you have any questions, concerns, or disputes regarding our Privacy Policy, please feel free to contact ',
             style: TextStyle(fontSize: 16),
           ),
-          Text(
-            'RapidPass-dctx@devcon.ph',
-            style: TextStyle(
-              fontSize: 16,
-              decoration: TextDecoration.underline,
-              color: Colors.blueAccent,  
+          InkWell(
+            onTap: () => _openMail('RapidPass-dctx@devcon.ph') ,
+            child: Text(
+              'RapidPass-dctx@devcon.ph',
+              style: TextStyle(
+                fontSize: 16,
+                decoration: TextDecoration.underline,
+                color: Colors.blueAccent,
+              ),
             ),
-            
           ),
         ],
       ),
