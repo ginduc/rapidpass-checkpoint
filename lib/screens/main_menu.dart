@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_respository.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
@@ -144,6 +145,10 @@ class MainMenu extends StatelessWidget {
         Provider.of<ApiRepository>(context, listen: false);
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
+    if (state == null) {
+      DialogHelper.showAlertDialog(context,
+          title: 'Database sync error', message: 'An unknown error occurred.');
+    }
     final int totalPages = state.totalPages;
     debugPrint('state.totalPages: ${totalPages}');
     if (totalPages > 0) {
@@ -152,6 +157,13 @@ class MainMenu extends StatelessWidget {
         state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
       }
     }
+    final int totalRecords =
+        await apiRepository.localDatabaseService.countPasses();
+    final String message = state.insertedRowsCount > 0
+        ? 'Downloaded ${state.insertedRowsCount} records'
+        : 'No new records found. Total records in database is ${totalRecords}';
+    DialogHelper.showAlertDialog(context,
+        title: 'Database Updated', message: message);
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
