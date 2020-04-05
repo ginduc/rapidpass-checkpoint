@@ -7,6 +7,7 @@ import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_respository.dart';
+import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -141,7 +142,16 @@ class MainMenu extends StatelessWidget {
   Future _updateDatabase(final BuildContext context) async {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
-    await apiRepository.batchDownloadAndInsertPasses();
+    DatabaseSyncState state =
+        await apiRepository.batchDownloadAndInsertPasses();
+    final int totalPages = state.totalPages;
+    debugPrint('state.totalPages: ${totalPages}');
+    if (totalPages > 0) {
+      while (state.pageNumber < totalPages) {
+        state.pageNumber = state.pageNumber + 1;
+        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+      }
+    }
   }
 
   Future _scanAndNavigate(final BuildContext context) async {

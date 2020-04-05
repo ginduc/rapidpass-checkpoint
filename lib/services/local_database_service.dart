@@ -24,7 +24,7 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Future<ValidPass> getValidPassByIntegerControlCode(
       final int controlCodeAsInt) {
-    return appDatabase.streamValidPass(controlCodeAsInt).first;
+    return appDatabase.getValidPass(controlCodeAsInt);
   }
 
   // Close and clear all expensive resources needed as this class gets killed.
