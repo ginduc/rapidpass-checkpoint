@@ -22,7 +22,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     if (scanResults.isValid()) {
       playNotificationApproved();
     } else {
-      playNotificationRegected();
+      playNotificationRejected();
     }
   }
 
@@ -190,7 +190,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     return await cache.play("notification_approved.mp3");
   }
 
-  Future<AudioPlayer> playNotificationRegected() async {
+  Future<AudioPlayer> playNotificationRejected() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_denied.mp3");
   }
