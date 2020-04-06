@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
-import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
@@ -41,24 +40,9 @@ class ApiRepository extends IApiRepository {
     final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: 0);
     try {
       await apiService.getBatchPasses(state);
-      int inserted = 0;
-      state.passesForInsert.forEach((companion) async {
-        var controlCodeNumber = companion.controlCode.value;
-        debugPrint('Got pass ${ControlCode.encode(controlCodeNumber)}');
-        final validPass = await localDatabaseService
-            .getValidPassByIntegerControlCode(controlCodeNumber);
-        if (validPass == null) {
-          debugPrint(
-              "Control code ${ControlCode.encode(controlCodeNumber)} not found in local database, inserting...");
-          await localDatabaseService.insertValidPass(companion);
-        } else {
-          debugPrint(
-              "Control code ${ControlCode.encode(controlCodeNumber)} already found in local database, skipping...");
-        }
-        inserted += 1;
-      });
-      debugPrint('inserted: $inserted');
-      state.insertedRowsCount = state.insertedRowsCount + inserted;
+      localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
+      state.insertedRowsCount =
+          state.insertedRowsCount + state.passesForInsert.length;
       debugPrint('state.insertedRowsCount: ${state.insertedRowsCount}');
       final int after = await localDatabaseService.countPasses();
       debugPrint('after: $after');
@@ -78,29 +62,14 @@ class ApiRepository extends IApiRepository {
     debugPrint('before: $before');
     debugPrint('state.lastSyncOn: ${state.lastSyncOn}');
     try {
-      final DatabaseSyncState newState = await apiService.getBatchPasses(state);
-      int inserted = 0;
-      newState.passesForInsert.forEach((companion) async {
-        var controlCodeNumber = companion.controlCode.value;
-        debugPrint('Got pass ${ControlCode.encode(controlCodeNumber)}');
-        final validPass = await localDatabaseService
-            .getValidPassByIntegerControlCode(controlCodeNumber);
-        if (validPass == null) {
-          debugPrint(
-              "Control code ${ControlCode.encode(controlCodeNumber)} not found in local database, inserting...");
-          await localDatabaseService.insertValidPass(companion);
-        } else {
-          debugPrint(
-              "Control code ${ControlCode.encode(controlCodeNumber)} already found in local database, skipping...");
-        }
-        inserted += 1;
-      });
-      debugPrint('inserted: $inserted');
-      state.insertedRowsCount = state.insertedRowsCount + inserted;
+      await apiService.getBatchPasses(state);
+      localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
+      state.insertedRowsCount =
+          state.insertedRowsCount + state.passesForInsert.length;
       debugPrint('state.insertedRowsCount: ${state.insertedRowsCount}');
       final int after = await localDatabaseService.countPasses();
       debugPrint('after: $after');
-      return newState;
+      return state;
     } catch (e) {
       debugPrint(e);
     }

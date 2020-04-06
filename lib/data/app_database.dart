@@ -1,7 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:moor/moor.dart';
 
 part 'app_database.g.dart';
 
+/// Remember to generate the code using
+/// ```
+/// flutter packages pub run build_runner build
+/// ```
+/// Or
+/// ```
+/// flutter packages pub run build_runner watch
+/// ```
 @DataClassName('ValidPass')
 class ValidPasses extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -64,14 +73,32 @@ class AppDatabase extends _$AppDatabase {
         .getSingle();
   }
 
+  Future<ValidPass> getValidPassByIdOrPlate(final String idOrPlate) async {
+    return await (select(validPasses)
+          ..where((u) => u.idOrPlate.equals(idOrPlate)))
+        .getSingle();
+  }
+
+  Future updateValidPass(final ValidPassesCompanion validPassesCompanion) =>
+      update(validPasses).replace(validPassesCompanion);
+
   Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
       into(validPasses).insert(validPassesCompanion);
 
-  Future insertAll(final List<ValidPassesCompanion> forInsertion) {
+  Future insertOrUpdateAll(
+      final List<ValidPassesCompanion> bulkInsertOrUpdate) {
     return transaction(() {
       List<Future> futures = List();
-      for (final vpc in forInsertion) {
-        futures.add(insertValidPass(vpc));
+      for (final vpc in bulkInsertOrUpdate) {
+        if (vpc.id != null &&
+            vpc.id != Value.absent() &&
+            vpc.id.value != null) {
+          debugPrint('Updating pass id ${vpc.id.value}');
+          futures.add(updateValidPass(vpc));
+        } else {
+          debugPrint('Inserting pass ${vpc.controlCode.value}');
+          futures.add(insertValidPass(vpc));
+        }
       }
       return Future.wait(futures);
     });

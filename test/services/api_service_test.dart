@@ -36,8 +36,9 @@ void main() {
       print('state: $state');
 
       final databaseService = LocalDatabaseService(appDatabase: database);
-      final noExisting =
-          await databaseService.bulkInsert(state.passesForInsert).then((v) {
+      final noExisting = await databaseService
+          .bulkInsertOrUpdate(state.passesForInsert)
+          .then((v) {
         database.countPasses().then((after) {
           print('after: $after');
           expect(after, equals(4));

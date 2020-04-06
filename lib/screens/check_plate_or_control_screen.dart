@@ -45,10 +45,11 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   @override
-  void deactivate(){
+  void deactivate() {
     super.deactivate();
     _formFieldTextEditingController.clear();
   }
+
   @override
   void didChangeDependencies() {
     _formFieldTextEditingController.clear();
@@ -60,7 +61,7 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     super.dispose();
     _formFieldTextEditingController.dispose();
   }
-  
+
   String _getAppBarText() {
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       return "Check Plate Number";
@@ -199,8 +200,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     CheckPlateOrControlScreenResults checkResults;
 
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
-      scanResults = PassValidationService.checkPlateNumber(
-          _formFieldTextEditingController.text);
+      scanResults = await passValidationService
+          .checkPlateNumber(_formFieldTextEditingController.text);
       if (scanResults.allRed) {
         DialogHelper.showAlertDialog(
           context,
@@ -211,7 +212,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
         return;
       }
     } else if (_screenModeType == CheckPlateOrControlScreenModeType.control) {
-      if (!ControlCode.isValid(_formFieldTextEditingController.text)) {
+      final String normalizedControlCode =
+          _formFieldTextEditingController.text.toUpperCase();
+      if (!ControlCode.isValid(normalizedControlCode)) {
         DialogHelper.showAlertDialog(
           context,
           title: 'Control Number Invalid',
@@ -220,8 +223,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
         );
         return;
       }
-      scanResults = await passValidationService
-          .checkControlCode(_formFieldTextEditingController.text);
+      scanResults =
+          await passValidationService.checkControlCode(normalizedControlCode);
     }
 
     checkResults =

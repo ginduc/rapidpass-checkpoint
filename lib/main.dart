@@ -46,7 +46,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
     appDatabase: AppDatabase(LazyDatabase(() async {
       final dbFolder = await getDatabasesPath();
       final file = File(p.join(dbFolder, 'db.sqlite'));
-      return VmDatabase(file);
+      return VmDatabase(file, logStatements: true);
     })),
   );
 
@@ -154,9 +154,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => PrivacyPolicy(),
               );
             case '/faqs':
-              return CupertinoPageRoute(
-                builder: (_) => Faqs()
-              );
+              return CupertinoPageRoute(builder: (_) => Faqs());
           }
           return null;
         },

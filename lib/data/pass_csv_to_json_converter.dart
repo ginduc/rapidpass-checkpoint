@@ -20,7 +20,7 @@ class PassCsvToJsonConverter
   final toJsonMapping = {
     'aporType': 'apor',
     'controlCode': 'controlCode',
-    'identifierNumber': 'idOrPlate',
+    'plateNumber': 'idOrPlate',
     'idType': 'idType',
     'status': 'status',
     'validFrom': 'validFrom',

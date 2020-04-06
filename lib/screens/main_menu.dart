@@ -151,7 +151,7 @@ class MainMenu extends StatelessWidget {
           title: 'Database sync error', message: 'An unknown error occurred.');
     }
     final int totalPages = state.totalPages;
-    debugPrint('state.totalPages: ${totalPages}');
+    debugPrint('state.totalPages: $totalPages');
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
         state.pageNumber = state.pageNumber + 1;
@@ -162,7 +162,7 @@ class MainMenu extends StatelessWidget {
         await apiRepository.localDatabaseService.countPasses();
     final String message = state.insertedRowsCount > 0
         ? 'Downloaded ${state.insertedRowsCount} records'
-        : 'No new records found. Total records in database is ${totalRecords}';
+        : 'No new records found. Total records in database is $totalRecords';
     DialogHelper.showAlertDialog(context,
         title: 'Database Updated', message: message);
     final DateTime now = DateTime.now();
