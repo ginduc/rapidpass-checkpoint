@@ -18,7 +18,13 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
 
   CheckPlateOrControlCodeResultsScreen(CheckPlateOrControlScreenResults args)
       : this.screenModeType = args.screenModeType,
-        this.scanResults = args.scanResults;
+        this.scanResults = args.scanResults {
+    if (scanResults.isValid()) {
+      playNotificationApproved();
+    } else {
+      playNotificationRejected();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +70,6 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
-    if (scanResults.isValid()) {
-      playNotificationApproved();
-    } else {
-      playNotificationRegected();
-    }
-
     final card = scanResults.isValid()
         ? PassResultsCard(
             iconName: 'check-2x',
@@ -89,99 +89,99 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
           appBar: AppBar(title: Text('Result')),
           body: SingleChildScrollView(
               child: Center(
-                child: Column(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
+                  child: card,
+                ),
+                const SizedBox(height: 5),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
-                      child: card,
+//                    if (scanResults.isValid() == true)
+//                      InkWell(
+//                        onTap: () =>
+//                            Navigator.pushNamed(context, '/viewMoreInfo'),
+//                        child: Container(
+//                          padding: EdgeInsets.symmetric(
+//                              vertical: 13.0, horizontal: 20.0),
+//                          child: OutlineButton(
+//                            borderSide: BorderSide(color: green300),
+//                            highlightedBorderColor: green300,
+//                            focusColor: green300,
+//                            child: Text('View More Information',
+//                                style: TextStyle(fontSize: 16)),
+//                            shape: RoundedRectangleBorder(
+//                              borderRadius: BorderRadius.circular(30.0),
+//                            ),
+//                            color: green300,
+//                            textColor: green300,
+//                            padding: EdgeInsets.symmetric(
+//                              horizontal: 16.0,
+//                              vertical: 20.0,
+//                            ),
+//                            onPressed: () =>
+//                                Navigator.pushNamed(context, '/viewMoreInfo'),
+//                          ),
+//                        ),
+//                      ),
+                    if (scanResults.isValid() == true)
+                      Padding(padding: EdgeInsets.only(top: 16.0)),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 20.0),
+                        child: RaisedButton(
+                          child: Text(
+                              this.screenModeType ==
+                                      CheckPlateOrControlScreenModeType.plate
+                                  ? 'Check another Plate Number'
+                                  : 'Check another Control Number',
+                              style: TextStyle(fontSize: 16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(34.0),
+                          ),
+                          color: green300,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 20.0),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 5),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        if (scanResults.isValid() == true)
-                        InkWell(
-                          onTap: () =>
-                              Navigator.pushNamed(context, '/viewMoreInfo'),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 13.0, horizontal: 20.0),
-                            child: OutlineButton(
-                              borderSide: BorderSide(color: green300),
-                              highlightedBorderColor: green300,
-                              focusColor: green300,
-                              child: Text('View More Information',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              color: green300,
-                              textColor: green300,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 20.0,
-                              ),
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, '/viewMoreInfo'),
-                            ),
-                          ),
-                        ),
-                        if (scanResults.isValid() == true)
-                        Padding(padding: EdgeInsets.only(top: 16.0)),
-                        InkWell(
-                          onTap: () => Navigator.pop(context),
-                            child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                            child: RaisedButton(
-                              child: Text(
-                                  this.screenModeType ==
-                                          CheckPlateOrControlScreenModeType
-                                              .plate
-                                      ? 'Check another Plate Number'
-                                      : 'Check another Control Number',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(34.0),
-                              ),
-                              color: green300,
-                              textColor: Colors.white,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => Navigator.popUntil(
+                    InkWell(
+                      onTap: () => Navigator.popUntil(
                           context, ModalRoute.withName('/menu')),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 20.0),
-                            child: OutlineButton(
-                              borderSide: BorderSide(color: green300),
-                              focusColor: green300,
-                              child: Text('Return to checker page',
-                                  style: TextStyle(fontSize: 16)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                              color: green300,
-                              textColor: green300,
-                              highlightedBorderColor: green300,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 20.0),
-                              onPressed: () => Navigator.popUntil(
-                                  context, ModalRoute.withName('/menu')),
-                            ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 20.0),
+                        child: OutlineButton(
+                          borderSide: BorderSide(color: green300),
+                          focusColor: green300,
+                          child: Text('Return to checker page',
+                              style: TextStyle(fontSize: 16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
+                          color: green300,
+                          textColor: green300,
+                          highlightedBorderColor: green300,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 20.0),
+                          onPressed: () => Navigator.popUntil(
+                              context, ModalRoute.withName('/menu')),
                         ),
-                        const SizedBox(height: 30)
-                      ],
+                      ),
                     ),
+                    const SizedBox(height: 30)
                   ],
                 ),
-              ))),
+              ],
+            ),
+          ))),
     );
   }
 
@@ -190,7 +190,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     return await cache.play("notification_approved.mp3");
   }
 
-  Future<AudioPlayer> playNotificationRegected() async {
+  Future<AudioPlayer> playNotificationRejected() async {
     AudioCache cache = new AudioCache();
     return await cache.play("notification_denied.mp3");
   }

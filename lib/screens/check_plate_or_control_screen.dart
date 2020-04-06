@@ -28,9 +28,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
 
   bool _formHasErrors = false;
 
-  // TODO: Remove this soon
-  String _hardCodedValue = '123456';
-
   @override
   void initState() {
     super.initState();
@@ -45,9 +42,15 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void deactivate() {
+    super.deactivate();
     _formFieldTextEditingController.clear();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _formFieldTextEditingController.clear();
+    super.didChangeDependencies();
   }
 
   @override
@@ -194,8 +197,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     CheckPlateOrControlScreenResults checkResults;
 
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
-      scanResults = PassValidationService.checkPlateNumber(
-          _formFieldTextEditingController.text);
+      scanResults = await passValidationService
+          .checkPlateNumber(_formFieldTextEditingController.text);
       if (scanResults.allRed) {
         DialogHelper.showAlertDialog(
           context,
@@ -206,7 +209,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
         return;
       }
     } else if (_screenModeType == CheckPlateOrControlScreenModeType.control) {
-      if (!ControlCode.isValid(_formFieldTextEditingController.text)) {
+      final String normalizedControlCode =
+          _formFieldTextEditingController.text.toUpperCase();
+      if (!ControlCode.isValid(normalizedControlCode)) {
         DialogHelper.showAlertDialog(
           context,
           title: 'Control Number Invalid',
@@ -215,13 +220,12 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
         );
         return;
       }
-      scanResults = await passValidationService
-          .checkControlCode(_formFieldTextEditingController.text);
+      scanResults =
+          await passValidationService.checkControlCode(normalizedControlCode);
     }
 
     checkResults =
         CheckPlateOrControlScreenResults(_screenModeType, scanResults);
-
     Navigator.pushNamed(
       context,
       '/checkPlateOrCodeResults',

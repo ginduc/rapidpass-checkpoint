@@ -1,7 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pointycastle/api.dart';
+import 'package:pointycastle/block/aes_fast.dart';
+import 'package:pointycastle/stream/ctr.dart';
+import 'package:rapidpass_checkpoint/env.dart' as Env;
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
@@ -17,14 +22,38 @@ const int $f = 0x66;
 class QrCodeDecoder extends Converter<ByteData, QrData> {
   final AsciiDecoder asciiDecoder = AsciiDecoder();
 
+  ByteData _decrypt(ByteData rawInput) {
+    final rawBuffer = rawInput.buffer.asUint8List();
+    final Uint8List cipherText = rawBuffer.sublist(2, rawBuffer.length - 4);
+    print('cipherText: ${hex.encode(cipherText)} (${cipherText.length})');
+    final List<int> signature =
+        rawBuffer.sublist(rawBuffer.length - 4, rawBuffer.length);
+    print('signature: ${hex.encode(signature)} (${signature.length})');
+    final key = Uint8List.fromList(Env.aesSecretKey);
+    // Please don't do this if you need _real_ cryptographic security!
+    // Use a _real_, one-time use initialization vector
+    final iv = hex.decode('00') as Uint8List;
+    final aes = AESFastEngine();
+    final cipher = CTRStreamCipher(aes);
+    cipher.init(false, ParametersWithIV(KeyParameter(key), iv));
+
+    final plainText = cipher.process(cipherText);
+    print('plainText: ${hex.encode(plainText)} (${plainText.length})');
+
+    final Uint8List plainTextWithSignature =
+        Uint8List.fromList(plainText + signature);
+    return plainTextWithSignature.buffer.asByteData();
+  }
+
   @override
-  QrData convert(ByteData input) {
-    debugPrint('input.lengthInBytes: ${input.lengthInBytes}');
-    if (input.lengthInBytes < 13) {
-      throw FormatException(
-          'Invalid QR code raw data: ${input.buffer.asUint8List()}',
-          input,
-          input.lengthInBytes);
+  QrData convert(final ByteData rawInput) {
+    debugPrint(
+        'rawInput: ${hex.encode(rawInput.buffer.asUint8List())} (${rawInput.lengthInBytes})');
+    ByteData input;
+    if (rawInput.getUint8(0) == 0xff && rawInput.getUint8(1) == 0xfe) {
+      input = _decrypt(rawInput);
+    } else {
+      input = rawInput;
     }
     try {
       final passType = (input.getUint8(0) & 0x80 == 0x80)
@@ -36,7 +65,9 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
       final controlCode = input.getUint32(2);
       print('controlCode: $controlCode (${ControlCode.encode(controlCode)})');
       final validFrom = input.getUint32(6);
+      debugPrint('validFrom: $validFrom');
       final validUntil = input.getUint32(10);
+      debugPrint('validUntil: $validUntil');
       final idOrPlateLen = input.getUint8(14);
       debugPrint('idOrPlateLen: $idOrPlateLen');
       final List<int> bytes = List(idOrPlateLen);

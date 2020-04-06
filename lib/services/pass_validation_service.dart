@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
-import 'package:rapidpass_checkpoint/repository/api_respository.dart';
+import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/utils/hmac_sha256.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 
@@ -17,7 +18,7 @@ class PassValidationService {
     try {
       final decodedFromBase64 = base64.decode(base64Encoded);
       final asHex = hex.encode(decodedFromBase64);
-      print('barcode => $asHex (${asHex.length} codes)');
+      print('QR Code as hex => $asHex (${asHex.length} codes)');
       final buffer = decodedFromBase64 is Uint8List
           ? decodedFromBase64.buffer
           : Uint8List.fromList(decodedFromBase64).buffer;
@@ -69,26 +70,24 @@ class PassValidationService {
     return results;
   }
 
-  static final skip32key = AsciiEncoder().convert('SKIP32_SECRET_KEY');
-
-  static final knownPlateNumbers = {
-    'NAZ2070': QrData(
-        passType: PassType.Vehicle,
-        apor: 'PI',
-        controlCode: 329882482,
-        validFrom: 1582992000,
-        validUntil: 1588262400,
-        idOrPlate: 'NAZ2070')
-  };
-
   static String normalizePlateNumber(final String plateNumber) {
     return plateNumber.toUpperCase().split('\\s').join();
   }
 
-  static ScanResults checkPlateNumber(final String plateNumber) {
+  Future<ScanResults> checkPlateNumber(final String plateNumber) async {
     final normalizedPlateNumber = normalizePlateNumber(plateNumber);
-    if (knownPlateNumbers.containsKey(normalizedPlateNumber)) {
-      return ScanResults(knownPlateNumbers[normalizedPlateNumber]);
+    final validPass = await apiRepository.localDatabaseService
+        .getValidPassByIdOrPlate(normalizedPlateNumber);
+    if (validPass != null) {
+      final QrData qrData = QrData(
+          passType:
+              validPass.passType == 1 ? PassType.Vehicle : PassType.Individual,
+          apor: validPass.apor,
+          controlCode: validPass.controlCode,
+          validFrom: validPass.validFrom,
+          validUntil: validPass.validUntil,
+          idOrPlate: validPass.idOrPlate);
+      return ScanResults(qrData);
     } else {
       return ScanResults.invalidPass;
     }

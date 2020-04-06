@@ -50,21 +50,35 @@ class QrData {
   }
 
   DateTime validFromDateTime() {
+    if (this.validFrom == null) {
+      return null;
+    }
     return DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
   }
 
   DateTime validUntilDateTime() {
+    if (this.validUntil == null) {
+      return null;
+    }
     return DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
   }
 
   final DateFormat dateFormat = DateFormat.yMMMd('en_US');
 
   String validFromDisplayDate() {
-    return dateFormat.format(validFromDateTime());
+    var vfdt = validFromDateTime();
+    if (vfdt == null) {
+      return '';
+    }
+    return dateFormat.format(vfdt);
   }
 
   String validUntilDisplayDate() {
-    return dateFormat.format(validUntilDateTime());
+    var vudt = validUntilDateTime();
+    if (vudt == null) {
+      return '';
+    }
+    return dateFormat.format(vudt);
   }
 
   String validUntilDisplayTimestamp() {
