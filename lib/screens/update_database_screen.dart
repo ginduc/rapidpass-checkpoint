@@ -217,7 +217,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
     // For Functionality Test
     // [Uncomment statement below to drive an update failure state]
-    state = null;
+    // state = null;
     if (state == null) {
       DialogHelper.showAlertDialog(
         context,
