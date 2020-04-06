@@ -10,7 +10,7 @@ import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 
 abstract class IApiService {
-  Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum);
+  Future<void> authenticateDevice({String imei, String masterKey});
   Future<DatabaseSyncState> getBatchPasses(DatabaseSyncState state);
   Future<void> verifyPlateNumber(String plateNumber);
   Future<void> verifyControlNumber(String controlNumber);
@@ -20,6 +20,9 @@ class ApiService extends IApiService {
   final HttpClientAdapter httpClientAdapter;
   final String baseUrl;
 
+  static const authenticateDevicePath = '/checkpoint/auth';
+  static const getBatchPassesPath = '/batch/access-passes';
+
   ApiService({
     @required this.baseUrl,
     HttpClientAdapter httpClientAdapter,
@@ -28,12 +31,19 @@ class ApiService extends IApiService {
             : DefaultHttpClientAdapter();
 
   @override
-  Future<void> authenticateDevice(int timestamp, int pageSize, int pageNum) {
-    // TODO: implement authenticateDevice
-    return null;
+  Future authenticateDevice({final String imei, final String masterKey}) async {
+    final Dio client = Dio(BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: 30000,
+        receiveTimeout: 60000,
+        contentType: Headers.jsonContentType));
+    client.httpClientAdapter = httpClientAdapter;
+    final Response response = await client.post(authenticateDevicePath,
+        data: {'imei': imei, 'masterKey': masterKey});
+    final data = response.data;
+    debugPrint('${inspect(data)}');
+    return data;
   }
-
-  static const getBatchPassesPath = '/batch/access-passes';
 
   @override
   Future<DatabaseSyncState> getBatchPasses(

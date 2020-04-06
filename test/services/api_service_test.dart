@@ -19,6 +19,16 @@ void main() {
   });
 
   group('ApiService test group', () {
+    test('test authenticateDevice()', () async {
+      final VcrAdapter adapter = VcrAdapter();
+      adapter.useCassette('authenticate-device');
+      apiService = ApiService(
+          httpClientAdapter: adapter,
+          baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
+      final result = await apiService.authenticateDevice(
+          imei: '358240051111110', masterKey: '5Mg7JGHTRgpqP7jH');
+      print(result);
+    });
     test('test getBatchPasses', () async {
       final VcrAdapter adapter = VcrAdapter();
       adapter.useCassette('batch/access-passes');
