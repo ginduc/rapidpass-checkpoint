@@ -167,8 +167,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
         appState.masterQrCode = code;
         Navigator.pushNamed(context, '/authenticatingScreen');
       });
-    } else {
+    } else if (appState.appSecrets == null) {
       Navigator.pushNamed(context, '/authenticatingScreen');
+    } else {
+      Navigator.pushNamed(context, '/menu');
     }
   }
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +26,12 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
     final AppState appState = Provider.of<AppState>(context, listen: false);
     _futureAppSecrets = _authenticate(apiRepository.apiService,
             deviceInfoModel.imei, appState.masterQrCode)
-        .catchError((e) {
+        .then((appSecrets) {
+      appState
+          .setAppSecrets(appSecrets)
+          .then((_) => Navigator.pushReplacementNamed(context, '/menu'));
+      return appSecrets;
+    }).catchError((e) {
       debugPrint(e.toString());
       String title = 'Authentication error';
       if (e is ApiException) {
@@ -37,8 +40,7 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
         }
       }
       DialogHelper.showAlertDialog(context, title: title, message: e.message)
-          .then((v) {
-        debugPrint('v: ${inspect(v)}');
+          .then((_) {
         Navigator.popUntil(context, ModalRoute.withName('/'));
       });
     });
@@ -59,7 +61,10 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0, left: 8.0),
-                child: Text('Authenticating...'),
+                child: FutureBuilder<AppSecrets>(
+                    future: _futureAppSecrets,
+                    builder: (_, snapshot) => Text(
+                        snapshot.hasData ? 'Logged in' : 'Authenticating...')),
               )
             ])));
   }

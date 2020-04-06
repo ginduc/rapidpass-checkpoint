@@ -32,13 +32,16 @@ class AppStorage {
         prefs.setInt('lastSyncOn', timestamp).then((_) => timestamp));
   }
 
-  static Future<void> setAppSecrets(final AppSecrets appSecrets) {
+  static Future<AppSecrets> setAppSecrets(final AppSecrets appSecrets) {
     return Future.wait([
       secureStorage.write(key: _signingKeyKey, value: appSecrets.signingKey),
       secureStorage.write(
           key: _encryptionKeyKey, value: appSecrets.encryptionKey),
       secureStorage.write(key: _accessCodeKey, value: appSecrets.accessCode)
-    ]).then((_) => debugPrint('AppSecrets saved!'));
+    ]).then((_) {
+      debugPrint('AppSecrets saved!');
+      return appSecrets;
+    });
   }
 
   static Future<Uint8List> getDatabaseEncryptionKey() =>

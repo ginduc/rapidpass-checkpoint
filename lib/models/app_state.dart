@@ -33,8 +33,11 @@ class AppState extends ChangeNotifier {
   }
 
   AppSecrets get appSecrets => this._appSecrets;
-  set appSecrets(final AppSecrets appSecrets) {
+  Future<AppSecrets> setAppSecrets(final AppSecrets appSecrets) {
     this._appSecrets = appSecrets;
-    AppStorage.setAppSecrets(appSecrets).then((_) => notifyListeners());
+    return AppStorage.setAppSecrets(appSecrets).then((secrets) {
+      notifyListeners();
+      return secrets;
+    });
   }
 }

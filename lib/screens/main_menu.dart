@@ -19,7 +19,7 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        debugPrint('onWillPop...');
+        // However we got here, on 'Back' go back all the way to the Welcome screen
         Navigator.popUntil(context, ModalRoute.withName('/'));
         return Future.value(false);
       },
