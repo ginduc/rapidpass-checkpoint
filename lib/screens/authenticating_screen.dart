@@ -31,15 +31,19 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
           .setAppSecrets(appSecrets)
           .then((_) => Navigator.pushReplacementNamed(context, '/menu'));
       return appSecrets;
-    }).catchError((e) {
-      debugPrint(e.toString());
+    }).catchError((e) async {
+      debugPrint('catchError(${e.toString()})');
       String title = 'Authentication error';
+      String message = e.toString();
       if (e is ApiException) {
-        if (e.statusCode >= 500 && e.statusCode < 600) {
+        debugPrint('e.statusCode: ${e.statusCode}');
+        if (e.statusCode != null && e.statusCode >= 500 && e.statusCode < 600) {
           title = 'Server error';
         }
+        message = e.message;
       }
-      DialogHelper.showAlertDialog(context, title: title, message: e.message)
+      await DialogHelper.showAlertDialog(context,
+              title: title, message: message)
           .then((_) {
         Navigator.popUntil(context, ModalRoute.withName('/'));
       });

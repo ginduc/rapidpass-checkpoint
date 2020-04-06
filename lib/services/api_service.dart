@@ -85,7 +85,9 @@ class ApiService extends IApiService {
           throw ApiException('No response from server.');
         } else if (data is Map<String, dynamic> &&
             data.containsKey('message')) {
-          throw ApiException(data['message']);
+          var message = data['message'];
+          debugPrint("message: '$message'");
+          throw ApiException(message);
         } else {
           throw e;
         }
