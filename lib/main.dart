@@ -17,8 +17,8 @@ import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart'
 import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
-import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
@@ -131,23 +131,16 @@ class RapidPassCheckpointApp extends StatelessWidget {
                   settings: settings);
             case '/checkPlateNumber':
               return CupertinoPageRoute(
-                builder: (_) {
-                  return CheckPlateOrControlScreen(
-                      CheckPlateOrControlScreenModeType.plate);
-                },
-              );
+                  builder: (_) => CheckPlateOrControlScreen(
+                      CheckPlateOrControlScreenModeType.plate));
             case '/checkControlNumber':
               return CupertinoPageRoute(
-                builder: (_) {
-                  return CheckPlateOrControlScreen(
-                      CheckPlateOrControlScreenModeType.control);
-                },
+                builder: (_) => CheckPlateOrControlScreen(
+                    CheckPlateOrControlScreenModeType.control),
               );
-            case '/scanQrCode':
+            case '/masterQrScannerScreen':
               return CupertinoPageRoute(
-                builder: (_) => QrScannerScreen(),
-                settings: settings,
-              );
+                  builder: (_) => MasterQrScannerScreen());
             case '/viewMoreInfo':
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),

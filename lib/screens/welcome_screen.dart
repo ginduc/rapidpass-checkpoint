@@ -106,9 +106,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                           child: RaisedButton(
                             shape: new RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(24.0)),
-                            onPressed: () {
-                              Navigator.pushNamed(context, "/menu");
-                            },
+                            onPressed: () => _startButtonPressed(context),
                             child: Text("Start",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 18.0)),
@@ -145,6 +143,11 @@ class WelcomeScreenState extends State<WelcomeScreen>
         ),
       ),
     );
+  }
+
+  void _startButtonPressed(final BuildContext context) {
+    debugPrint('_startButtonPressed()');
+    Navigator.pushNamed(context, "/masterQrScannerScreen");
   }
 
   Widget _buildFooter(String title) {
