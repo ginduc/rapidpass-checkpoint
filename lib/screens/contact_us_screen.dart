@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/helpers/url_launcher_helper.dart';
 
 class ContactUs extends StatelessWidget {
   static final String routeName = "/contact_us";
@@ -43,22 +44,35 @@ class ContactUs extends StatelessWidget {
                   'using the channels below. We will get back to you as soon as possible.',
             ),
             SizedBox(height: 25),
-            _buildSocial(
-              ctx: context,
-              socialname: 'rapidpass-dctx@devcon.ph',
-              socialIcon: FontAwesomeIcons.envelope,
+            InkWell(
+              onTap: () => URLLauncherHelper.launchMail(
+                'rapidpass-dctx@devcon.ph',
+              ),
+              child: _buildSocial(
+                ctx: context,
+                socialname: 'rapidpass-dctx@devcon.ph',
+                socialIcon: FontAwesomeIcons.envelope,
+              ),
             ),
             SizedBox(height: 15),
-            _buildSocial(
-              ctx: context,
-              socialname: 'facebook.com/rapidpassph',
-              socialIcon: FontAwesomeIcons.facebookF,
+            InkWell(
+              onTap: () => URLLauncherHelper.launchFacebook(
+                  '114422283533958', 'rapidpassph'),
+              child: _buildSocial(
+                ctx: context,
+                socialname: 'facebook.com/rapidpassph',
+                socialIcon: FontAwesomeIcons.facebookF,
+              ),
             ),
             SizedBox(height: 15),
-            _buildSocial(
-              ctx: context,
-              socialname: 'twitter.com/rapidpassph',
-              socialIcon: FontAwesomeIcons.twitter,
+            InkWell(
+              onTap: () =>
+                  URLLauncherHelper.launchUrl('https://twitter.com/rapidpassph'),
+              child: _buildSocial(
+                ctx: context,
+                socialname: 'twitter.com/rapidpassph',
+                socialIcon: FontAwesomeIcons.twitter,
+              ),
             ),
           ],
         ),
