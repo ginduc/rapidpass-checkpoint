@@ -16,6 +16,7 @@ class UpdateDatabaseScreen extends StatefulWidget {
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasConnection = true;
   bool _isUpdating = false;
+  bool _hasError = false;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 4000,
@@ -24,6 +25,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   Widget _buildRecordListView() {
     return Expanded(
+      flex: 2,
       child: LayoutBuilder(
         builder: (bContext, constraints) {
           return Container(
@@ -91,6 +93,21 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _builUpdateErrorMessage() {
+    return Expanded(
+      child: Center(
+        child: Text(
+          'Error Updating Database!',
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
       ),
     );
   }
@@ -163,6 +180,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         children: <Widget>[
           if (!_isUpdating) _buildRecordListView(),
           if (!_hasConnection) _buildOfflineContent(screenSize),
+          if (_hasError && _hasConnection && !_isUpdating)
+            _builUpdateErrorMessage(),
           if (_isUpdating) _showProgressBar(),
           _buildFooterContent(),
         ],
@@ -176,10 +195,23 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     final appState = Provider.of<AppState>(context, listen: false);
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
+
+    // For Functionality Test
+    // state = null;
     if (state == null) {
-      DialogHelper.showAlertDialog(context,
-          title: 'Database sync error', message: 'An unknown error occurred.');
+      DialogHelper.showAlertDialog(
+        context,
+        title: 'Database sync error',
+        message: 'An unknown error occurred.',
+      );
+      setState(() {
+        _isUpdating = false;
+        _hasError = true;
+      });
+      
+      return;
     }
+
     final int totalPages = state.totalPages;
     debugPrint('state.totalPages: $totalPages');
     if (totalPages > 0) {
@@ -188,21 +220,26 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
       }
     }
+
     final int totalRecords =
         await apiRepository.localDatabaseService.countPasses();
     final String message = state.insertedRowsCount > 0
         ? 'Downloaded ${state.insertedRowsCount} records'
         : 'No new records found. Total records in database is $totalRecords';
-    DialogHelper.showAlertDialog(
-      context,
-      title: 'Database Updated',
-      message: message,
-      onConfirm: () {
-        setState(() {
-          _isUpdating = false;
-        });
-      },
-    );
+
+    if (state != null) {
+      DialogHelper.showAlertDialog(
+        context,
+        title: 'Database Updated',
+        message: message,
+      );
+
+      setState(() {
+        _hasError = false;
+        _isUpdating = false;
+      });
+    }
+
     await AppStorage.setLastSyncOnToNow().then((timestamp) {
       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
       appState.setDatabaseLastUpdated(timestamp);
