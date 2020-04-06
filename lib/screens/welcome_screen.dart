@@ -106,8 +106,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                             },
                             child: Text("Start",
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0)),
+                                    color: Colors.white, fontSize: 18.0)),
                           ),
                         ),
                       ),
@@ -144,7 +143,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
 
   Widget _buildFooter(String title) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, "/${title.replaceAll(' ', '_').toLowerCase()}"),
+      onTap: () => Navigator.pushNamed(
+          context, "/${title.replaceAll(' ', '_').toLowerCase()}"),
       child: Text(
         title,
         style: TextStyle(

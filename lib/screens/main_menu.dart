@@ -126,7 +126,8 @@ class MainMenu extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
                   debugPrint('Update Database pressed');
-                  _updateDatabase(context);
+                  Navigator.pushNamed(context, '/updateDatabase');
+                  // _updateDatabase(context);
                 },
                 child: Text('Update Database',
                     style: TextStyle(
