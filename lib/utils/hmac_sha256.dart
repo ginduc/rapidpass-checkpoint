@@ -1,24 +1,22 @@
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
-import 'package:rapidpass_checkpoint/env.dart' as Env;
 
 class HmacShac256 {
-  static bool validateSignature(final Uint8List decodedFromBase64) {
+  static bool validateSignature(
+      final Uint8List key, final Uint8List decodedFromBase64) {
     final length = decodedFromBase64.lengthInBytes;
-    print('decodedFromBase64: $decodedFromBase64');
-    print('length: $length');
+    print(
+        'decodedFromBase64: ${hex.encode(decodedFromBase64)} ($length bytes)');
     if (length < 4) {
       return false;
     }
     final unsignedData = decodedFromBase64.sublist(0, length - 4);
-    final digest = computeSignature(
-        Uint8List.fromList(Env.hmacSha256SigningKey), unsignedData);
+    final digest = computeSignature(key, unsignedData);
     final ffDigest = digest.bytes.sublist(0, 4);
-    print('ffDigest: $ffDigest');
     final ffInput = decodedFromBase64.sublist(length - 4, length);
-    print('ffInput: $ffInput');
     return listEquals(ffInput, ffDigest);
   }
 
