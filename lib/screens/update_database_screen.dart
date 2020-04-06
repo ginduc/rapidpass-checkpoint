@@ -14,16 +14,21 @@ class UpdateDatabaseScreen extends StatefulWidget {
 }
 
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
+  AppState appState;
+
   bool _hasConnection = true;
   bool _isUpdating = false;
   bool _hasError = false;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 0,
-    'dateTime': DateTime.parse("2020-01-01 00:00:00")
+    'dateTime': DateTime.parse("0000-00-00 00:00:00"),
   };
 
   Widget _buildRecordListView() {
+    appState = Provider.of<AppState>(context, listen: false);
+    _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+
     return Expanded(
       flex: 2,
       child: LayoutBuilder(
@@ -191,7 +196,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   Future _updateDatabase(final BuildContext context) async {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
-    final appState = Provider.of<AppState>(context, listen: false);
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
 
