@@ -84,10 +84,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
                     textAlign: TextAlign.center),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 5),
-                  child: Text('data'),
-                ),
-                Padding(
                   padding: EdgeInsets.only(top: 28),
                   child:
                       Consumer<AppState>(builder: (context, appState, child) {
