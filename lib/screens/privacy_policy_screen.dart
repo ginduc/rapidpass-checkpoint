@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/helpers/url_launcher_helper.dart';
 
 class PrivacyPolicy extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,14 +173,16 @@ class PrivacyPolicy extends StatelessWidget {
             'If you have any questions, concerns, or disputes regarding our Privacy Policy, please feel free to contact ',
             style: TextStyle(fontSize: 16),
           ),
-          Text(
-            'RapidPass-dctx@devcon.ph',
-            style: TextStyle(
-              fontSize: 16,
-              decoration: TextDecoration.underline,
-              color: Colors.blueAccent,  
+          InkWell(
+            onTap: () => URLLauncherHelper.launchMail('RapidPass-dctx@devcon.ph') ,
+            child: Text(
+              'RapidPass-dctx@devcon.ph',
+              style: TextStyle(
+                fontSize: 16,
+                decoration: TextDecoration.underline,
+                color: Colors.blueAccent,
+              ),
             ),
-            
           ),
         ],
       ),
