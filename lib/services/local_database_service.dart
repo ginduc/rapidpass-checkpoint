@@ -1,70 +1,150 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:moor/moor.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/models/control_code.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
+import 'package:rapidpass_checkpoint/utils/aes.dart';
 
 abstract class ILocalDatabaseService {
-  Future<List<QrDataEntry>> getAllQrData();
-  Stream<List<QrDataEntry>> streamQrData();
-  Stream<QrDataEntry> streamQrDataEntry(int id);
-  Future<QrDataEntry> insertQrCode(QrDataEntry entry);
-  Future<QrDataEntry> updateQrCode(QrDataEntry entry);
-  Future<QrDataEntry> deleteQrCode(QrDataEntry entry);
+  Future<int> countPasses();
+  Future<ValidPass> getValidPassByIdOrPlate(final String idOrPlate);
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode);
+  Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
+  Future<int> insertValidPass(final ValidPassesCompanion companion);
+  Future bulkInsertOrUpdate(final List<ValidPassesCompanion> forInserting);
   void dispose();
 }
 
 // TODO: Additional logic while retrieving the data from local db should be placed here
 class LocalDatabaseService implements ILocalDatabaseService {
+  final Uint8List encryptionKey;
   final AppDatabase appDatabase;
 
-  LocalDatabaseService({@required this.appDatabase});
+  LocalDatabaseService(
+      {@required this.encryptionKey, @required this.appDatabase});
 
-  // Retrieves all QR code data from the database per method call.
-  // Please see [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
   @override
-  Future<List<QrDataEntry>> getAllQrData() {
-    return appDatabase.getAllQrData();
+  Future<ValidPass> getValidPassByStringControlCode(final String controlCode) {
+    return getValidPassByIntegerControlCode(ControlCode.decode(controlCode));
   }
 
-  // Subscribes and listens to the latest changes in the database.
-  // Please see [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
   @override
-  Stream<List<QrDataEntry>> streamQrData() {
-    return appDatabase.streamQrData();
+  Future<ValidPass> getValidPassByIntegerControlCode(
+      final int controlCodeAsInt) {
+    debugPrint(
+        'getValidPassByIntegerControlCode($controlCodeAsInt [${ControlCode.encode(controlCodeAsInt)}])');
+    return appDatabase.getValidPass(controlCodeAsInt).then((validPass) async {
+      debugPrint('validPass: $validPass');
+      if (validPass == null) {
+        return null;
+      } else {
+        final Uint8List encryptionKey =
+            await AppStorage.getDatabaseEncryptionKey();
+        return decryptIdOrPlate(encryptionKey, validPass);
+      }
+    });
   }
 
-  // Subscribes and listens to the latest changes of a single record in the database.
-  // Please see [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
   @override
-  Stream<QrDataEntry> streamQrDataEntry(int id) {
-    return appDatabase.streamQrDataEntry(id);
-  }
-
-  // Inserts new record to the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> insertQrCode(QrDataEntry entry) async {
-    await appDatabase.insertQrCode(entry);
-    return entry;
-  }
-
-  // Replaces an existing record from the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> updateQrCode(QrDataEntry entry) async {
-    await appDatabase.updateQrCode(entry);
-    return entry;
-  }
-
-  // Deletes an existing record from the database.
-  // Returns the previously inserted record (eg. used for displaying additional confirmatio prompts).
-  @override
-  Future<QrDataEntry> deleteQrCode(QrDataEntry entry) async {
-    await appDatabase.deleteQrCode(entry);
-    return entry;
+  Future<ValidPass> getValidPassByIdOrPlate(final String idOrPlate) async {
+    debugPrint("LocalDatabaseService.getValidPassByIdOrPlate('$idOrPlate')");
+    final Uint8List encryptionKey = await AppStorage.getDatabaseEncryptionKey();
+    final String encryptedIdOrPlate =
+        encryptIdOrPlateValue(encryptionKey, idOrPlate);
+    debugPrint("encryptedIdOrPlate: '$encryptedIdOrPlate'");
+    return appDatabase
+        .getValidPassByIdOrPlate(encryptedIdOrPlate)
+        .then((validPass) async {
+      debugPrint('validPass: $validPass');
+      if (validPass == null) {
+        return null;
+      } else {
+        return decryptIdOrPlate(encryptionKey, validPass);
+      }
+    });
   }
 
   // Close and clear all expensive resources needed as this class gets killed.
   @override
   void dispose() async {
     await appDatabase.close();
+  }
+
+  @override
+  Future<int> insertValidPass(final ValidPassesCompanion companion) async {
+    final Uint8List encryptionKey = await AppStorage.getDatabaseEncryptionKey();
+    final ValidPassesCompanion encrypted =
+        encryptIdOrPlate(encryptionKey, companion);
+    return appDatabase.insertValidPass(encrypted);
+  }
+
+  static String encryptIdOrPlateValue(
+      final Uint8List encryptionKey, final String value) {
+    final Uint8List plainText = utf8.encode(value);
+    final Uint8List encrypted =
+        Aes.encrypt(key: encryptionKey, plainText: plainText);
+    return Base64Encoder().convert(encrypted);
+  }
+
+  static String decryptIdOrPlateValue(
+      final Uint8List encryptionKey, final String encryptedValue) {
+    final Uint8List cipherText = Base64Decoder().convert(encryptedValue);
+    final decrypted = Aes.decrypt(key: encryptionKey, cipherText: cipherText);
+    return utf8.decode(decrypted);
+  }
+
+  ValidPassesCompanion encryptIdOrPlate(
+      final Uint8List encryptionKey, final ValidPassesCompanion companion) {
+    if (companion == null) {
+      return null;
+    }
+    debugPrint('companion.idOrPlate.value: ${companion?.idOrPlate?.value}');
+    if (companion.idOrPlate == null ||
+        companion.idOrPlate == Value.absent() ||
+        companion.idOrPlate.value == null) {
+      return companion.copyWith(idOrPlate: Value(''));
+    }
+    final String encryptedValue =
+        encryptIdOrPlateValue(encryptionKey, companion.idOrPlate.value);
+    return companion.copyWith(idOrPlate: Value(encryptedValue));
+  }
+
+  ValidPass decryptIdOrPlate(
+      final Uint8List encryptionKey, final ValidPass validPass) {
+    if (validPass == null) {
+      return validPass;
+    }
+    if (validPass.idOrPlate == null || validPass.idOrPlate.isEmpty) {
+      return validPass;
+    }
+    final String idOrPlate =
+        decryptIdOrPlateValue(encryptionKey, validPass.idOrPlate);
+    return validPass.copyWith(idOrPlate: idOrPlate);
+  }
+
+  @override
+  Future<int> countPasses() async {
+    return appDatabase.countPasses();
+  }
+
+  @override
+  Future bulkInsertOrUpdate(
+      final List<ValidPassesCompanion> forInserting) async {
+    final futures = forInserting.map((fi) =>
+        getValidPassByIntegerControlCode(fi.controlCode.value).then((existing) {
+          if (existing == null) {
+            return encryptIdOrPlate(this.encryptionKey, fi);
+          } else {
+            debugPrint('existing: $existing');
+            final ValidPassesCompanion forUpdate =
+                fi.copyWith(id: Value(existing.id));
+            return encryptIdOrPlate(this.encryptionKey, forUpdate);
+          }
+        }));
+    return Future.wait(futures.toList()).then((bulkInsertOrUpdate) =>
+        appDatabase.insertOrUpdateAll(bulkInsertOrUpdate));
   }
 }

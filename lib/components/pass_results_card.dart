@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 const borderRadius = 12.0;
 
@@ -15,15 +16,19 @@ class PassResultsTableRow {
 class PassResultsCard extends StatelessWidget {
   final String iconName;
   final String headerText;
+  final String subHeaderText;
   final List<PassResultsTableRow> data;
   final Color color;
   final bool allRed;
-  PassResultsCard(
+  final bool headerOnly;
+  const PassResultsCard(
       {this.iconName,
       this.headerText,
+      this.subHeaderText,
       this.data,
       this.color,
-      this.allRed = false});
+      this.allRed = false,
+      this.headerOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,29 +37,29 @@ class PassResultsCard extends StatelessWidget {
       if (this.allRed || row.errorMessage != null) {
         return TableRow(children: [
           GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text(
-                row.label,
-                style: tableTextStyle.copyWith(color: Colors.red),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Text(
+                  row.label,
+                  style: tableTextStyle.copyWith(color: Colors.red),
+                ),
               ),
-            ),
-            onTap: () => _showDialog(context,
-                title: this.headerText, body: row.errorMessage),
-          ),
+              onTap: () => DialogHelper.showAlertDialog(context,
+                  title: this.headerText,
+                  message: row.errorMessage ?? this.headerText)),
           GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text(
-                row.value,
-                textAlign: TextAlign.right,
-                style: tableTextStyle.copyWith(
-                    color: Colors.red, fontWeight: FontWeight.bold),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Text(
+                  row.value,
+                  textAlign: TextAlign.right,
+                  style: tableTextStyle.copyWith(
+                      color: Colors.red, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            onTap: () => _showDialog(context,
-                title: this.headerText, body: row.errorMessage),
-          )
+              onTap: () => DialogHelper.showAlertDialog(context,
+                  title: this.headerText,
+                  message: row.errorMessage ?? this.headerText))
         ]);
       } else {
         return TableRow(children: [
@@ -86,10 +91,18 @@ class PassResultsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
               Container(
+                padding: this.headerOnly
+                    ? EdgeInsets.symmetric(vertical: 80.0)
+                    : null,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(borderRadius),
-                      topRight: Radius.circular(borderRadius)),
+                    topLeft: Radius.circular(borderRadius),
+                    topRight: Radius.circular(borderRadius),
+                    bottomLeft:
+                        Radius.circular(this.headerOnly ? borderRadius : 0),
+                    bottomRight:
+                        Radius.circular(this.headerOnly ? borderRadius : 0),
+                  ),
                   color: this.color,
                 ),
                 child: Padding(
@@ -103,46 +116,40 @@ class PassResultsCard extends StatelessWidget {
                           image: AssetImage('assets/${this.iconName}.png'),
                         ),
                       ),
-                      Text(
-                        this.headerText,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold),
-                      )
+                      if (this.headerText != null)
+                        Text(
+                          this.headerText.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      if (this.subHeaderText != null) ...[
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          this.subHeaderText.toUpperCase(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ]
                     ],
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Table(children: tableChildren)),
-              )
+              if (!this.headerOnly)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Table(children: tableChildren)),
+                )
             ])));
-  }
-
-  void _showDialog(BuildContext context, {String title, String body}) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(body),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

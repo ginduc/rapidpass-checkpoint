@@ -1,8 +1,19 @@
 class RapidAssetConstants {
   static const baseAssetFont = 'assets';
-  
-  /// Images
-  static const icQrCode = '$baseAssetFont/icons8_qr-code-2x.png';
-  static const icPlateNubmer = '$baseAssetFont/license-plate-2x.png';
-  static const icControlCode = '$baseAssetFont/control_number-2x.png';
+
+  /// Logo
+  static const rapidPassLogo = '$baseAssetFont/rapidpass_logo.svg';
+  static const rapidPassLogoPurple = '$baseAssetFont/rapidpass_logo_purple.svg';
+  static const dctxLogo = '$baseAssetFont/dctx_logo.svg';
+  static const devconLogo = '$baseAssetFont/devcon_logo.png';
+
+  /// Purple
+  static const icQrCode = '$baseAssetFont/qrcode-purple.svg';
+  static const icPlateNumber = '$baseAssetFont/plate-number-purple.svg';
+  static const icControlCode = '$baseAssetFont/control-number-purple.svg';
+
+  /// White
+  static const icQrCodeWhite = '$baseAssetFont/qrcode-white.svg';
+  static const icPlateNumberWhite = '$baseAssetFont/plate-number-white.svg';
+  static const icControlCodeWhite = '$baseAssetFont/control-number-white.svg';
 }

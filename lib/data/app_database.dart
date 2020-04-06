@@ -1,26 +1,49 @@
+import 'package:flutter/foundation.dart';
 import 'package:moor/moor.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 
 part 'app_database.g.dart';
 
-@DataClassName('QrDataEntry')
-class QrData extends Table {
+/// Remember to generate the code using
+/// ```
+/// flutter packages pub run build_runner build
+/// ```
+/// Or
+/// ```
+/// flutter packages pub run build_runner watch
+/// ```
+@DataClassName('ValidPass')
+class ValidPasses extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get passType => integer()();
+
+  TextColumn get apor => text().nullable()();
+
+  IntColumn get controlCode => integer().customConstraint('UNIQUE')();
+
+  IntColumn get validFrom => integer().nullable()();
+
+  IntColumn get validUntil => integer().nullable()();
+
+  TextColumn get idType => text().nullable()();
+
+  TextColumn get idOrPlate => text().nullable()();
+
+  TextColumn get company => text().nullable()();
+
+  TextColumn get homeAddress => text().nullable()();
+}
+
+@DataClassName('InvalidPass')
+class InvalidPasses extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   IntColumn get controlCode => integer()();
 
-  IntColumn get validFrom => integer()();
-
-  IntColumn get validUntil => integer()();
-
-  IntColumn get idOrPlate => integer()();
-
-  TextColumn get company => text()();
-
-  TextColumn get homeAddress => text()();
+  TextColumn get status => text()();
 }
 
-@UseMoor(tables: [QrData])
+@UseMoor(tables: [ValidPasses, InvalidPasses])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
@@ -39,17 +62,45 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<List<QrDataEntry>> getAllQrData() => select(qrData).get();
-
-  Stream<List<QrDataEntry>> streamQrData() => select(qrData).watch();
-
-  Stream<QrDataEntry> streamQrDataEntry(int id) {
-    return (select(qrData)..where((u) => u.id.equals(id))).watchSingle();
+  Future<int> countPasses() async {
+    var list = (await select(validPasses).get());
+    return list.length;
   }
 
-  Future insertQrCode(QrDataEntry entry) => into(qrData).insert(entry);
+  Future<ValidPass> getValidPass(final int controlCode) async {
+    return await (select(validPasses)
+          ..where((u) => u.controlCode.equals(controlCode)))
+        .getSingle();
+  }
 
-  Future updateQrCode(QrDataEntry entry) => update(qrData).replace(entry);
+  Future<ValidPass> getValidPassByIdOrPlate(final String idOrPlate) async {
+    return await (select(validPasses)
+          ..where((u) => u.idOrPlate.equals(idOrPlate)))
+        .getSingle();
+  }
 
-  Future deleteQrCode(QrDataEntry entry) => delete(qrData).delete(entry);
+  Future updateValidPass(final ValidPassesCompanion validPassesCompanion) =>
+      update(validPasses).replace(validPassesCompanion);
+
+  Future insertValidPass(final ValidPassesCompanion validPassesCompanion) =>
+      into(validPasses).insert(validPassesCompanion);
+
+  Future insertOrUpdateAll(
+      final List<ValidPassesCompanion> bulkInsertOrUpdate) {
+    return transaction(() {
+      List<Future> futures = List();
+      for (final vpc in bulkInsertOrUpdate) {
+        if (vpc.id != null &&
+            vpc.id != Value.absent() &&
+            vpc.id.value != null) {
+          debugPrint('Updating pass id ${vpc.id.value}');
+          futures.add(updateValidPass(vpc));
+        } else {
+          debugPrint('Inserting pass ${vpc.controlCode.value}');
+          futures.add(insertValidPass(vpc));
+        }
+      }
+      return Future.wait(futures);
+    });
+  }
 }

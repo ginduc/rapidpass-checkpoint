@@ -12,7 +12,7 @@ enum RapidPassField {
 
 final fieldNames = {
   RapidPassField.passType: 'Pass Type',
-  RapidPassField.controlCode: 'Control Code',
+  RapidPassField.controlCode: 'Control Number',
   RapidPassField.apor: 'APOR',
   RapidPassField.validFrom: 'Valid From',
   RapidPassField.validUntil: 'Valid Until',
@@ -33,13 +33,22 @@ class ValidationError {
 class ScanResults {
   final QrData qrData;
   final List<ValidationError> errors = List();
-  String resultMessage = 'Pass Ok';
+  String resultMessage;
+  String resultSubMessage;
   bool allRed = false;
 
-  ScanResults(this.qrData);
+  static final invalidPass =
+      ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true)
+          .addError('ENTRY DENIED');
 
-  List<ValidationError> addError(String errorMessage, {RapidPassField source}) {
+  ScanResults(this.qrData,
+      {this.resultMessage = 'ENTRY APPROVED',
+      this.allRed = false,
+      String resultSubMessage});
+
+  ScanResults addError(String errorMessage, {RapidPassField source}) {
     this.errors.add(ValidationError(errorMessage, source: source));
+    return this;
   }
 
   ValidationError findErrorForSource(final RapidPassField source) {

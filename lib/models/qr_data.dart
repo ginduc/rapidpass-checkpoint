@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:rapidpass_checkpoint/utils/base32_crockford.dart';
 import 'package:rapidpass_checkpoint/utils/damm32.dart';
 
 const CrockfordEncoder paddedEncoder = const CrockfordEncoder(7);
 
+enum PassType { Vehicle, Individual }
+
 class QrData {
-  final int passType;
+  final PassType passType;
   final String apor;
   final int controlCode;
   final int validFrom;
@@ -13,9 +16,22 @@ class QrData {
   final String idOrPlate;
   final int signature;
 
-  QrData(this.passType, this.apor, this.controlCode, this.validFrom,
-      this.validUntil, this.idOrPlate,
-      {this.signature});
+  QrData(
+      {@required this.passType,
+      @required this.apor,
+      @required this.controlCode,
+      @required this.validFrom,
+      @required this.validUntil,
+      @required this.idOrPlate,
+      this.signature});
+
+  static final QrData empty = QrData(
+      passType: null,
+      apor: '',
+      controlCode: 0,
+      validFrom: 0,
+      validUntil: 0,
+      idOrPlate: '');
 
   @override
   String toString() {
@@ -34,21 +50,35 @@ class QrData {
   }
 
   DateTime validFromDateTime() {
+    if (this.validFrom == null) {
+      return null;
+    }
     return DateTime.fromMillisecondsSinceEpoch(this.validFrom * 1000);
   }
 
   DateTime validUntilDateTime() {
+    if (this.validUntil == null) {
+      return null;
+    }
     return DateTime.fromMillisecondsSinceEpoch(this.validUntil * 1000);
   }
 
   final DateFormat dateFormat = DateFormat.yMMMd('en_US');
 
   String validFromDisplayDate() {
-    return dateFormat.format(validFromDateTime());
+    var vfdt = validFromDateTime();
+    if (vfdt == null) {
+      return '';
+    }
+    return dateFormat.format(vfdt);
   }
 
   String validUntilDisplayDate() {
-    return dateFormat.format(validUntilDateTime());
+    var vudt = validUntilDateTime();
+    if (vudt == null) {
+      return '';
+    }
+    return dateFormat.format(vudt);
   }
 
   String validUntilDisplayTimestamp() {
