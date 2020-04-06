@@ -4,8 +4,8 @@ import 'package:meta/meta.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/local_database_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // TODO Rename this to RapidPassRepository
 abstract class IApiRepository {
@@ -29,9 +29,7 @@ class ApiRepository extends IApiRepository {
   Future<DatabaseSyncState> batchDownloadAndInsertPasses() async {
     final int before = await localDatabaseService.countPasses();
     debugPrint('before: $before');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int lastSyncOn =
-        prefs.containsKey('lastSyncOn') ? prefs.getInt('lastSyncOn') : 0;
+    final int lastSyncOn = await AppStorage.getLastSyncOn();
     debugPrint('lastSyncOn: $lastSyncOn');
     final lastSyncOnDateTime =
         DateTime.fromMillisecondsSinceEpoch(lastSyncOn * 1000);

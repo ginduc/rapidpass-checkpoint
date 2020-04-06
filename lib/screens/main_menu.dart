@@ -9,9 +9,9 @@ import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainMenuScreen extends StatelessWidget {
   @override
@@ -165,11 +165,7 @@ class MainMenu extends StatelessWidget {
         : 'No new records found. Total records in database is $totalRecords';
     DialogHelper.showAlertDialog(context,
         title: 'Database Updated', message: message);
-    final DateTime now = DateTime.now();
-    final int newLastSyncOn = now.millisecondsSinceEpoch ~/ 1000;
-    debugPrint('newLastSyncOn: $newLastSyncOn');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('lastSyncOn', newLastSyncOn);
+    await AppStorage.setLastSyncOnToNow();
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
