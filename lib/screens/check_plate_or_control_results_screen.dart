@@ -100,33 +100,33 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    if (scanResults.isValid() == true)
-                      InkWell(
-                        onTap: () =>
-                            Navigator.pushNamed(context, '/viewMoreInfo'),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 13.0, horizontal: 20.0),
-                          child: OutlineButton(
-                            borderSide: BorderSide(color: green300),
-                            highlightedBorderColor: green300,
-                            focusColor: green300,
-                            child: Text('View More Information',
-                                style: TextStyle(fontSize: 16)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                            color: green300,
-                            textColor: green300,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                              vertical: 20.0,
-                            ),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, '/viewMoreInfo'),
-                          ),
-                        ),
-                      ),
+//                    if (scanResults.isValid() == true)
+//                      InkWell(
+//                        onTap: () =>
+//                            Navigator.pushNamed(context, '/viewMoreInfo'),
+//                        child: Container(
+//                          padding: EdgeInsets.symmetric(
+//                              vertical: 13.0, horizontal: 20.0),
+//                          child: OutlineButton(
+//                            borderSide: BorderSide(color: green300),
+//                            highlightedBorderColor: green300,
+//                            focusColor: green300,
+//                            child: Text('View More Information',
+//                                style: TextStyle(fontSize: 16)),
+//                            shape: RoundedRectangleBorder(
+//                              borderRadius: BorderRadius.circular(30.0),
+//                            ),
+//                            color: green300,
+//                            textColor: green300,
+//                            padding: EdgeInsets.symmetric(
+//                              horizontal: 16.0,
+//                              vertical: 20.0,
+//                            ),
+//                            onPressed: () =>
+//                                Navigator.pushNamed(context, '/viewMoreInfo'),
+//                          ),
+//                        ),
+//                      ),
                     if (scanResults.isValid() == true)
                       Padding(padding: EdgeInsets.only(top: 16.0)),
                     InkWell(
