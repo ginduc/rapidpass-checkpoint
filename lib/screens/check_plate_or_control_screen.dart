@@ -28,9 +28,6 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
 
   bool _formHasErrors = false;
 
-  // TODO: Remove this soon
-  String _hardCodedValue = '123456';
-
   @override
   void initState() {
     super.initState();

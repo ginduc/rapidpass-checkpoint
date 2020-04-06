@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
+import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -84,10 +85,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     textAlign: TextAlign.center),
                 Padding(
                   padding: EdgeInsets.only(top: 28),
-                  child: Text(
-                    "Database updated as of\nMarch 29, 2020",
-                    textAlign: TextAlign.center,
-                  ),
+                  child:
+                      Consumer<AppState>(builder: (context, appState, child) {
+                    return Text(
+                      appState.databaseLastUpdatedText ??
+                          'Please sync the database',
+                      style: TextStyle(fontSize: 18.0),
+                    );
+                  }),
                 ),
                 Expanded(
                   child: Column(
@@ -122,7 +127,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[

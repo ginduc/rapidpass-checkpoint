@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
+import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
@@ -126,8 +127,8 @@ class MainMenu extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
                   debugPrint('Update Database pressed');
-                  Navigator.pushNamed(context, '/updateDatabase');
-                  // _updateDatabase(context);
+//                  Navigator.pushNamed(context, '/updateDatabase');
+                  _updateDatabase(context);
                 },
                 child: Text('Update Database',
                     style: TextStyle(
@@ -145,6 +146,7 @@ class MainMenu extends StatelessWidget {
   Future _updateDatabase(final BuildContext context) async {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
+    final appState = Provider.of<AppState>(context, listen: false);
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
     if (state == null) {
@@ -166,7 +168,10 @@ class MainMenu extends StatelessWidget {
         : 'No new records found. Total records in database is $totalRecords';
     DialogHelper.showAlertDialog(context,
         title: 'Database Updated', message: message);
-    await AppStorage.setLastSyncOnToNow();
+    await AppStorage.setLastSyncOnToNow().then((timestamp) {
+      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+      appState.setDatabaseLastUpdated(timestamp);
+    });
   }
 
   Future _scanAndNavigate(final BuildContext context) async {

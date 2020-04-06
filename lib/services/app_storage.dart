@@ -25,6 +25,7 @@ class AppStorage {
     debugPrint('timestamp: $timestamp');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('lastSyncOn', timestamp);
+    return timestamp;
   }
 
   static Future<Uint8List> getDatabaseEncryptionKey() async {
