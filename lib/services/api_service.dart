@@ -2,12 +2,18 @@ import 'dart:developer';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/data/pass_csv_to_json_converter.dart';
+import 'package:rapidpass_checkpoint/models/app_secrets.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
+
+class ApiException implements Exception {
+  final String message;
+  ApiException(this.message);
+}
 
 abstract class IApiService {
   Future<void> authenticateDevice({String imei, String masterKey});
@@ -31,18 +37,52 @@ class ApiService extends IApiService {
             : DefaultHttpClientAdapter();
 
   @override
-  Future authenticateDevice({final String imei, final String masterKey}) async {
+  Future<AppSecrets> authenticateDevice(
+      {final String imei, final String masterKey}) async {
     final Dio client = Dio(BaseOptions(
         baseUrl: baseUrl,
         connectTimeout: 30000,
         receiveTimeout: 60000,
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
-    final Response response = await client.post(authenticateDevicePath,
-        data: {'imei': imei, 'masterKey': masterKey});
-    final data = response.data;
-    debugPrint('${inspect(data)}');
-    return data;
+    try {
+      final response = await client.post(authenticateDevicePath,
+          data: {'imei': imei, 'masterKey': masterKey});
+      final data = response.data;
+      debugPrint('${inspect(data)}');
+      if (data == null) {
+        return Future.error('No response from server.');
+      } else if (data is Map<String, dynamic>) {
+        if (data.containsKey('message')) {
+          return Future.error(data['message']);
+        } else if (data.containsKey('signingKey') &&
+            data.containsKey('encryptionKey') &&
+            data.containsKey('accessCode')) {
+          return AppSecrets(
+              signingKey: data['signingKey'],
+              encryptionKey: data['encryptionKey'],
+              accessCode: data['accessCode']);
+        }
+      }
+      return Future.error('Unknown response from server.');
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      debugPrint('statusCode: ${e.response.statusCode}');
+      if (e.response.statusCode == 401) {
+        throw ApiException('Unauthorized');
+      } else {
+        final data = e.response.data;
+        print(inspect(data));
+        if (data == null) {
+          throw ApiException('No response from server.');
+        } else if (data is Map<String, dynamic> &&
+            data.containsKey('message')) {
+          throw ApiException(data['message']);
+        } else {
+          throw e;
+        }
+      }
+    }
   }
 
   @override

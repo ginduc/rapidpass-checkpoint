@@ -19,7 +19,6 @@ class _MasterQrScannerScreenState extends State<MasterQrScannerScreen>
     super.initState();
 
     _captureController.onCapture((data) {
-      debugPrint("onCapture('$data')");
       if (scanned == false) validate(data);
     });
   }
@@ -91,7 +90,7 @@ class _MasterQrScannerScreenState extends State<MasterQrScannerScreen>
       this.scanned = true;
       _captureController.pause();
       debugPrint('code: $code');
-      Navigator.pushNamed(context, '/menu');
+      Navigator.pop(context, code);
     } catch (e) {
       debugPrint('Error occured: $e');
     }

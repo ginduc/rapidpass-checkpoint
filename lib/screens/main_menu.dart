@@ -177,7 +177,7 @@ class MainMenu extends StatelessWidget {
         title: 'Database Updated', message: message);
     await AppStorage.setLastSyncOnToNow().then((timestamp) {
       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-      appState.setDatabaseLastUpdated(timestamp);
+      appState.databaseLastUpdated = timestamp;
     });
   }
 

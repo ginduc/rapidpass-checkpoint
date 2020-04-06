@@ -1,48 +1,62 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:moor/moor.dart';
+import 'package:rapidpass_checkpoint/models/app_secrets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStorage {
   // Create storage
   static final secureStorage = new FlutterSecureStorage();
 
+  static const _masterQrCodeKey = 'rapidPass.masterQrCode';
   static const _databaseEncryptionKeyKey = 'rapidPass.databaseEncryptionKey';
+  static const _signingKeyKey = 'rapidPass.signingKey';
+  static const _encryptionKeyKey = 'rapidPass.encryptionKey';
+  static const _accessCodeKey = 'rapidPass.accessCode';
 
-  static Future<int> getLastSyncOn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int lastSyncOn =
-        prefs.containsKey('lastSyncOn') ? prefs.getInt('lastSyncOn') : 0;
-    return lastSyncOn;
-  }
+  static Future<void> setMasterQrCode(final String masterQrCode) =>
+      secureStorage.write(key: _masterQrCodeKey, value: masterQrCode);
 
-  static Future<int> setLastSyncOnToNow() async {
+  static Future<int> getLastSyncOn() =>
+      SharedPreferences.getInstance().then((prefs) =>
+          prefs.containsKey('lastSyncOn') ? prefs.getInt('lastSyncOn') : 0);
+
+  static Future<int> setLastSyncOnToNow() {
     final DateTime now = DateTime.now();
     final int timestamp = now.millisecondsSinceEpoch ~/ 1000;
     debugPrint('timestamp: $timestamp');
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('lastSyncOn', timestamp);
-    return timestamp;
+    return SharedPreferences.getInstance().then((prefs) =>
+        prefs.setInt('lastSyncOn', timestamp).then((_) => timestamp));
   }
 
-  static Future<Uint8List> getDatabaseEncryptionKey() async {
-    return secureStorage.read(key: _databaseEncryptionKeyKey).then((value) {
-      if (value != null) {
-        return Base64Codec().decode(value);
-      } else {
-        final Uint8List key = _generateRandomEncryptionKey();
-        final String encodedKey = Base64Codec().encode(key);
-        debugPrint('Generated key: $key');
-        secureStorage.write(key: _databaseEncryptionKeyKey, value: encodedKey);
-        return key;
-      }
-    });
+  static Future<void> setAppSecrets(final AppSecrets appSecrets) {
+    return Future.wait([
+      secureStorage.write(key: _signingKeyKey, value: appSecrets.signingKey),
+      secureStorage.write(
+          key: _encryptionKeyKey, value: appSecrets.encryptionKey),
+      secureStorage.write(key: _accessCodeKey, value: appSecrets.accessCode)
+    ]).then((_) => debugPrint('AppSecrets saved!'));
   }
 
-  static Uint8List _generateRandomEncryptionKey() {
+  static Future<Uint8List> getDatabaseEncryptionKey() =>
+      secureStorage.read(key: _databaseEncryptionKeyKey).then((value) {
+        if (value != null) {
+          return Base64Codec().decode(value);
+        } else {
+          final Uint8List key = generateRandomEncryptionKey();
+          final String encodedKey = Base64Codec().encode(key);
+          debugPrint('Generated key: $key');
+          secureStorage.write(
+              key: _databaseEncryptionKeyKey, value: encodedKey);
+          return key;
+        }
+      });
+
+  @visibleForTesting
+  static Uint8List generateRandomEncryptionKey() {
     final Random random = Random.secure();
     return Uint8List.fromList(
         List<int>.generate(16, (i) => random.nextInt(256)));
