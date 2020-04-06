@@ -17,16 +17,23 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('RapidPass Checkpoint')),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              MainMenu(),
-            ],
+    return WillPopScope(
+      onWillPop: () {
+        debugPrint('onWillPop...');
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text('RapidPass Checkpoint')),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                MainMenu(),
+              ],
+            ),
           ),
         ),
       ),
