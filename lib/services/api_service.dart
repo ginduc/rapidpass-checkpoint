@@ -8,10 +8,12 @@ import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/data/pass_csv_to_json_converter.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
+import 'package:rapidpass_checkpoint/models/detailed_information.dart';
 
 abstract class IApiService {
   Future<void> authenticateDevice({String imei, String masterKey});
   Future<DatabaseSyncState> getBatchPasses(DatabaseSyncState state);
+  Future<DetailedInformation> getRegistryPass(String referenceId);
   Future<void> verifyPlateNumber(String plateNumber);
   Future<void> verifyControlNumber(String controlNumber);
 }
@@ -22,6 +24,7 @@ class ApiService extends IApiService {
 
   static const authenticateDevicePath = '/checkpoint/auth';
   static const getBatchPassesPath = '/batch/access-passes';
+  static const getRegistryPassPath = '/registry/access-passes';
 
   ApiService({
     @required this.baseUrl,
@@ -108,5 +111,38 @@ class ApiService extends IApiService {
   Future<void> verifyPlateNumber(String plateNumber) {
     // TODO: implement verifyPlateNumber
     return null;
+  }
+
+  @override
+  Future<DetailedInformation> getRegistryPass(String referenceId) async {
+    // TODO: get more information about /registry/access-passes/{referenceID}
+    debugPrint('getRegistryPass.referenceId: $referenceId');
+    final Dio client = Dio(BaseOptions(
+        baseUrl: baseUrl,
+        connectTimeout: 30000,
+        receiveTimeout: 60000,
+        contentType: Headers.jsonContentType));
+    client.httpClientAdapter = httpClientAdapter;
+    final Response response = await client.get('$getRegistryPassPath/$referenceId');
+    final data = response.data;
+    debugPrint('${inspect(data)}');
+    final DetailedInformation registryPass = DetailedInformation(
+        controlNumber: data['controlCode'],
+        plateNumber: data['plateNumber'],
+        accessType: '',
+        approvedBy: '',
+        validUntil: '',
+        lastUsed: '',
+        reason: '',
+        fullName: data['name'],
+        email: '',
+        mobileNumber: '',
+        companyName: '',
+        idType: data['idType'],
+        idNumber: data['identifierNumber'],
+        origin: null,
+        destination: null,
+    );
+    return registryPass;
   }
 }
