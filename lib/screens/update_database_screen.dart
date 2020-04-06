@@ -27,7 +27,10 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   Widget _buildRecordListView() {
     appState = Provider.of<AppState>(context, listen: false);
-    _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+
+    setState(() {
+      _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+    });
 
     return Expanded(
       flex: 2,
@@ -148,13 +151,26 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           ),
           SizedBox(height: 10),
           Container(
-            child: Text(
-              'UPDATED AS OF\n'
-              '${DateFormat.jm().format(_latestUpdateInfo['dateTime'])} ${DateFormat('MMMM dd, yyyy').format(_latestUpdateInfo['dateTime'])}\n'
-              'Total of ${_latestUpdateInfo['count']} ${_latestUpdateInfo['count'] as int > 1 ? 'records' : 'record'}',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10),
-            ),
+            child: _latestUpdateInfo['dateTime'] != null
+                ? Text(
+                    'UPDATED AS OF\n'
+                    '${DateFormat.jm().format(_latestUpdateInfo['dateTime'])} ${DateFormat('MMMM dd, yyyy').format(_latestUpdateInfo['dateTime'])}\n'
+                    'Total of ${_latestUpdateInfo['count']} ${_latestUpdateInfo['count'] as int > 1 ? 'records' : 'record'}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 10),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      'YOUR DATABASE IS OUTDATED!\n'
+                      'Please Sync Database',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
           )
         ],
       ),
@@ -201,7 +217,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
     // For Functionality Test
     // [Uncomment statement below to drive an update failure state]
-    // state = null;
+    state = null;
     if (state == null) {
       DialogHelper.showAlertDialog(
         context,
