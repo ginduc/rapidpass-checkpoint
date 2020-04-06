@@ -24,10 +24,26 @@ void main() {
       adapter.useCassette('authenticate-device');
       apiService = ApiService(
           httpClientAdapter: adapter,
-          baseUrl: 'https://rapidpass-api.azurewebsites.net/api/v1/');
+          baseUrl: 'https://rapidpass-api-stage.azurewebsites.net/api/v1/');
       final result = await apiService.authenticateDevice(
-          imei: '358240051111110', masterKey: '5Mg7JGHTRgpqP7jH');
-      print(result);
+          imei: '358240051111110',
+          masterKey:
+              '3D4BA45B2E32DFBCEC318FE76FE1F0AD913A05718F99368AFE8E808146F3D0F488B2D01440FC911273137748BE944A6997BE3BFEEB83999E1E96F4D52FB877A6');
+      print(result['signingKey']);
+      print(result['encryptionKey']);
+      print(result['accessCode']);
+      expect(
+          result['signingKey'],
+          equals(
+              'DDBE7467FD2AA46928631B979AECAA492B9058451755DD20B43CD106774EEB9B'));
+      expect(
+          result['encryptionKey'],
+          equals(
+              'B17697FF67EB05CA9264F9D2E3D805EBAFE2EF2F06B321B4D940A26EBBF792D8'));
+      expect(
+          result['accessCode'],
+          equals(
+              'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzNTgyNDAwNTExMTExMTAiLCJleHAiOjE1ODYxNTE2NzcsImlhdCI6MTU4NjE1MTY0NywiZ3JvdXAiOiJjaGVja3BvaW50In0.29Tx6FEcRsatKGYuLdzjV5N6zo8y4WqWR3uYEmH3_MM'));
     });
     test('test getBatchPasses', () async {
       final VcrAdapter adapter = VcrAdapter();
