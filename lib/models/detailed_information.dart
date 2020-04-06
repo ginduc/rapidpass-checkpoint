@@ -1,6 +1,7 @@
 class DetailedInformation {
   DetailedInformation({
     this.controlNumber,
+    this.plateNumber,
     this.accessType,
     this.approvedBy,
     this.validUntil,
@@ -16,9 +17,10 @@ class DetailedInformation {
     this.destination
   });
 
-  final String controlNumber, accessType,
-               approvedBy, validUntil,
-               lastUsed, reason;
+  final String controlNumber, plateNumber,
+                accessType, approvedBy,
+                validUntil, lastUsed,
+                reason;
   final String fullName, email, mobileNumber;
   final String companyName, idType, idNumber;
   final Location origin, destination;
