@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +26,22 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
     final DeviceInfoModel deviceInfoModel =
         Provider.of<DeviceInfoModel>(context, listen: false);
     final AppState appState = Provider.of<AppState>(context, listen: false);
-    _futureAppSecrets = _authenticate(
-        apiRepository.apiService, deviceInfoModel.imei, appState.masterQrCode);
+    _futureAppSecrets = _authenticate(apiRepository.apiService,
+            deviceInfoModel.imei, appState.masterQrCode)
+        .catchError((e) {
+      debugPrint(e.toString());
+      String title = 'Authentication error';
+      if (e is ApiException) {
+        if (e.statusCode >= 500 && e.statusCode < 600) {
+          title = 'Server error';
+        }
+      }
+      DialogHelper.showAlertDialog(context, title: title, message: e.message)
+          .then((v) {
+        debugPrint('v: ${inspect(v)}');
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+      });
+    });
     super.initState();
   }
 
@@ -50,13 +66,6 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
 
   Future<AppSecrets> _authenticate(final ApiService apiService,
       final String imei, final String masterQrCode) async {
-    try {
-      return apiService.authenticateDevice(imei: imei, masterKey: masterQrCode);
-    } on ApiException catch (e) {
-      debugPrint(e.toString());
-      DialogHelper.showAlertDialog(context,
-          title: 'Authentication error', message: e.message);
-      throw e;
-    }
+    return apiService.authenticateDevice(imei: imei, masterKey: masterQrCode);
   }
 }

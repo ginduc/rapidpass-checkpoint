@@ -12,7 +12,8 @@ import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 
 class ApiException implements Exception {
   final String message;
-  ApiException(this.message);
+  final int statusCode;
+  ApiException(this.message, {this.statusCode});
 }
 
 abstract class IApiService {
@@ -36,13 +37,16 @@ class ApiService extends IApiService {
             ? httpClientAdapter
             : DefaultHttpClientAdapter();
 
+  static const int thirtySeconds = 30000;
+  static const int tenSeconds = 10000;
+
   @override
   Future<AppSecrets> authenticateDevice(
       {final String imei, final String masterKey}) async {
     final Dio client = Dio(BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 30000,
-        receiveTimeout: 60000,
+        connectTimeout: thirtySeconds,
+        receiveTimeout: tenSeconds,
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
     try {
@@ -67,9 +71,13 @@ class ApiService extends IApiService {
       return Future.error('Unknown response from server.');
     } on DioError catch (e) {
       debugPrint(e.toString());
-      debugPrint('statusCode: ${e.response.statusCode}');
-      if (e.response.statusCode == 401) {
-        throw ApiException('Unauthorized');
+      var statusCode = e.response.statusCode;
+      debugPrint('statusCode: $statusCode');
+      if (statusCode >= 500 && statusCode < 600) {
+        throw ApiException('Server error ($statusCode)',
+            statusCode: statusCode);
+      } else if (statusCode == 401) {
+        throw ApiException('Unauthorized', statusCode: 401);
       } else {
         final data = e.response.data;
         print(inspect(data));
