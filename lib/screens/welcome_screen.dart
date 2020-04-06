@@ -90,7 +90,12 @@ class WelcomeScreenState extends State<WelcomeScreen>
                     return Text(
                       appState.databaseLastUpdatedText ??
                           'Please sync the database',
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(
+                        fontSize: appState.databaseLastUpdatedText == null
+                            ? 18.0
+                            : 15.0,
+                      ),
+                      textAlign: TextAlign.center,
                     );
                   }),
                 ),
