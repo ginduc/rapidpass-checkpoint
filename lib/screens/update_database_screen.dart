@@ -19,8 +19,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasError = false;
 
   Map<String, Object> _latestUpdateInfo = {
-    'count': 4000,
-    'dateTime': DateTime.parse("2020-04-03 16:40:00")
+    'count': 0,
+    'dateTime': DateTime.parse("2020-01-01 00:00:00")
   };
 
   Widget _buildRecordListView() {
@@ -43,7 +43,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              '${_dummyRecord[index]['count']} Records Added',
+                              '${_dummyRecord[index]['count']} ${(_dummyRecord[index]['count'] as int > 1 ? 'records' : 'record')} Added',
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w500),
                             ),
@@ -124,7 +124,10 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                   ? () {
                       setState(() {
                         _isUpdating = true;
-                        _updateDatabase(context);
+
+                        print('Updating From (Sync button)...');
+                        _updateDatabase(context)
+                            .then((_) => print('Done (Sync button)...'));
                       });
                     }
                   : null,
@@ -143,7 +146,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             child: Text(
               'UPDATED AS OF\n'
               '${DateFormat.jm().format(_latestUpdateInfo['dateTime'])} ${DateFormat('MMMM dd, yyyy').format(_latestUpdateInfo['dateTime'])}\n'
-              'Total of ${_latestUpdateInfo['count']} Records',
+              'Total of ${_latestUpdateInfo['count']} ${_latestUpdateInfo['count'] as int > 1 ? 'records' : 'record'}',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 10),
             ),
@@ -158,11 +161,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: LinearProgressIndicator(
-            backgroundColor: deepPurple300,
-            valueColor: AlwaysStoppedAnimation<Color>(deepPurple600),
-            value: 0.5,
-          ),
+          child: LinearProgressIndicator(),
         ),
       ),
     );
@@ -197,6 +196,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         await apiRepository.batchDownloadAndInsertPasses();
 
     // For Functionality Test
+    // [Uncomment statement below to drive an update failure state]
     // state = null;
     if (state == null) {
       DialogHelper.showAlertDialog(
@@ -204,11 +204,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         title: 'Database sync error',
         message: 'An unknown error occurred.',
       );
+
       setState(() {
         _isUpdating = false;
         _hasError = true;
       });
-      
+
       return;
     }
 
@@ -224,7 +225,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     final int totalRecords =
         await apiRepository.localDatabaseService.countPasses();
     final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} records'
+        ? 'Downloaded ${state.insertedRowsCount} ${(state.insertedRowsCount > 1 ? 'records' : 'record')}'
         : 'No new records found. Total records in database is $totalRecords';
 
     if (state != null) {
@@ -237,13 +238,15 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       setState(() {
         _hasError = false;
         _isUpdating = false;
+        _latestUpdateInfo['count'] = state.insertedRowsCount;
+        _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+      });
+
+      await AppStorage.setLastSyncOnToNow().then((timestamp) {
+        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+        appState.databaseLastUpdated = timestamp;
       });
     }
-
-    await AppStorage.setLastSyncOnToNow().then((timestamp) {
-      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-      appState.setDatabaseLastUpdated(timestamp);
-    });
   }
 }
 

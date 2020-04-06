@@ -15,6 +15,8 @@ class AppState extends ChangeNotifier {
       ? 'Database last updated on ${dateFormat.format(_databaseLastUpdated)}'
       : null;
 
+  DateTime get databaseLastUpdatedDateTime => _databaseLastUpdated ?? 0;
+
   set databaseLastUpdated(final int timestamp) {
     debugPrint('databaseLastUpdated($timestamp)');
     this._databaseLastUpdated = timestamp > 0

@@ -125,7 +125,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                                   borderRadius: BorderRadius.circular(24.0)),
                               // only enable the 'Start' button once we have an ApiRepository
                               onPressed: apiRepository != null
-                                  ? () => _startButtonPressed(context)
+                                  ? () => Navigator.pushNamed(context, '/menu') //_startButtonPressed(context)
                                   : null,
                               child: Text(
                                 'START',

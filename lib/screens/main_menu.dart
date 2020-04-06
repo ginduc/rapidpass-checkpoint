@@ -106,9 +106,7 @@ class MainMenu extends StatelessWidget {
                 shape: new RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
-                  debugPrint('Update Database pressed');
-                 Navigator.pushNamed(context, '/updateDatabase');
-                  // _updateDatabase(context);
+                  Navigator.pushNamed(context, '/updateDatabase');
                 },
                 child: Text('Update Database',
                     style: TextStyle(
@@ -121,41 +119,6 @@ class MainMenu extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future _updateDatabase(final BuildContext context) async {
-    await progressDialog.show();
-    final ApiRepository apiRepository =
-        Provider.of<ApiRepository>(context, listen: false);
-    final appState = Provider.of<AppState>(context, listen: false);
-    DatabaseSyncState state =
-        await apiRepository.batchDownloadAndInsertPasses();
-    if (state == null) {
-      progressDialog.hide().then((_) => DialogHelper.showAlertDialog(context,
-          title: 'Database sync error', message: 'An unknown error occurred.'));
-    }
-    final int totalPages = state.totalPages;
-    debugPrint('state.totalPages: $totalPages');
-    if (totalPages > 0) {
-      while (state.pageNumber < totalPages) {
-        state.pageNumber = state.pageNumber + 1;
-        progressDialog.update(progress: state.pageNumber / totalPages);
-        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
-      }
-    }
-    final int totalRecords =
-        await apiRepository.localDatabaseService.countPasses();
-    final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} record(s).'
-        : 'No new records found. Total records in database is $totalRecords.';
-    progressDialog.hide().then((_) async {
-      DialogHelper.showAlertDialog(context,
-          title: 'Database Updated', message: message);
-      await AppStorage.setLastSyncOnToNow().then((timestamp) {
-        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-        appState.databaseLastUpdated = timestamp;
-      });
-    });
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
