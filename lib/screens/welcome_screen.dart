@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
+import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -33,7 +34,6 @@ class WelcomeScreenState extends State<WelcomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     _checkRequiredPermissions();
   }
 
@@ -108,15 +108,18 @@ class WelcomeScreenState extends State<WelcomeScreen>
                         child: SizedBox(
                           height: 48,
                           width: 300.0,
-                          child: RaisedButton(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0)),
-                            onPressed: () {
-                              Navigator.pushNamed(context, "/menu");
-                            },
-                            child: Text("Start",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 18.0)),
+                          child: Consumer<ApiRepository>(
+                            builder: (_, apiRepository, __) => RaisedButton(
+                              shape: new RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24.0)),
+                              // only enable the 'Start' button once we have an ApiRepository
+                              onPressed: apiRepository != null
+                                  ? () => _startButtonPressed(context)
+                                  : null,
+                              child: Text('Start',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18.0)),
+                            ),
                           ),
                         ),
                       ),
@@ -132,8 +135,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
                 ),
                 Container(
                   height: 80,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.05),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
@@ -141,6 +144,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       _buildFooter('FAQs'),
                       _buildFooter('Contact Us'),
                       _buildFooter('Privacy Policy'),
+                      IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/settings'),
+                      )
                     ],
                   ),
                 ),
@@ -150,6 +161,22 @@ class WelcomeScreenState extends State<WelcomeScreen>
         ),
       ),
     );
+  }
+
+  void _startButtonPressed(final BuildContext context) async {
+    final AppState appState = Provider.of<AppState>(context, listen: false);
+    debugPrint('_startButtonPressed()');
+    if (appState.masterQrCode == null) {
+      Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) {
+        debugPrint("masterQrScannerScreen returned $code");
+        appState.masterQrCode = code;
+        Navigator.pushNamed(context, '/authenticatingScreen');
+      });
+    } else if (appState.appSecrets == null) {
+      Navigator.pushNamed(context, '/authenticatingScreen');
+    } else {
+      Navigator.pushNamed(context, '/menu');
+    }
   }
 
   Widget _buildFooter(String title) {

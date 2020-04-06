@@ -1,15 +1,20 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/utils/qr_code_decoder.dart';
 import 'package:test/test.dart';
 
 void main() {
+  final Uint8List encryptionKey =
+      hex.decode('d099294ebdae6763ba75d386eae517aa') as Uint8List;
+
   test('QrCodeDecoder works with new, encrypted codes', () {
     final String raw = '//7qFlQbr6l8SnZjKCxd5S9ejfETOduxDCusjQ==';
     final bytes = base64.decode(raw);
-    final uint8list = bytes.buffer.asByteData();
-    final qrData = QrCodeDecoder().convert(uint8list);
+    final byteData = bytes.buffer.asByteData();
+    final qrData = QrCodeDecoder(encryptionKey).convert(byteData);
     expect(qrData.passType, equals(PassType.Vehicle));
     expect(qrData.apor, equals('GO'));
     expect(qrData.controlCode, equals(2491777155));
@@ -23,7 +28,7 @@ void main() {
     final String raw = '0EkTqZtyXlqKgF6q9gAHTkFaMjA3MGxRlmM=';
     final bytes = base64.decode(raw);
     final uint8list = bytes.buffer.asByteData();
-    final qrData = QrCodeDecoder().convert(uint8list);
+    final qrData = QrCodeDecoder(encryptionKey).convert(uint8list);
     expect(qrData.passType, equals(PassType.Vehicle));
     expect(qrData.apor, equals("PI"));
     expect(qrData.controlCode, equals(329882482));

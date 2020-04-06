@@ -12,14 +12,16 @@ import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/about_screen.dart';
+import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
-import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
+import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
@@ -44,21 +46,11 @@ void main() {
 class RapidPassCheckpointApp extends StatelessWidget {
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
-  final LocalDatabaseService _localDatabaseService = LocalDatabaseService(
-    appDatabase: AppDatabase(LazyDatabase(() async {
-      final dbFolder = await getDatabasesPath();
-      final file = File(p.join(dbFolder, 'db.sqlite'));
-      return VmDatabase(file, logStatements: true);
-    })),
-  );
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
-    AppStorage.getDatabaseEncryptionKey().then((value) {
-      debugPrint('databaseEncryptionKey: $value');
-    });
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -68,19 +60,12 @@ class RapidPassCheckpointApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) {
           final appState = AppState();
           AppStorage.getLastSyncOn()
-              .then((timestamp) => appState.setDatabaseLastUpdated(timestamp));
+              .then((timestamp) => appState.databaseLastUpdated = timestamp);
           return appState;
         }),
-        Provider(
-          create: (_) => _localDatabaseService,
-        ),
-        Provider(
-          create: (_) => ApiRepository(
-            apiService: ApiService(
-              baseUrl: Env.apiBaseUrl,
-            ),
-            localDatabaseService: _localDatabaseService,
-          ),
+        FutureProvider<ApiRepository>(
+          initialData: null,
+          create: (_) => _buildApiRepository(),
         ),
         ProxyProvider<ApiRepository, PassValidationService>(
           update: (_, apiRepository, __) =>
@@ -131,23 +116,18 @@ class RapidPassCheckpointApp extends StatelessWidget {
                   settings: settings);
             case '/checkPlateNumber':
               return CupertinoPageRoute(
-                builder: (_) {
-                  return CheckPlateOrControlScreen(
-                      CheckPlateOrControlScreenModeType.plate);
-                },
-              );
+                  builder: (_) => CheckPlateOrControlScreen(
+                      CheckPlateOrControlScreenModeType.plate));
             case '/checkControlNumber':
               return CupertinoPageRoute(
-                builder: (_) {
-                  return CheckPlateOrControlScreen(
-                      CheckPlateOrControlScreenModeType.control);
-                },
+                builder: (_) => CheckPlateOrControlScreen(
+                    CheckPlateOrControlScreenModeType.control),
               );
-            case '/scanQrCode':
+            case '/masterQrScannerScreen':
               return CupertinoPageRoute(
-                builder: (_) => QrScannerScreen(),
-                settings: settings,
-              );
+                  builder: (_) => MasterQrScannerScreen());
+            case '/authenticatingScreen':
+              return CupertinoPageRoute(builder: (_) => AuthenticatingScreen());
             case '/viewMoreInfo':
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),
@@ -168,10 +148,32 @@ class RapidPassCheckpointApp extends StatelessWidget {
               );
             case '/faqs':
               return CupertinoPageRoute(builder: (_) => Faqs());
+            case '/settings':
+              return CupertinoPageRoute(builder: (_) => SettingsScreen());
           }
           return null;
         },
       ),
     );
+  }
+
+  Future<ApiRepository> _buildApiRepository() async {
+    final Uint8List encryptionKey = await AppStorage.getDatabaseEncryptionKey();
+    debugPrint('encryptionKey: $encryptionKey');
+    final localDatabaseService = LocalDatabaseService(
+        appDatabase: AppDatabase(LazyDatabase(() async {
+          final dbFolder = await getDatabasesPath();
+          final file = File(p.join(dbFolder, 'db.sqlite'));
+          return VmDatabase(file, logStatements: true);
+        })),
+        encryptionKey: encryptionKey);
+    final apiRepository = ApiRepository(
+      apiService: ApiService(
+        baseUrl: Env.apiBaseUrl,
+      ),
+      localDatabaseService: localDatabaseService,
+    );
+    debugPrint('_buildApiRepository() => $apiRepository');
+    return apiRepository;
   }
 }

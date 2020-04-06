@@ -53,6 +53,8 @@ class Green {
     final colorScheme = themeData.colorScheme
         .copyWith(surface: green300, primary: deepPurple900);
     return themeData.copyWith(
+        accentColor: green300,
+        highlightColor: Colors.green,
         buttonTheme: themeData.buttonTheme.copyWith(
             buttonColor: green300,
             colorScheme: colorScheme,

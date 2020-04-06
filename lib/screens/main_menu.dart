@@ -17,16 +17,23 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('RapidPass Checkpoint')),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              MainMenu(),
-            ],
+    return WillPopScope(
+      onWillPop: () {
+        // However we got here, on 'Back' go back all the way to the Welcome screen
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text('RapidPass Checkpoint')),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                MainMenu(),
+              ],
+            ),
           ),
         ),
       ),
@@ -170,7 +177,7 @@ class MainMenu extends StatelessWidget {
         title: 'Database Updated', message: message);
     await AppStorage.setLastSyncOnToNow().then((timestamp) {
       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-      appState.setDatabaseLastUpdated(timestamp);
+      appState.databaseLastUpdated = timestamp;
     });
   }
 
@@ -182,11 +189,14 @@ class MainMenu extends StatelessWidget {
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
+    // TODO Make this not timing sensitive
+    final AppState appState = Provider.of<AppState>(context, listen: false);
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       debugPrint('base64Encoded: $base64Encoded');
       if (base64Encoded != null) {
-        return PassValidationService.deserializeAndValidate(base64Encoded);
+        return PassValidationService.deserializeAndValidate(
+            appState.appSecrets, base64Encoded);
       }
     } catch (e) {
       debugPrint('Error occured: $e');
