@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
+import 'package:rapidpass_checkpoint/models/app_state.dart';
+import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
+import 'package:rapidpass_checkpoint/repository/api_repository.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UpdateDatabaseScreen extends StatefulWidget {
@@ -99,9 +105,9 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             child: FlatButton(
               onPressed: _hasConnection
                   ? () {
-                      /* Sync */
                       setState(() {
-                        _isUpdating = !_isUpdating;
+                        _isUpdating = true;
+                        _updateDatabase(context);
                       });
                     }
                   : null,
@@ -162,6 +168,45 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         ],
       ),
     );
+  }
+
+  Future _updateDatabase(final BuildContext context) async {
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    final appState = Provider.of<AppState>(context, listen: false);
+    DatabaseSyncState state =
+        await apiRepository.batchDownloadAndInsertPasses();
+    if (state == null) {
+      DialogHelper.showAlertDialog(context,
+          title: 'Database sync error', message: 'An unknown error occurred.');
+    }
+    final int totalPages = state.totalPages;
+    debugPrint('state.totalPages: $totalPages');
+    if (totalPages > 0) {
+      while (state.pageNumber < totalPages) {
+        state.pageNumber = state.pageNumber + 1;
+        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+      }
+    }
+    final int totalRecords =
+        await apiRepository.localDatabaseService.countPasses();
+    final String message = state.insertedRowsCount > 0
+        ? 'Downloaded ${state.insertedRowsCount} records'
+        : 'No new records found. Total records in database is $totalRecords';
+    DialogHelper.showAlertDialog(
+      context,
+      title: 'Database Updated',
+      message: message,
+      onConfirm: () {
+        setState(() {
+          _isUpdating = false;
+        });
+      },
+    );
+    await AppStorage.setLastSyncOnToNow().then((timestamp) {
+      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+      appState.setDatabaseLastUpdated(timestamp);
+    });
   }
 }
 
