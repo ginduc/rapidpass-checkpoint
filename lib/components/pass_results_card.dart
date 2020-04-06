@@ -91,13 +91,17 @@ class PassResultsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
               Container(
-                padding: this.headerOnly ? EdgeInsets.symmetric(vertical: 80.0) : null,
+                padding: this.headerOnly
+                    ? EdgeInsets.symmetric(vertical: 80.0)
+                    : null,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(borderRadius),
-                      topRight: Radius.circular(borderRadius),
-                      bottomLeft: Radius.circular(this.headerOnly ? borderRadius : 0),
-                      bottomRight: Radius.circular(this.headerOnly ? borderRadius : 0),
+                    topLeft: Radius.circular(borderRadius),
+                    topRight: Radius.circular(borderRadius),
+                    bottomLeft:
+                        Radius.circular(this.headerOnly ? borderRadius : 0),
+                    bottomRight:
+                        Radius.circular(this.headerOnly ? borderRadius : 0),
                   ),
                   color: this.color,
                 ),
@@ -140,12 +144,12 @@ class PassResultsCard extends StatelessWidget {
                 ),
               ),
               if (!this.headerOnly)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Table(children: tableChildren)),
-              )
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Table(children: tableChildren)),
+                )
             ])));
   }
 }

@@ -80,7 +80,6 @@ class About extends StatelessWidget {
                         child: Image.asset(
                           RapidAssetConstants.devconLogo,
                           height: 20,
-
                         ),
                       ),
                     ],
