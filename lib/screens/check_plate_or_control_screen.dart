@@ -14,7 +14,7 @@ class CheckPlateOrControlScreen extends StatefulWidget {
   const CheckPlateOrControlScreen(this.screenModeType);
 
   @override
-  State<StatefulWidget> createState() {
+  State<CheckPlateOrControlScreen> createState() {
     return _CheckPlateOrControlScreenState();
   }
 }
