@@ -64,11 +64,16 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
               ? aporCodes[e.value] + ' (${e.value})'
               : e.value;
 
+      if (label == 'Plate Number' && tableData[RapidPassField.passType].startsWith("I -")) {
+        return null;
+      }
+
       return error == null
           ? PassResultsTableRow(label: label, value: value)
           : PassResultsTableRow(
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
+    passResultsData.removeWhere((field) => field == null);
 
     final card = scanResults.isValid()
         ? PassResultsCard(
