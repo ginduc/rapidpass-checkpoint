@@ -106,7 +106,8 @@ class MainMenu extends StatelessWidget {
                 shape: new RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/updateDatabase');
+                  debugPrint('Update Database pressed');
+                 Navigator.pushNamed(context, '/updateDatabase');
                 },
                 child: Text('Update Database',
                     style: TextStyle(
