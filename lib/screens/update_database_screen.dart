@@ -16,14 +16,15 @@ class UpdateDatabaseScreen extends StatefulWidget {
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   AppState appState;
 
-  bool _hasConnection = false;
+  bool _hasConnection = true;
   bool _isUpdating = false;
-  bool _hasError = true;
+  bool _hasError = false;
   double progress;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 0,
-    'dateTime': DateTime.parse("0000-00-00 00:00:00"),
+    'dateTime': DateTime
+        .now() //DateTime(0), // ! Assumes there is no database record yet if DateTime is 0
   };
 
   // Future _updateDatabase() {
@@ -98,20 +99,26 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             message:
                 'There\'s something wrong while getting the new information from the database.',
           );
+        } else {
+          _latestUpdateInfo['count'] = 100;
+          final int latestAddedCount = _latestUpdateInfo['count'];
+          final String message = latestAddedCount > 0
+              ? 'Downloaded $latestAddedCount new ${(latestAddedCount > 1 ? 'records' : 'record')}.'
+              : 'No new records found. Total records in database is 500';
+
+          DialogHelper.showAlertDialog(
+            context,
+            title: 'Database Synced!',
+            message: message,
+          );
         }
       });
     });
   }
 
   Widget _buildRecordListView() {
-    appState = Provider.of<AppState>(context, listen: false);
-
-    setState(() {
-      _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
-    });
-
     return Expanded(
-      flex: 2,
+      flex: 3,
       child: LayoutBuilder(
         builder: (bContext, constraints) {
           return Container(
@@ -149,7 +156,9 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(Icons.assignment, size: 200, color: Colors.grey),
+                        Icon(Icons.assignment,
+                            size: constraints.maxHeight * 0.50,
+                            color: Colors.grey),
                         Text(
                           'Log is Empty.',
                           style: Theme.of(context).textTheme.display1.apply(
@@ -199,16 +208,23 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     ));
   }
 
-  Widget _builUpdateErrorMessage() {
+  Widget _buildUpdateErrorMessage() {
     return Expanded(
       child: Center(
-        child: Text(
-          'Error Updating Database!',
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.warning, color: Colors.red),
+            SizedBox(width: 10),
+            Text(
+              'Error Updating Database.',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -239,8 +255,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           SizedBox(height: 10),
           Container(
             child: (_latestUpdateInfo['dateTime'] != null &&
-                    _latestUpdateInfo['dateTime'] !=
-                        DateTime.parse("0000-00-00 00:00:00"))
+                    _latestUpdateInfo['dateTime'] != DateTime(0))
                 ? Text(
                     'UPDATED AS OF\n'
                     '${DateFormat.jm().format(_latestUpdateInfo['dateTime'])} ${DateFormat('MMMM dd, yyyy').format(_latestUpdateInfo['dateTime'])}\n'
@@ -248,17 +263,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 10),
                   )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Text(
-                      'YOUR DATABASE IS OUTDATED!\n'
-                      'Please Sync Database',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                : SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
                   ),
           )
         ],
@@ -283,6 +289,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //   appState = Provider.of<AppState>(context, listen: false);
+
+    // setState(() {
+    //   _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+    // });
+
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -299,6 +311,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           !_hasConnection
               ? _buildOfflineContent(screenSize)
               : _isUpdating ? _showProgressBar() : _buildRecordListView(),
+          if (_hasError)
+            _buildUpdateErrorMessage(),
           _buildFooterContent(),
         ],
       ),
@@ -375,5 +389,5 @@ List<Map<String, dynamic>> _dummyRecord = [
   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
