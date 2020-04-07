@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UpdateDatabaseScreen extends StatefulWidget {
@@ -10,11 +11,90 @@ class UpdateDatabaseScreen extends StatefulWidget {
 class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasConnection = true;
   bool _isUpdating = false;
+  bool _hasError = true;
+  double progress;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 4000,
     'dateTime': DateTime.parse("2020-04-03 16:40:00")
   };
+
+  // Future _updateDatabase() {
+  //   await progressDialog.show();
+  //   final ApiRepository apiRepository =
+  //       Provider.of<ApiRepository>(context, listen: false);
+  //   final appState = Provider.of<AppState>(context, listen: false);
+  //   DatabaseSyncState state =
+  //       await apiRepository.batchDownloadAndInsertPasses();
+  //   if (state == null) {
+  //     progressDialog.hide().then((_) => DialogHelper.showAlertDialog(context,
+  //         title: 'Database sync error', message: 'An unknown error occurred.'));
+  //   }
+  //   final int totalPages = state.totalPages;
+  //   debugPrint('state.totalPages: $totalPages');
+  //   if (totalPages > 0) {
+  //     while (state.pageNumber < totalPages) {
+  //       state.pageNumber = state.pageNumber + 1;
+  //       progressDialog.update(progress: state.pageNumber / totalPages);
+  //       state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+  //     }
+  //   }
+  //   final int totalRecords =
+  //       await apiRepository.localDatabaseService.countPasses();
+  //   final String message = state.insertedRowsCount > 0
+  //       ? 'Downloaded ${state.insertedRowsCount} record(s).'
+  //       : 'No new records found. Total records in database is $totalRecords.';
+  //   progressDialog.hide().then((_) async {
+  //     DialogHelper.showAlertDialog(context,
+  //         title: 'Database Updated', message: message);
+  //     await AppStorage.setLastSyncOnToNow().then((timestamp) {
+  //       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+  //       appState.databaseLastUpdated = timestamp;
+  //     });
+  //   });
+  // }
+
+  void _updateDatabase() {
+    /* Sync */
+    setState(() {
+      _isUpdating = !_isUpdating;
+    });
+
+    Future.delayed(Duration(seconds: 2), () => 0.1).then((p) {
+      setState(() {
+        progress = p;
+      });
+      return Future.delayed(Duration(seconds: 1), () => 0.2);
+    }).then((p) {
+      setState(() {
+        progress += p;
+      });
+      return Future.delayed(Duration(seconds: 1), () => 0.3);
+    }).then((p) {
+      setState(() {
+        progress += p;
+      });
+      return Future.delayed(Duration(seconds: 2), () => 0.3);
+    }).then((p) {
+      setState(() {
+        progress += p;
+      });
+    }).whenComplete(() {
+      setState(() {
+        progress = null;
+        _isUpdating = false;
+        
+        if (_hasError) {
+          DialogHelper.showAlertDialog(
+            context,
+            title: 'Error',
+            message:
+                'There\'s something wrong while getting the new information from the database.',
+          );
+        }
+      });
+    });
+  }
 
   Widget _buildRecordListView() {
     return Expanded(
