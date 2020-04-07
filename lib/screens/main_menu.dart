@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
@@ -24,16 +25,18 @@ class MainMenuScreen extends StatelessWidget {
         Navigator.popUntil(context, ModalRoute.withName('/'));
         return Future.value(false);
       },
-      child: Scaffold(
-        appBar: AppBar(title: Text('RapidPass Checkpoint')),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                MainMenu(),
-              ],
+      child: FlavorBanner(
+        child: Scaffold(
+          appBar: AppBar(title: Text('RapidPass Checkpoint')),
+          body: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  MainMenu(),
+                ],
+              ),
             ),
           ),
         ),

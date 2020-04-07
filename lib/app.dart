@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
@@ -32,17 +33,39 @@ import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
-import 'env.dart' as Env;
 import 'models/check_plate_or_control_args.dart';
+
+enum Environment { dev, prod }
+
+class Flavor {
+  final Environment environment;
+  final String apiBaseUrl;
+
+  static Flavor _instance;
+
+  factory Flavor(
+      {@required Environment environment, @required String apiBaseUrl}) {
+    _instance ??= Flavor._internal(environment, apiBaseUrl);
+    return _instance;
+  }
+
+  Flavor._internal(this.environment, this.apiBaseUrl);
+
+  static Flavor get instance => _instance;
+  static bool get isProduction => _instance.environment == Environment.prod;
+}
 
 class RapidPassCheckpointApp extends StatelessWidget {
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
 
+  final Flavor _flavor;
+  RapidPassCheckpointApp(this._flavor);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
+    debugPrint('apiBaseUrl: ${_flavor.apiBaseUrl}');
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -167,11 +190,18 @@ class RapidPassCheckpointApp extends StatelessWidget {
         encryptionKey: encryptionKey);
     final apiRepository = ApiRepository(
       apiService: ApiService(
-        baseUrl: Env.apiBaseUrl,
+        baseUrl: _flavor.apiBaseUrl,
       ),
       localDatabaseService: localDatabaseService,
     );
     debugPrint('_buildApiRepository() => $apiRepository');
     return apiRepository;
   }
+}
+
+void runRapidPassCheckpoint(final Flavor flavor) {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) => runApp(RapidPassCheckpointApp(flavor)));
 }
