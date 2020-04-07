@@ -60,7 +60,5 @@ class ScanResults {
     return null;
   }
 
-  bool isValid() {
-    return this.errors.isEmpty;
-  }
+  bool get isValid => this.errors.isEmpty;
 }

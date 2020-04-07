@@ -26,7 +26,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
   void initState() {
     super.initState();
 
-    if (widget.scanResults.isValid()) {
+    if (widget.scanResults.isValid) {
       _playNotificationApproved();
     } else {
       _playNotificationRejected();
@@ -79,7 +79,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
-    final card = widget.scanResults.isValid()
+    final card = widget.scanResults.isValid
         ? PassResultsCard(
             iconName: 'check-2x',
             headerText: widget.scanResults.resultMessage,
@@ -119,7 +119,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-//                        if (widget.scanResults.isValid() == true)
+//                        if (widget.scanResults.isValid)
 //                          InkWell(
 //                            onTap: () =>
 //                                Navigator.pushNamed(context, '/viewMoreInfo'),
@@ -146,7 +146,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 //                              ),
 //                            ),
 //                          ),
-                          if (widget.scanResults.isValid() == true)
+                          if (widget.scanResults.isValid)
                             Padding(padding: EdgeInsets.only(top: 16.0)),
                           InkWell(
                             onTap: () => _scanAndNavigate(context),

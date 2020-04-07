@@ -20,7 +20,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
   CheckPlateOrControlCodeResultsScreen(CheckPlateOrControlScreenResults args)
       : this.screenModeType = args.screenModeType,
         this.scanResults = args.scanResults {
-    if (scanResults.isValid()) {
+    if (scanResults.isValid) {
       playNotificationApproved();
     } else {
       playNotificationRejected();
@@ -77,7 +77,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
     }).toList();
     passResultsData.removeWhere((field) => field == null);
 
-    final card = scanResults.isValid()
+    final card = scanResults.isValid
         ? PassResultsCard(
             iconName: 'check-2x',
             headerText: scanResults.resultMessage,
@@ -108,7 +108,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-//                    if (scanResults.isValid() == true)
+//                    if (scanResults.isValid)
 //                      InkWell(
 //                        onTap: () =>
 //                            Navigator.pushNamed(context, '/viewMoreInfo'),
@@ -135,7 +135,7 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
 //                          ),
 //                        ),
 //                      ),
-                      if (scanResults.isValid() == true)
+                      if (scanResults.isValid)
                         Padding(padding: EdgeInsets.only(top: 16.0)),
                       InkWell(
                         onTap: () => Navigator.pop(context),

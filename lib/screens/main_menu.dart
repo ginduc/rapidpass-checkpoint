@@ -172,12 +172,22 @@ class MainMenu extends StatelessWidget {
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
     // TODO Make this not timing sensitive
     final AppState appState = Provider.of<AppState>(context, listen: false);
+    final PassValidationService passValidationService =
+        Provider.of<PassValidationService>(context, listen: false);
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       debugPrint('base64Encoded: $base64Encoded');
       if (base64Encoded != null) {
-        return PassValidationService.deserializeAndValidate(
-            appState.appSecrets, base64Encoded);
+        final ScanResults deserializedQrCode =
+            PassValidationService.deserializeAndValidate(
+                appState.appSecrets, base64Encoded);
+        debugPrint('deserializedQrCode.isValid: ${deserializedQrCode.isValid}');
+        if (deserializedQrCode.isValid) {
+          final ScanResults fromDatabase = await passValidationService
+              .checkControlNumber(deserializedQrCode.qrData.controlCode);
+          debugPrint('fromDatabase.isValid: ${fromDatabase.isValid}');
+          return fromDatabase.isValid ? fromDatabase : deserializedQrCode;
+        }
       }
     } catch (e) {
       debugPrint('Error occured: $e');
