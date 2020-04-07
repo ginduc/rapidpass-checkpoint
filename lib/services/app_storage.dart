@@ -19,7 +19,15 @@ class AppStorage {
 
   static Future<void> setMasterQrCode(final String masterQrCode) async {
     if (masterQrCode == null) return;
-    secureStorage.write(key: _masterQrCodeKey, value: masterQrCode);
+    return secureStorage.write(key: _masterQrCodeKey, value: masterQrCode);
+  }
+
+  static Future<void> resetMasterQrCode() {
+    return secureStorage.delete(key: _masterQrCodeKey);
+  }
+
+  static Future<String> getMasterQrCode() {
+    return secureStorage.read(key: _masterQrCodeKey);
   }
 
   static Future<int> getLastSyncOn() =>

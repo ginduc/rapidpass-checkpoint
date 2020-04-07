@@ -127,7 +127,10 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(
                   builder: (_) => MasterQrScannerScreen());
             case '/authenticatingScreen':
-              return CupertinoPageRoute(builder: (_) => AuthenticatingScreen());
+              return CupertinoPageRoute(
+                  builder: (_) => AuthenticatingScreen(
+                        onSuccessRouteName: '/menu',
+                      ));
             case '/viewMoreInfo':
               return CupertinoPageRoute(
                 builder: (_) => ViewMoreInfoScreen(),

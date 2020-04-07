@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,6 +9,7 @@ import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
@@ -35,6 +37,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _checkRequiredPermissions();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final code = await AppStorage.getMasterQrCode();
+      debugPrint("Got masterQrCode: '$code'");
+      if (code != null) {
+        // TODO there must be a cleaner way to do this
+        Provider.of<AppState>(context, listen: false).masterQrCode = code;
+      }
+    });
   }
 
   @override
@@ -161,14 +171,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       _buildFooter('FAQs'),
                       _buildFooter('Contact Us'),
                       _buildFooter('Privacy Policy'),
-//                      IconButton(
-//                        icon: Icon(
-//                          Icons.settings,
-//                          color: Colors.white70,
-//                        ),
-//                        onPressed: () =>
-//                            Navigator.pushNamed(context, '/settings'),
-//                      )
+                      IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/settings'),
+                      )
                     ],
                   ),
                 ),
@@ -184,11 +194,13 @@ class WelcomeScreenState extends State<WelcomeScreen>
     final AppState appState = Provider.of<AppState>(context, listen: false);
     debugPrint('_startButtonPressed()');
     if (appState.masterQrCode == null) {
-      Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) {
+      Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) async {
         debugPrint("masterQrScannerScreen returned $code");
         if (code != null) {
-          appState.masterQrCode = code;
-          Navigator.pushNamed(context, '/authenticatingScreen');
+          await AppStorage.setMasterQrCode(code).then((_) {
+            appState.masterQrCode = code;
+            Navigator.pushNamed(context, '/authenticatingScreen');
+          });
         }
       });
     } else if (appState.appSecrets == null) {
