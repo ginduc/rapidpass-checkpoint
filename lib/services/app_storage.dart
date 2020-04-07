@@ -17,8 +17,10 @@ class AppStorage {
   static const _encryptionKeyKey = 'rapidPass.encryptionKey';
   static const _accessCodeKey = 'rapidPass.accessCode';
 
-  static Future<void> setMasterQrCode(final String masterQrCode) =>
-      secureStorage.write(key: _masterQrCodeKey, value: masterQrCode);
+  static Future<void> setMasterQrCode(final String masterQrCode) async {
+    if (masterQrCode == null) return;
+    secureStorage.write(key: _masterQrCodeKey, value: masterQrCode);
+  }
 
   static Future<int> getLastSyncOn() =>
       SharedPreferences.getInstance().then((prefs) =>

@@ -169,8 +169,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
     if (appState.masterQrCode == null) {
       Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) {
         debugPrint("masterQrScannerScreen returned $code");
-        appState.masterQrCode = code;
-        Navigator.pushNamed(context, '/authenticatingScreen');
+        if (code != null) {
+          appState.masterQrCode = code;
+          Navigator.pushNamed(context, '/authenticatingScreen');
+        }
       });
     } else if (appState.appSecrets == null) {
       Navigator.pushNamed(context, '/authenticatingScreen');
