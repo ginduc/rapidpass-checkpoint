@@ -59,55 +59,66 @@ class WelcomeScreenState extends State<WelcomeScreen>
       child: Scaffold(
         backgroundColor: deepPurple600,
         body: Container(
-          margin: const EdgeInsets.only(top: 50.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.07,
+                    bottom: MediaQuery.of(context).size.height * 0.05,
+                  ),
                   child: InkWell(
-                    onDoubleTap: () =>
-                        Navigator.of(context).push(CreditsScreen()),
+                    onDoubleTap: () => Navigator.of(context).push(
+                      CreditsScreen(),
+                    ),
                     borderRadius: BorderRadius.circular(100),
                     child: SvgPicture.asset(
                       RapidAssetConstants.rapidPassLogo,
                     ),
                   ),
                 ),
-                Text('Welcome to',
-                    style: TextStyle(fontSize: 27.0),
-                    textAlign: TextAlign.center),
-                Text('RapidPass.ph\nCheckpoint',
-                    softWrap: true,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
-                    textAlign: TextAlign.center),
+                Text(
+                  'Welcome to',
+                  style: TextStyle(fontSize: 27.0),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'RapidPass.ph\nCheckpoint',
+                  softWrap: true,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
+                  textAlign: TextAlign.center,
+                ),
                 Padding(
-                  padding: EdgeInsets.only(top: 28),
-                  child:
-                      Consumer<AppState>(builder: (context, appState, child) {
-                    return Text(
-                      appState.databaseLastUpdatedText ??
-                          'Please sync the database',
-                      style: TextStyle(
-                        fontSize: appState.databaseLastUpdatedText == null
-                            ? 18.0
-                            : 15.0,
-                      ),
-                      textAlign: TextAlign.center,
-                    );
-                  }),
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  child: Consumer<AppState>(
+                    builder: (context, appState, child) {
+                      return Text(
+                        appState.databaseLastUpdatedText ??
+                            'Please sync the database',
+                        style: TextStyle(
+                          fontSize: appState.databaseLastUpdatedText == null
+                              ? 18.0
+                              : 15.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      );
+                    },
+                  ),
                 ),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                MediaQuery.of(context).size.height * 0.02),
                         child: SizedBox(
                           height: 48,
-                          width: 300.0,
+                          width: MediaQuery.of(context).size.width * 0.8,
                           child: Consumer<ApiRepository>(
                             builder: (_, apiRepository, __) => RaisedButton(
                               shape: new RoundedRectangleBorder(
@@ -116,9 +127,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
                               onPressed: apiRepository != null
                                   ? () => _startButtonPressed(context)
                                   : null,
-                              child: Text('Start',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18.0)),
+                              child: Text(
+                                'START',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -134,9 +150,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
                   ),
                 ),
                 Container(
-                  height: 80,
+                  height: MediaQuery.of(context).size.height * 0.1,
                   padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05),
+                    left: MediaQuery.of(context).size.width * 0.05,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
