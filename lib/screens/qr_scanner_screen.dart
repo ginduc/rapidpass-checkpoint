@@ -84,10 +84,11 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         ),
         body: Stack(
           children: <Widget>[
-            Container(color: Colors.black),
-            PlatformAiBarcodeScannerWidget(
-              platformScannerController: _scannerController,
-            ),
+            Container(
+                color: Colors.black,
+                child: PlatformAiBarcodeScannerWidget(
+                  platformScannerController: _scannerController,
+                )),
             if (widget.args?.message != null)
               Positioned(
                 left: 44,
