@@ -11,7 +11,7 @@ description: RapidPass Checkpoint
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.0+4
+version: 1.2.0+5
 
 environment:
   sdk: ">=2.5.2 <3.0.0"
@@ -30,6 +30,7 @@ dependencies:
   device_id: ^0.2.0
   flutter_linkify: ^3.1.0
   flutter_secure_storage: ^3.3.1
+  flutter_spinkit: ^4.1.2
   flutter_svg: ^0.17.3+1
   font_awesome_flutter: ^8.8.1
   google_fonts: ^0.3.10
@@ -44,7 +45,9 @@ dependencies:
   path_provider: ^1.6.5
   permission_handler: ^5.0.0
   pointycastle: ^1.0.2
+  progress_dialog: ^1.2.1
   provider: ^4.0.4
+  qrcode: ^1.0.4
   qr_code_scanner: ^0.0.12
   shared_preferences: ^0.5.6+3
   sqflite: ^1.1.7

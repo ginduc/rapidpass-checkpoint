@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -21,9 +20,11 @@ abstract class ILocalDatabaseService {
 
 // TODO: Additional logic while retrieving the data from local db should be placed here
 class LocalDatabaseService implements ILocalDatabaseService {
+  final Uint8List encryptionKey;
   final AppDatabase appDatabase;
 
-  LocalDatabaseService({@required this.appDatabase});
+  LocalDatabaseService(
+      {@required this.encryptionKey, @required this.appDatabase});
 
   @override
   Future<ValidPass> getValidPassByStringControlCode(final String controlCode) {
@@ -132,28 +133,18 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Future bulkInsertOrUpdate(
       final List<ValidPassesCompanion> forInserting) async {
-    final Uint8List encryptionKey = await AppStorage.getDatabaseEncryptionKey();
-    final List<ValidPassesCompanion> bulkInsertOrUpdate = List();
-    await appDatabase.batch((batch) {
-      print('x: ${inspect(batch)} (${batch.runtimeType})');
-      for (final fi in forInserting) {
+    final futures = forInserting.map((fi) =>
         getValidPassByIntegerControlCode(fi.controlCode.value).then((existing) {
           if (existing == null) {
-            final ValidPassesCompanion encrypted =
-                encryptIdOrPlate(encryptionKey, fi);
-            bulkInsertOrUpdate.add(encrypted);
+            return encryptIdOrPlate(this.encryptionKey, fi);
           } else {
             debugPrint('existing: $existing');
             final ValidPassesCompanion forUpdate =
                 fi.copyWith(id: Value(existing.id));
-            final ValidPassesCompanion encrypted =
-                encryptIdOrPlate(encryptionKey, forUpdate);
-            bulkInsertOrUpdate.add(encrypted);
+            return encryptIdOrPlate(this.encryptionKey, forUpdate);
           }
-        });
-      }
-    });
-    print('bulkInsertOrUpdate.length: ${bulkInsertOrUpdate.length}');
-    return await appDatabase.insertOrUpdateAll(bulkInsertOrUpdate);
+        }));
+    return Future.wait(futures.toList()).then((bulkInsertOrUpdate) =>
+        appDatabase.insertOrUpdateAll(bulkInsertOrUpdate));
   }
 }

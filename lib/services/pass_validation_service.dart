@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:rapidpass_checkpoint/models/app_secrets.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
@@ -14,7 +14,8 @@ class PassValidationService {
 
   PassValidationService(this.apiRepository);
 
-  static ScanResults deserializeAndValidate(final String base64Encoded) {
+  static ScanResults deserializeAndValidate(
+      final AppSecrets appSecrets, final String base64Encoded) {
     try {
       final decodedFromBase64 = base64.decode(base64Encoded);
       final asHex = hex.encode(decodedFromBase64);
@@ -23,9 +24,12 @@ class PassValidationService {
           ? decodedFromBase64.buffer
           : Uint8List.fromList(decodedFromBase64).buffer;
       final byteData = ByteData.view(buffer);
-      final qrData = QrCodeDecoder().convert(byteData);
+      final Uint8List encryptionKey = hex.decode(appSecrets.encryptionKey);
+      final qrData = QrCodeDecoder(encryptionKey).convert(byteData);
       final scanResults = validate(qrData);
-      final signatureIsValid = HmacShac256.validateSignature(decodedFromBase64);
+      final Uint8List signingKey = hex.decode(appSecrets.signingKey);
+      final signatureIsValid =
+          HmacShac256.validateSignature(signingKey, decodedFromBase64);
       if (signatureIsValid) {
         return scanResults;
       } else {

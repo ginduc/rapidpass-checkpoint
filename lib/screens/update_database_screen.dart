@@ -36,11 +36,13 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                           children: <Widget>[
                             Text(
                               '${_dummyRecord[index]['count']} Records Added',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
                             ),
                             Text(
                               '${DateFormat('MM dd, yyyy').format(_dummyRecord[index]['dateTime'])} ${DateFormat.jm().format(_dummyRecord[index]['dateTime'])}',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
                             ),
                           ],
                         ),

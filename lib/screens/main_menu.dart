@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
@@ -16,17 +17,24 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('RapidPass Checkpoint')),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              MainMenu(),
-            ],
+  Widget build(final BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        // However we got here, on 'Back' go back all the way to the Welcome screen
+        Navigator.popUntil(context, ModalRoute.withName('/'));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text('RapidPass Checkpoint')),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                MainMenu(),
+              ],
+            ),
           ),
         ),
       ),
@@ -34,54 +42,26 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-class CheckPointWidget extends StatelessWidget {
-  final String checkPointName;
-
-  CheckPointWidget(this.checkPointName);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'RapidPass Checkpoint:',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: deepPurple600),
-            ),
-          ),
-          Container(
-            width: 320.0,
-            height: 50.0,
-            decoration: BoxDecoration(color: deepPurple600),
-            child: Center(
-              child: Text(
-                this.checkPointName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class MainMenu extends StatelessWidget {
+  ProgressDialog progressDialog;
   @override
   Widget build(BuildContext context) {
+    progressDialog = ProgressDialog(context, type: ProgressDialogType.Download)
+      ..style(
+          message: 'Updating Database...',
+          borderRadius: 10.0,
+          backgroundColor: Colors.white,
+          progressWidget: CircularProgressIndicator(),
+          elevation: 10.0,
+          insetAnimCurve: Curves.easeInOut,
+          progress: 0.0,
+          maxProgress: 100.0,
+          progressTextStyle: TextStyle(
+              color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+          messageTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 19.0,
+              fontWeight: FontWeight.w600));
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -144,20 +124,22 @@ class MainMenu extends StatelessWidget {
   }
 
   Future _updateDatabase(final BuildContext context) async {
+    await progressDialog.show();
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
     final appState = Provider.of<AppState>(context, listen: false);
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
     if (state == null) {
-      DialogHelper.showAlertDialog(context,
-          title: 'Database sync error', message: 'An unknown error occurred.');
+      progressDialog.hide().then((_) => DialogHelper.showAlertDialog(context,
+          title: 'Database sync error', message: 'An unknown error occurred.'));
     }
     final int totalPages = state.totalPages;
     debugPrint('state.totalPages: $totalPages');
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
         state.pageNumber = state.pageNumber + 1;
+        progressDialog.update(progress: state.pageNumber / totalPages);
         state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
       }
     }
@@ -166,11 +148,13 @@ class MainMenu extends StatelessWidget {
     final String message = state.insertedRowsCount > 0
         ? 'Downloaded ${state.insertedRowsCount} records'
         : 'No new records found. Total records in database is $totalRecords';
-    DialogHelper.showAlertDialog(context,
-        title: 'Database Updated', message: message);
-    await AppStorage.setLastSyncOnToNow().then((timestamp) {
-      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-      appState.setDatabaseLastUpdated(timestamp);
+    progressDialog.hide().then((_) async {
+      DialogHelper.showAlertDialog(context,
+          title: 'Database Updated', message: message);
+      await AppStorage.setLastSyncOnToNow().then((timestamp) {
+        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+        appState.databaseLastUpdated = timestamp;
+      });
     });
   }
 
@@ -182,11 +166,14 @@ class MainMenu extends StatelessWidget {
   }
 
   static Future<ScanResults> scanAndValidate(final BuildContext context) async {
+    // TODO Make this not timing sensitive
+    final AppState appState = Provider.of<AppState>(context, listen: false);
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       debugPrint('base64Encoded: $base64Encoded');
       if (base64Encoded != null) {
-        return PassValidationService.deserializeAndValidate(base64Encoded);
+        return PassValidationService.deserializeAndValidate(
+            appState.appSecrets, base64Encoded);
       }
     } catch (e) {
       debugPrint('Error occured: $e');

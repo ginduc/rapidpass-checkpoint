@@ -66,8 +66,8 @@ class ContactUs extends StatelessWidget {
             ),
             SizedBox(height: 15),
             InkWell(
-              onTap: () =>
-                  URLLauncherHelper.launchUrl('https://twitter.com/rapidpassph'),
+              onTap: () => URLLauncherHelper.launchUrl(
+                  'https://twitter.com/rapidpassph'),
               child: _buildSocial(
                 ctx: context,
                 socialname: 'twitter.com/rapidpassph',

@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/block/aes_fast.dart';
 import 'package:pointycastle/stream/ctr.dart';
-import 'package:rapidpass_checkpoint/env.dart' as Env;
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 
@@ -19,17 +18,20 @@ const int $a = 0x61;
 /// Character 'f'
 const int $f = 0x66;
 
-class QrCodeDecoder extends Converter<ByteData, QrData> {
-  final AsciiDecoder asciiDecoder = AsciiDecoder();
+const AsciiDecoder asciiDecoder = const AsciiDecoder();
 
-  ByteData _decrypt(ByteData rawInput) {
+class QrCodeDecoder extends Converter<ByteData, QrData> {
+  final Uint8List key;
+
+  QrCodeDecoder(this.key);
+
+  ByteData _decrypt(final ByteData rawInput) {
     final rawBuffer = rawInput.buffer.asUint8List();
     final Uint8List cipherText = rawBuffer.sublist(2, rawBuffer.length - 4);
     print('cipherText: ${hex.encode(cipherText)} (${cipherText.length})');
     final List<int> signature =
         rawBuffer.sublist(rawBuffer.length - 4, rawBuffer.length);
     print('signature: ${hex.encode(signature)} (${signature.length})');
-    final key = Uint8List.fromList(Env.aesSecretKey);
     // Please don't do this if you need _real_ cryptographic security!
     // Use a _real_, one-time use initialization vector
     final iv = hex.decode('00') as Uint8List;

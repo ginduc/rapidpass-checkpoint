@@ -32,7 +32,7 @@ class _FaqsState extends State<Faqs> {
                   ),
                 )
               : ExpansionTile(
-                  title: Text(_faqItem.headerValue),                  
+                  title: Text(_faqItem.headerValue),
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.fromLTRB(16, 10, 16, 16),
