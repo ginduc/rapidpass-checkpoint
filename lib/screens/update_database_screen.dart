@@ -19,118 +19,84 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasConnection = true;
   bool _isUpdating = false;
   bool _hasError = false;
-  double progress;
+  // double _progress;
 
   Map<String, Object> _latestUpdateInfo = {
-    'count': 200,
-    'dateTime': DateTime(0), // ! Assumes there is no database record yet if DateTime is 0
+    'count': 0,
+    'dateTime': DateTime(
+        0), // ! Assumes there is no database record yet if DateTime is 0
     //DateTime.now(), //DateTime(0), // ! Assumes there is a previous update record
   };
 
-  // Future _updateDatabase() {
-  //   await progressDialog.show();
-  //   final ApiRepository apiRepository =
-  //       Provider.of<ApiRepository>(context, listen: false);
-  //   final appState = Provider.of<AppState>(context, listen: false);
-  //   DatabaseSyncState state =
-  //       await apiRepository.batchDownloadAndInsertPasses();
-  //   if (state == null) {
-  //     progressDialog.hide().then((_) => DialogHelper.showAlertDialog(context,
-  //         title: 'Database sync error', message: 'An unknown error occurred.'));
-  //   }
-  //   final int totalPages = state.totalPages;
-  //   debugPrint('state.totalPages: $totalPages');
-  //   if (totalPages > 0) {
-  //     while (state.pageNumber < totalPages) {
-  //       state.pageNumber = state.pageNumber + 1;
-  //       progressDialog.update(progress: state.pageNumber / totalPages);
-  //       state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
-  //     }
-  //   }
-  //   final int totalRecords =
-  //       await apiRepository.localDatabaseService.countPasses();
-  //   final String message = state.insertedRowsCount > 0
-  //       ? 'Downloaded ${state.insertedRowsCount} record(s).'
-  //       : 'No new records found. Total records in database is $totalRecords.';
-  //   progressDialog.hide().then((_) async {
-  //     DialogHelper.showAlertDialog(context,
-  //         title: 'Database Updated', message: message);
-  //     await AppStorage.setLastSyncOnToNow().then((timestamp) {
-  //       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-  //       appState.databaseLastUpdated = timestamp;
+  // void _updateDatabase() {
+  //   /* Sync */
+  //   setState(() {
+  //     _isUpdating = !_isUpdating;
+  //   });
+
+  //   Future.delayed(Duration(seconds: 2), () => 0.1).then((p) {
+  //     setState(() {
+  //       progress = p;
+  //     });
+  //     return Future.delayed(Duration(seconds: 1), () => 0.2);
+  //   }).then((p) {
+  //     setState(() {
+  //       progress += p;
+  //     });
+  //     return Future.delayed(Duration(seconds: 1), () => 0.3);
+  //   }).then((p) {
+  //     setState(() {
+  //       progress += p;
+  //     });
+  //     return Future.delayed(Duration(seconds: 2), () => 0.3);
+  //   }).then((p) {
+  //     setState(() {
+  //       progress += p;
+  //     });
+  //   }).whenComplete(() {
+  //     setState(() {
+  //       progress = null;
+  //       _isUpdating = false;
+  //       _hasError = true;
+
+  //       // _dummyRecord = [];
+  //       _latestUpdateInfo['dateTime'] = DateTime.now();
+
+  //       // _dummyRecord = [
+  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  //       //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  //       //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  //       //   {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  //       // ];
+
+  //       if (_hasError) {
+  //         DialogHelper.showAlertDialog(
+  //           context,
+  //           title: 'Error',
+  //           message:
+  //               'There\'s something wrong while getting the new information from the database.',
+  //         );
+  //       } else if (!_hasError) {
+  //         _latestUpdateInfo['count'] = 100;
+  //         final int latestAddedCount = _latestUpdateInfo['count'];
+  //         final String message = latestAddedCount > 0
+  //             ? 'Downloaded $latestAddedCount new ${(latestAddedCount > 1 ? 'records' : 'record')}.'
+  //             : 'No new records found. Total records in database is 500';
+
+  //         DialogHelper.showAlertDialog(
+  //           context,
+  //           title: 'Database Synced!',
+  //           message: message,
+  //         );
+  //       }
   //     });
   //   });
   // }
-
-  void _updateDatabase() {
-    /* Sync */
-    setState(() {
-      _isUpdating = !_isUpdating;
-    });
-
-    Future.delayed(Duration(seconds: 2), () => 0.1).then((p) {
-      setState(() {
-        progress = p;
-      });
-      return Future.delayed(Duration(seconds: 1), () => 0.2);
-    }).then((p) {
-      setState(() {
-        progress += p;
-      });
-      return Future.delayed(Duration(seconds: 1), () => 0.3);
-    }).then((p) {
-      setState(() {
-        progress += p;
-      });
-      return Future.delayed(Duration(seconds: 2), () => 0.3);
-    }).then((p) {
-      setState(() {
-        progress += p;
-      });
-    }).whenComplete(() {
-      setState(() {
-        progress = null;
-        _isUpdating = false;
-        _hasError = false;
-
-        // _dummyRecord = [];
-        _latestUpdateInfo['dateTime'] = DateTime.now();
-
-        // _dummyRecord = [
-        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-        //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-        //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-        //   {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-        // ];
-
-        if (_hasError) {
-          DialogHelper.showAlertDialog(
-            context,
-            title: 'Error',
-            message:
-                'There\'s something wrong while getting the new information from the database.',
-          );
-        } else if (!_hasError) {
-          _latestUpdateInfo['count'] = 100;
-          final int latestAddedCount = _latestUpdateInfo['count'];
-          final String message = latestAddedCount > 0
-              ? 'Downloaded $latestAddedCount new ${(latestAddedCount > 1 ? 'records' : 'record')}.'
-              : 'No new records found. Total records in database is 500';
-
-          DialogHelper.showAlertDialog(
-            context,
-            title: 'Database Synced!',
-            message: message,
-          );
-        }
-      });
-    });
-  }
 
   Widget _buildRecordListView() {
     return Expanded(
@@ -254,8 +220,9 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           SizedBox(
             width: 250,
             child: FlatButton(
-              onPressed:
-                  _hasConnection ? !_isUpdating ? _updateDatabase : null : null,
+              onPressed: _hasConnection
+                  ? !_isUpdating ? () => _updateDatabase(context) : null
+                  : null,
               child: Text(_isUpdating ? 'Please Wait...' : 'Sync',
                   style: TextStyle(fontSize: 16.0)),
               shape: RoundedRectangleBorder(
@@ -293,11 +260,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: LinearProgressIndicator(
-            backgroundColor: deepPurple300,
-            valueColor: AlwaysStoppedAnimation<Color>(deepPurple900),
-            value: progress == null ? null : progress,
-          ),
+          child: LinearProgressIndicator(),
         ),
       ),
     );
@@ -305,13 +268,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //   appState = Provider.of<AppState>(context, listen: false);
-
-    // setState(() {
-    //   _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
-    // });
-
+    final appState = Provider.of<AppState>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
+
+    setState(() {
+      _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -319,81 +281,80 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       ),
       body: Column(
         children: <Widget>[
-          // if (!_isUpdating) _buildRecordListView(),
-          // if (!_hasConnection) _buildOfflineContent(screenSize),
-          // if (_hasError && _hasConnection && !_isUpdating)
-          //   _builUpdateErrorMessage(),
-          // if (_isUpdating) _showProgressBar(),
           !_hasConnection
               ? _buildOfflineContent(screenSize)
               : _isUpdating ? _showProgressBar() : _buildRecordListView(),
-          if (_hasError && !_isUpdating)
-            _buildUpdateErrorMessage(),
+          if (_hasError && !_isUpdating) _buildUpdateErrorMessage(),
           _buildFooterContent(),
         ],
       ),
     );
   }
 
-  // Future _updateDatabase(final BuildContext context) async {
-  //   final ApiRepository apiRepository =
-  //       Provider.of<ApiRepository>(context, listen: false);
-  //   DatabaseSyncState state =
-  //       await apiRepository.batchDownloadAndInsertPasses();
+  Future _updateDatabase(final BuildContext context) async {
+    setState(() {
+      _isUpdating = true;
+    });
 
-  //   // For Functionality Test
-  //   // [Uncomment statement below to drive an update failure state]
-  //   // state = null;
-  //   if (state == null) {
-  //     DialogHelper.showAlertDialog(
-  //       context,
-  //       title: 'Database sync error',
-  //       message: 'An unknown error occurred.',
-  //     );
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    DatabaseSyncState state =
+        await apiRepository.batchDownloadAndInsertPasses();
 
-  //     setState(() {
-  //       _isUpdating = false;
-  //       _hasError = true;
-  //     });
+    // ! For Functionality Test
+    // ! [Uncomment statement below to drive an update failure state]
+    // state = null;
+    if (state == null) {
+      DialogHelper.showAlertDialog(
+        context,
+        title: 'Database Sync Failed!',
+        message:
+            'There\'s something wrong while getting the new information from the database.',
+      );
 
-  //     return;
-  //   }
+      setState(() {
+        _hasError = true;
+        _isUpdating = false;
+      });
 
-  //   final int totalPages = state.totalPages;
-  //   debugPrint('state.totalPages: $totalPages');
-  //   if (totalPages > 0) {
-  //     while (state.pageNumber < totalPages) {
-  //       state.pageNumber = state.pageNumber + 1;
-  //       state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
-  //     }
-  //   }
+      return;
+    }
 
-  //   final int totalRecords =
-  //       await apiRepository.localDatabaseService.countPasses();
-  //   final String message = state.insertedRowsCount > 0
-  //       ? 'Downloaded ${state.insertedRowsCount} ${(state.insertedRowsCount > 1 ? 'records' : 'record')}'
-  //       : 'No new records found. Total records in database is $totalRecords';
+    final int totalPages = state.totalPages;
+    debugPrint('state.totalPages: $totalPages');
+    if (totalPages > 0) {
+      while (state.pageNumber < totalPages) {
+        state.pageNumber = state.pageNumber + 1;
+        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+      }
+    }
 
-  //   if (state != null) {
-  //     DialogHelper.showAlertDialog(
-  //       context,
-  //       title: 'Database Updated',
-  //       message: message,
-  //     );
+    final int totalRecords =
+        await apiRepository.localDatabaseService.countPasses();
+    final String message = state.insertedRowsCount > 0
+        ? 'Downloaded ${state.insertedRowsCount} ${(state.insertedRowsCount > 1 ? 'records' : 'record')}'
+        : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} records in database is $totalRecords';
 
-  //     setState(() {
-  //       _hasError = false;
-  //       _isUpdating = false;
-  //       _latestUpdateInfo['count'] = state.insertedRowsCount;
-  //       _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
-  //     });
+    if (state != null) {
+      await AppStorage.setLastSyncOnToNow().then((timestamp) {
+        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+        appState.databaseLastUpdated = timestamp;
+      });
 
-  //     await AppStorage.setLastSyncOnToNow().then((timestamp) {
-  //       debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-  //       appState.databaseLastUpdated = timestamp;
-  //     });
-  //   }
-  // }
+      DialogHelper.showAlertDialog(
+        context,
+        title: 'Database Synced!',
+        message: message,
+      );
+
+      setState(() {
+        _hasError = false;
+        _isUpdating = false;
+        _latestUpdateInfo['count'] = state.insertedRowsCount;
+        _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
+      });
+    }
+  }
 }
 
 List<Map<String, dynamic>> _dummyRecord = [
