@@ -60,7 +60,6 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    // Will be called when app is in foreground & if it triggered the background activity using openAppSettings()
     if (state == AppLifecycleState.resumed) {
       _scannerController.startCameraPreview();
     } else if (state == AppLifecycleState.paused) {
