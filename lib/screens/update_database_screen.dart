@@ -22,9 +22,9 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   double progress;
 
   Map<String, Object> _latestUpdateInfo = {
-    'count': 0,
-    'dateTime': DateTime
-        .now() //DateTime(0), // ! Assumes there is no database record yet if DateTime is 0
+    'count': 200,
+    'dateTime': DateTime(0), // ! Assumes there is no database record yet if DateTime is 0
+    //DateTime.now(), //DateTime(0), // ! Assumes there is a previous update record
   };
 
   // Future _updateDatabase() {
@@ -91,6 +91,22 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       setState(() {
         progress = null;
         _isUpdating = false;
+        _hasError = false;
+
+        // _dummyRecord = [];
+        _latestUpdateInfo['dateTime'] = DateTime.now();
+
+        // _dummyRecord = [
+        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+        //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+        //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+        //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+        //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+        //   {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+        // ];
 
         if (_hasError) {
           DialogHelper.showAlertDialog(
@@ -99,7 +115,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
             message:
                 'There\'s something wrong while getting the new information from the database.',
           );
-        } else {
+        } else if (!_hasError) {
           _latestUpdateInfo['count'] = 100;
           final int latestAddedCount = _latestUpdateInfo['count'];
           final String message = latestAddedCount > 0
@@ -311,7 +327,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           !_hasConnection
               ? _buildOfflineContent(screenSize)
               : _isUpdating ? _showProgressBar() : _buildRecordListView(),
-          if (_hasError)
+          if (_hasError && !_isUpdating)
             _buildUpdateErrorMessage(),
           _buildFooterContent(),
         ],
@@ -381,13 +397,13 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 }
 
 List<Map<String, dynamic>> _dummyRecord = [
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  // {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
