@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
@@ -36,14 +37,16 @@ class WelcomeScreenState extends State<WelcomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final appState = Provider.of<AppState>(context, listen: false);
     _checkRequiredPermissions();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final code = await AppStorage.getMasterQrCode();
       debugPrint("Got masterQrCode: '$code'");
       if (code != null) {
         // TODO there must be a cleaner way to do this
-        Provider.of<AppState>(context, listen: false).masterQrCode = code;
+        appState.masterQrCode = code;
       }
+      appState.packageInfo = await PackageInfo.fromPlatform();
     });
   }
 
@@ -98,6 +101,10 @@ class WelcomeScreenState extends State<WelcomeScreen>
                   softWrap: true,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32.0),
                   textAlign: TextAlign.center,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text('Version 1.2.0+6'),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
