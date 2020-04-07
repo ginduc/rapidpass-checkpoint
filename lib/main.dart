@@ -129,7 +129,10 @@ class RapidPassCheckpointApp extends StatelessWidget {
             case '/authenticatingScreen':
               return CupertinoPageRoute(
                   builder: (_) => AuthenticatingScreen(
-                        onSuccessRouteName: '/menu',
+                        onSuccess: (context) =>
+                            Navigator.pushReplacementNamed(context, '/menu'),
+                        onError: (context) => Navigator.popUntil(
+                            context, ModalRoute.withName('/')),
                       ));
             case '/viewMoreInfo':
               return CupertinoPageRoute(
