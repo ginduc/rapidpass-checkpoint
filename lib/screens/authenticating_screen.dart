@@ -11,9 +11,10 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 class AuthenticatingScreen extends StatefulWidget {
-  final String onSuccessRouteName;
+  final Function(BuildContext context) onSuccess;
+  final Function(BuildContext context) onError;
 
-  AuthenticatingScreen({this.onSuccessRouteName});
+  AuthenticatingScreen({this.onSuccess, this.onError});
 
   @override
   State<StatefulWidget> createState() => AuthenticatingScreenState();
@@ -32,11 +33,7 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
     _futureAppSecrets = _authenticate(apiRepository.apiService,
             deviceInfoModel.imei, appState.masterQrCode)
         .then((appSecrets) {
-      appState.setAppSecrets(appSecrets).then((_) => widget
-                  .onSuccessRouteName !=
-              null
-          ? Navigator.pushReplacementNamed(context, widget.onSuccessRouteName)
-          : Navigator.pop(context, appSecrets));
+      appState.setAppSecrets(appSecrets).then((_) => widget.onSuccess(context));
       return appSecrets;
     }).catchError((e) async {
       debugPrint('catchError(${e.toString()})');
@@ -60,7 +57,7 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
       await DialogHelper.showAlertDialog(context,
               title: title, message: message)
           .then((_) {
-        Navigator.popUntil(context, ModalRoute.withName('/'));
+        widget.onError(context);
       });
     });
     super.initState();

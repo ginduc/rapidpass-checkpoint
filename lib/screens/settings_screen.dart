@@ -57,8 +57,10 @@ class SettingsScreenState extends State<SettingsScreen> {
           final result = await Navigator.push(
               context,
               CupertinoPageRoute(
-                  builder: (_) =>
-                      AuthenticatingScreen(onSuccessRouteName: null)));
+                  builder: (_) => AuthenticatingScreen(
+                      onSuccess: (c) =>
+                          Navigator.popUntil(c, ModalRoute.withName('/')),
+                      onError: (c) => Navigator.of(c).pop())));
           debugPrint('result: ${inspect(result)}');
         });
       }
