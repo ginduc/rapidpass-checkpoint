@@ -71,6 +71,9 @@ class ApiService extends IApiService {
       return Future.error('Unknown response from server.');
     } on DioError catch (e) {
       debugPrint(e.toString());
+      if (e.response == null) {
+        throw ApiException('Network error. Please check your internet connection.');
+      }
       var statusCode = e.response.statusCode;
       debugPrint('statusCode: $statusCode');
       if (statusCode >= 500 && statusCode < 600) {
