@@ -173,25 +173,30 @@ class ApiService extends IApiService {
         receiveTimeout: 60000,
         contentType: Headers.jsonContentType));
     client.httpClientAdapter = httpClientAdapter;
-    final Response response = await client.get('$getRegistryPassPath/$referenceId');
+    final Response response =
+        await client.get('$getRegistryPassPath/$referenceId');
     final data = response.data;
     debugPrint('${inspect(data)}');
     final DetailedInformation registryPass = DetailedInformation(
-        controlNumber: data['controlCode'],
-        plateNumber: data['plateNumber'],
-        accessType: '',
-        approvedBy: '',
-        validUntil: '',
-        lastUsed: '',
-        reason: '',
-        fullName: data['name'],
-        email: '',
-        mobileNumber: '',
-        companyName: '',
-        idType: data['idType'],
-        idNumber: data['identifierNumber'],
-        origin: null,
-        destination: null,
+      controlNumber: data['controlCode'],
+      plateNumber: data['plateNumber'],
+      accessType: '',
+      approvedBy: '',
+      validUntil: data['validUntil'],
+      lastUsed: '',
+      reason: '',
+      fullName: data['name'],
+      email: '',
+      mobileNumber: '',
+      companyName: data['company'],
+      idType: data['idType'],
+      idNumber: data['identifierNumber'],
+      origin: null,
+      destination: Location(
+          place: data['destName'],
+          streetName: data['destStreet'],
+          cityName: data['destCity'],
+          province: data['province']),
     );
     return registryPass;
   }

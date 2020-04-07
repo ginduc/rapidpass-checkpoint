@@ -29,7 +29,7 @@ class DetailedInformation {
 }
 
 class Location {
-  Location({this.streetName, this.cityName, this.province});
+  Location({this.place, this.streetName, this.cityName, this.province});
 
-  final String streetName, cityName, province;
+  final String place, streetName, cityName, province;
 }
