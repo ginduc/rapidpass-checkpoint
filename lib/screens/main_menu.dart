@@ -142,7 +142,8 @@ class MainMenu extends StatelessWidget {
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
         state.pageNumber = state.pageNumber + 1;
-        progressDialog.update(progress: state.pageNumber / totalPages);
+        final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
+        progressDialog.update(progress: progress.toDouble());
         state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
       }
     }
