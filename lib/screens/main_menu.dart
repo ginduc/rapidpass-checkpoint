@@ -146,8 +146,8 @@ class MainMenu extends StatelessWidget {
     final int totalRecords =
         await apiRepository.localDatabaseService.countPasses();
     final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} records'
-        : 'No new records found. Total records in database is $totalRecords';
+        ? 'Downloaded ${state.insertedRowsCount} record(s).'
+        : 'No new records found. Total records in database is $totalRecords.';
     progressDialog.hide().then((_) async {
       DialogHelper.showAlertDialog(context,
           title: 'Database Updated', message: message);
