@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
+import 'package:rapidpass_checkpoint/flavor.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
@@ -107,7 +108,18 @@ class WelcomeScreenState extends State<WelcomeScreen>
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child: Text('Version 1.2.0+6'),
+                    child: Selector<AppState, PackageInfo>(
+                        selector: (_, appState) => appState.packageInfo,
+                        builder: (_, PackageInfo packageInfo, __) {
+                          if (packageInfo != null) {
+                            final String versionText = Flavor.isProduction
+                                ? packageInfo.version
+                                : '${packageInfo.version}+${packageInfo.buildNumber}';
+                            return Text('Version $versionText');
+                          } else {
+                            return Text('');
+                          }
+                        }),
                   ),
                   Padding(
                     padding: EdgeInsets.only(

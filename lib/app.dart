@@ -33,27 +33,8 @@ import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
+import 'flavor.dart';
 import 'models/check_plate_or_control_args.dart';
-
-enum Environment { dev, prod }
-
-class Flavor {
-  final Environment environment;
-  final String apiBaseUrl;
-
-  static Flavor _instance;
-
-  factory Flavor(
-      {@required Environment environment, @required String apiBaseUrl}) {
-    _instance ??= Flavor._internal(environment, apiBaseUrl);
-    return _instance;
-  }
-
-  Flavor._internal(this.environment, this.apiBaseUrl);
-
-  static Flavor get instance => _instance;
-  static bool get isProduction => _instance.environment == Environment.prod;
-}
 
 class RapidPassCheckpointApp extends StatelessWidget {
   // Local

@@ -1,4 +1,5 @@
 import 'app.dart';
+import 'flavor.dart';
 
 void main() {
   final flavor = Flavor(

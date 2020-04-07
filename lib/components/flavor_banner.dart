@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rapidpass_checkpoint/app.dart';
+import 'package:rapidpass_checkpoint/flavor.dart';
 
 class FlavorBanner extends StatelessWidget {
   final Widget child;
