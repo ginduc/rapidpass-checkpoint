@@ -11,6 +11,10 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
 class AuthenticatingScreen extends StatefulWidget {
+  final String onSuccessRouteName;
+
+  AuthenticatingScreen({this.onSuccessRouteName});
+
   @override
   State<StatefulWidget> createState() => AuthenticatingScreenState();
 }
@@ -28,9 +32,11 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
     _futureAppSecrets = _authenticate(apiRepository.apiService,
             deviceInfoModel.imei, appState.masterQrCode)
         .then((appSecrets) {
-      appState
-          .setAppSecrets(appSecrets)
-          .then((_) => Navigator.pushReplacementNamed(context, '/menu'));
+      appState.setAppSecrets(appSecrets).then((_) => widget
+                  .onSuccessRouteName !=
+              null
+          ? Navigator.pushReplacementNamed(context, widget.onSuccessRouteName)
+          : Navigator.pop(context, appSecrets));
       return appSecrets;
     }).catchError((e) async {
       debugPrint('catchError(${e.toString()})');

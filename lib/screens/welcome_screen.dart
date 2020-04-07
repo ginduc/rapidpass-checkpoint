@@ -171,14 +171,14 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       _buildFooter('FAQs'),
                       _buildFooter('Contact Us'),
                       _buildFooter('Privacy Policy'),
-//                      IconButton(
-//                        icon: Icon(
-//                          Icons.settings,
-//                          color: Colors.white70,
-//                        ),
-//                        onPressed: () =>
-//                            Navigator.pushNamed(context, '/settings'),
-//                      )
+                      IconButton(
+                        icon: Icon(
+                          Icons.settings,
+                          color: Colors.white70,
+                        ),
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/settings'),
+                      )
                     ],
                   ),
                 ),
