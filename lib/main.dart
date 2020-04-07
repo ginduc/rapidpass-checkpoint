@@ -20,6 +20,7 @@ import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
@@ -123,6 +124,14 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => CheckPlateOrControlScreen(
                     CheckPlateOrControlScreenModeType.control),
               );
+            case '/scanQr':
+              QrScannerScreenArgs args = settings.arguments;
+              if (args != null)
+                assert(args is QrScannerScreenArgs);
+              else
+                args = QrScannerScreenArgs();
+
+              return CupertinoPageRoute(builder: (_) => QrScannerScreen(args));
             case '/masterQrScannerScreen':
               return CupertinoPageRoute(
                   builder: (_) => MasterQrScannerScreen());

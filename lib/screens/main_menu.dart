@@ -14,6 +14,7 @@ import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   @override
@@ -169,7 +170,12 @@ class MainMenu extends StatelessWidget {
     // TODO Make this not timing sensitive
     final AppState appState = Provider.of<AppState>(context, listen: false);
     try {
-      final String base64Encoded = await BarcodeScanner.scan();
+      // final String base64Encoded = await BarcodeScanner.scan();
+      final base64Encoded = await Navigator.pushNamed(context, '/scanQr',
+          arguments: QrScannerScreenArgs(
+              message:
+                  'Position the QR image inside the frame. It will scan automatically.'));
+
       debugPrint('base64Encoded: $base64Encoded');
       if (base64Encoded != null) {
         return PassValidationService.deserializeAndValidate(
