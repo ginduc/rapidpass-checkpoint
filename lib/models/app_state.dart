@@ -26,10 +26,7 @@ class AppState extends ChangeNotifier {
   String get masterQrCode => this._masterQrCode;
   set masterQrCode(final String masterQrCode) {
     this._masterQrCode = masterQrCode;
-    AppStorage.setMasterQrCode(masterQrCode).then((_) {
-      debugPrint('Master QR Code saved!');
-      notifyListeners();
-    });
+    notifyListeners();
   }
 
   AppSecrets get appSecrets => this._appSecrets;

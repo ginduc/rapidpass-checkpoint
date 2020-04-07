@@ -6,6 +6,7 @@ import 'package:rapidpass_checkpoint/models/app_secrets.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
+import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 
@@ -36,11 +37,19 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
       String title = 'Authentication error';
       String message = e.toString();
       if (e is ApiException) {
-        debugPrint('e.statusCode: ${e.statusCode}');
-        if (e.statusCode != null && e.statusCode >= 500 && e.statusCode < 600) {
-          title = 'Server error';
-        }
         message = e.message;
+        final statusCode = e.statusCode;
+        debugPrint('e.statusCode: $statusCode');
+        if (statusCode != null) {
+          if (statusCode == 401) {
+            appState.masterQrCode = null;
+            await AppStorage.resetMasterQrCode();
+            message =
+                'Unauthorized. Please try scanning the master QR code again.';
+          } else if (statusCode >= 500 && statusCode < 600) {
+            title = 'Server error';
+          }
+        }
       }
       await DialogHelper.showAlertDialog(context,
               title: title, message: message)
