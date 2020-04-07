@@ -19,84 +19,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasConnection = true;
   bool _isUpdating = false;
   bool _hasError = false;
-  // double _progress;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 0,
-    'dateTime': DateTime(
-        0), // ! Assumes there is no database record yet if DateTime is 0
-    //DateTime.now(), //DateTime(0), // ! Assumes there is a previous update record
+    'dateTime': DateTime(0),
+    // ! Assumes there is no database record yet if DateTime is 0. Shared preference can be apply later.
   };
-
-  // void _updateDatabase() {
-  //   /* Sync */
-  //   setState(() {
-  //     _isUpdating = !_isUpdating;
-  //   });
-
-  //   Future.delayed(Duration(seconds: 2), () => 0.1).then((p) {
-  //     setState(() {
-  //       progress = p;
-  //     });
-  //     return Future.delayed(Duration(seconds: 1), () => 0.2);
-  //   }).then((p) {
-  //     setState(() {
-  //       progress += p;
-  //     });
-  //     return Future.delayed(Duration(seconds: 1), () => 0.3);
-  //   }).then((p) {
-  //     setState(() {
-  //       progress += p;
-  //     });
-  //     return Future.delayed(Duration(seconds: 2), () => 0.3);
-  //   }).then((p) {
-  //     setState(() {
-  //       progress += p;
-  //     });
-  //   }).whenComplete(() {
-  //     setState(() {
-  //       progress = null;
-  //       _isUpdating = false;
-  //       _hasError = true;
-
-  //       // _dummyRecord = [];
-  //       _latestUpdateInfo['dateTime'] = DateTime.now();
-
-  //       // _dummyRecord = [
-  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  //       //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  //       //   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  //       //   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  //       //   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  //       //   {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  //       // ];
-
-  //       if (_hasError) {
-  //         DialogHelper.showAlertDialog(
-  //           context,
-  //           title: 'Error',
-  //           message:
-  //               'There\'s something wrong while getting the new information from the database.',
-  //         );
-  //       } else if (!_hasError) {
-  //         _latestUpdateInfo['count'] = 100;
-  //         final int latestAddedCount = _latestUpdateInfo['count'];
-  //         final String message = latestAddedCount > 0
-  //             ? 'Downloaded $latestAddedCount new ${(latestAddedCount > 1 ? 'records' : 'record')}.'
-  //             : 'No new records found. Total records in database is 500';
-
-  //         DialogHelper.showAlertDialog(
-  //           context,
-  //           title: 'Database Synced!',
-  //           message: message,
-  //         );
-  //       }
-  //     });
-  //   });
-  // }
 
   Widget _buildRecordListView() {
     return Expanded(
@@ -268,8 +196,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = Provider.of<AppState>(context, listen: false);
     final screenSize = MediaQuery.of(context).size;
+    appState = Provider.of<AppState>(context, listen: false);
 
     setState(() {
       _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
@@ -358,13 +286,13 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 }
 
 List<Map<String, dynamic>> _dummyRecord = [
-  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  // {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
