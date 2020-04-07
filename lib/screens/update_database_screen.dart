@@ -101,36 +101,58 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       child: LayoutBuilder(
         builder: (bContext, constraints) {
           return Container(
-            margin: EdgeInsets.symmetric(vertical: 20),
             height: constraints.maxHeight,
+            width: constraints.maxWidth,
             child: _dummyRecord.isNotEmpty
-                ? ListView.builder(
+                ? ListView.separated(
+                    separatorBuilder: (context, count) {
+                      return const Divider(
+                        height: 10,
+                        color: Colors.grey,
+                      );
+                    },
                     itemBuilder: (bContext, index) => Container(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 20),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey[200])),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '${_dummyRecord[index]['count']} Records Added',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              '${DateFormat('MM dd, yyyy').format(_dummyRecord[index]['dateTime'])} ${DateFormat.jm().format(_dummyRecord[index]['dateTime'])}',
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500),
-                            ),
-                          ],
+                      child: ListTile(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        title: Text(
+                          '${_dummyRecord[index]['count']} Records Added',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         ),
+                        trailing: Text(
+                          '${DateFormat('MM-dd-yyyy').format(_dummyRecord[index]['dateTime'])} ${DateFormat.jm().format(_dummyRecord[index]['dateTime'])}',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                        onTap: () {},
                       ),
                     ),
                     itemCount: _dummyRecord.length,
                   )
-                : null,
+                : Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.assignment, size: 200, color: Colors.grey),
+                        Text(
+                          'Log is Empty.',
+                          style: Theme.of(context).textTheme.display1.apply(
+                                color: Colors.grey,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Padding(padding: EdgeInsets.only(bottom: 10)),
+                        Text(
+                          'Press the "Sync" button and start fetching the new updates.',
+                          style: TextStyle(
+                              fontSize: 20.0, color: Colors.grey[700]),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
+                  ),
           );
         },
       ),
@@ -138,59 +160,49 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   }
 
   Widget _buildOfflineContent(Size screenSize) {
-    return Container(
+    return Expanded(
+        child: Container(
+      padding: EdgeInsets.all(20.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.20),
-            child: Text(
-              'Please connect your device\n'
-              'to an internet connection\n'
-              'to Update Database',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[400], fontSize: 16),
-            ),
+          Icon(Icons.cloud_off, size: 200, color: Colors.grey),
+          Text(
+            'You are offline.',
+            style: Theme.of(context).textTheme.display1.apply(
+                  color: Colors.grey,
+                ),
+            textAlign: TextAlign.center,
           ),
-          Container(
-            height: 90,
-            child: Center(
-              child: Text(
-                'OFFLINE',
-                style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 12),
-              ),
-            ),
-          ),
+          const Padding(padding: EdgeInsets.only(bottom: 10)),
+          Text(
+            'Please check your internet connection and try again.',
+            style: TextStyle(fontSize: 20.0, color: Colors.grey[700]),
+            textAlign: TextAlign.center,
+          )
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildFooterContent() {
     return Container(
-      margin: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.all(20.0),
       child: Column(
         children: <Widget>[
           SizedBox(
-            width: 200,
+            width: 250,
             child: FlatButton(
-              onPressed: _hasConnection
-                  ? () {
-                      /* Sync */
-                      setState(() {
-                        _isUpdating = !_isUpdating;
-                      });
-                    }
-                  : null,
-              child: Text(_isUpdating ? 'Please Wait...' : 'Sync'),
+              onPressed:
+                  _hasConnection ? !_isUpdating ? _updateDatabase : null : null,
+              child: Text(_isUpdating ? 'Please Wait...' : 'Sync',
+                  style: TextStyle(fontSize: 16.0)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
               ),
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               color: green300,
-              disabledColor: Colors.grey[400],
+              disabledColor: _isUpdating ? Colors.green[200] : Colors.grey[400],
               textColor: Colors.white,
               disabledTextColor: Colors.white,
             ),
@@ -217,8 +229,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           padding: const EdgeInsets.all(20.0),
           child: LinearProgressIndicator(
             backgroundColor: deepPurple300,
-            valueColor: AlwaysStoppedAnimation<Color>(deepPurple600),
-            value: 0.5,
+            valueColor: AlwaysStoppedAnimation<Color>(deepPurple900),
+            value: progress == null ? null : progress,
           ),
         ),
       ),
@@ -235,9 +247,10 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       ),
       body: Column(
         children: <Widget>[
-          if (!_isUpdating) _buildRecordListView(),
-          if (!_hasConnection) _buildOfflineContent(screenSize),
-          if (_isUpdating) _showProgressBar(),
+          !_hasConnection
+              ? _buildOfflineContent(screenSize)
+              : _isUpdating ? _showProgressBar() 
+              : _buildRecordListView(),
           _buildFooterContent(),
         ],
       ),
@@ -245,14 +258,14 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   }
 }
 
-final _dummyRecord = [
+List<Map<String, dynamic>> _dummyRecord = [
   {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
   {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
   {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  // {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  // {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  // {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
+  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
+  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
+  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
 ];
