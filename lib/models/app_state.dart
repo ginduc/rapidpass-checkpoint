@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info/package_info.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
 
 import 'app_secrets.dart';
@@ -8,6 +9,7 @@ class AppState extends ChangeNotifier {
   DateTime _databaseLastUpdated;
   String _masterQrCode;
   AppSecrets _appSecrets;
+  PackageInfo _packageInfo;
 
   static final DateFormat dateFormat = DateFormat.yMMMd('en_US').add_jm();
 
@@ -26,10 +28,7 @@ class AppState extends ChangeNotifier {
   String get masterQrCode => this._masterQrCode;
   set masterQrCode(final String masterQrCode) {
     this._masterQrCode = masterQrCode;
-    AppStorage.setMasterQrCode(masterQrCode).then((_) {
-      debugPrint('Master QR Code saved!');
-      notifyListeners();
-    });
+    notifyListeners();
   }
 
   AppSecrets get appSecrets => this._appSecrets;
@@ -39,5 +38,11 @@ class AppState extends ChangeNotifier {
       notifyListeners();
       return secrets;
     });
+  }
+
+  PackageInfo get packageInfo => this._packageInfo;
+  set packageInfo(final PackageInfo packageInfo) {
+    this._packageInfo = packageInfo;
+    notifyListeners();
   }
 }

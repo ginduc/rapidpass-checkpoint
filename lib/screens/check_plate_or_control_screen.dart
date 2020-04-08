@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
@@ -14,7 +15,7 @@ class CheckPlateOrControlScreen extends StatefulWidget {
   const CheckPlateOrControlScreen(this.screenModeType);
 
   @override
-  State<StatefulWidget> createState() {
+  State<CheckPlateOrControlScreen> createState() {
     return _CheckPlateOrControlScreenState();
   }
 }
@@ -93,97 +94,99 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(_getAppBarText()),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 24.0),
-                      child: Text(_getHelpText()),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 48.0),
-                      child: Text(_getFormFieldLabel()),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 12.0),
-                      child: SizedBox(
-                        height: 80.0,
-                        child: TextFormField(
-                          controller: _formFieldTextEditingController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
+    return FlavorBanner(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(_getAppBarText()),
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(top: 24.0),
+                        child: Text(_getHelpText()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 48.0),
+                        child: Text(_getFormFieldLabel()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 12.0),
+                        child: SizedBox(
+                          height: 80.0,
+                          child: TextFormField(
+                            controller: _formFieldTextEditingController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                            maxLength: _screenModeType ==
+                                    CheckPlateOrControlScreenModeType.plate
+                                ? 11
+                                : 10,
+                            maxLengthEnforced: true,
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter(
+                                  RegExp("[a-zA-Z0-9]"))
+                            ],
+                            autofocus: true,
+                            onChanged: (String value) => setState(() {}),
+                            validator: (String value) {
+                              if (value.isEmpty) {
+                                setState(() {
+                                  _formHasErrors = true;
+                                });
+                                return 'This field is required.';
+                              } else if (value.isNotEmpty) {
+                                setState(() {
+                                  _formHasErrors = false;
+                                });
+                              }
+                              return null;
+                            },
                           ),
-                          maxLength: _screenModeType ==
-                                  CheckPlateOrControlScreenModeType.plate
-                              ? 11
-                              : 10,
-                          maxLengthEnforced: true,
-                          inputFormatters: [
-                            WhitelistingTextInputFormatter(
-                                RegExp("[a-zA-Z0-9]"))
-                          ],
-                          autofocus: true,
-                          onChanged: (String value) => setState(() {}),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              setState(() {
-                                _formHasErrors = true;
-                              });
-                              return 'This field is required.';
-                            } else if (value.isNotEmpty) {
-                              setState(() {
-                                _formHasErrors = false;
-                              });
-                            }
-                            return null;
-                          },
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(26.0),
+                  child: FlatButton(
+                    child: Text(
+                      _getSubmitCtaText(),
+                      style: TextStyle(fontSize: 16),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(26.0),
-                child: FlatButton(
-                  child: Text(
-                    _getSubmitCtaText(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  color: green300,
-                  disabledColor: Colors.grey[300],
-                  textColor: Colors.white,
-                  padding: EdgeInsets.all(16.0),
-                  onPressed: _formFieldTextEditingController.text.isEmpty
-                      ? null
-                      : () {
-                          _formKey.currentState.validate();
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    color: green300,
+                    disabledColor: Colors.grey[300],
+                    textColor: Colors.white,
+                    padding: EdgeInsets.all(16.0),
+                    onPressed: _formFieldTextEditingController.text.isEmpty
+                        ? null
+                        : () {
+                            _formKey.currentState.validate();
 
-                          if (!_formHasErrors) {
-                            _validate(context);
-                          }
-                        },
+                            if (!_formHasErrors) {
+                              _validate(context);
+                            }
+                          },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UpdateDatabaseScreen extends StatefulWidget {
@@ -149,17 +150,19 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Database'),
-      ),
-      body: Column(
-        children: <Widget>[
-          if (!_isUpdating) _buildRecordListView(),
-          if (!_hasConnection) _buildOfflineContent(screenSize),
-          if (_isUpdating) _showProgressBar(),
-          _buildFooterContent(),
-        ],
+    return FlavorBanner(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Update Database'),
+        ),
+        body: Column(
+          children: <Widget>[
+            if (!_isUpdating) _buildRecordListView(),
+            if (!_hasConnection) _buildOfflineContent(screenSize),
+            if (_isUpdating) _showProgressBar(),
+            _buildFooterContent(),
+          ],
+        ),
       ),
     );
   }

@@ -30,6 +30,9 @@ class PassCsvToJsonConverter
   void map(Map<String, dynamic> json, String header, dynamic value) {
     switch (header) {
       case 'controlCode':
+        if (value == null) {
+          throw new FormatException('controlCode is null');
+        }
         json['controlCode'] = ControlCode.decode(value);
         break;
       case 'passType':
