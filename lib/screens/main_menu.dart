@@ -163,7 +163,8 @@ class MainMenu extends StatelessWidget {
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
-    final scanResults = await scanAndValidate(context);
+    final scanResults = await MainMenu.scanAndValidate(context);
+    debugPrint('scanAndValidate() returned $scanResults');
     if (scanResults is ScanResults) {
       Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
     }
@@ -177,7 +178,10 @@ class MainMenu extends StatelessWidget {
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       debugPrint('base64Encoded: $base64Encoded');
-      if (base64Encoded != null) {
+      if (base64Encoded == null) {
+        // 'Back' button pressed on scanner
+        return null;
+      } else {
         final ScanResults deserializedQrCode =
             PassValidationService.deserializeAndValidate(
                 appState.appSecrets, base64Encoded);
@@ -194,7 +198,6 @@ class MainMenu extends StatelessWidget {
     } catch (e) {
       debugPrint('Error occured: $e');
     }
-    // TODO Display invalid code
-    return ScanResults.invalidPass;
+    return null;
   }
 }
