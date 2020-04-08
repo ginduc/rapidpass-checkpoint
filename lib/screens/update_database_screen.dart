@@ -6,6 +6,7 @@ import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UpdateDatabaseScreen extends StatefulWidget {
@@ -180,17 +181,19 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
     });
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Database'),
-      ),
-      body: Column(
-        children: <Widget>[
-          !_hasConnection
+    return FlavorBanner(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Update Database'),
+        ),
+        body: Column(
+          children: <Widget>[
+            !_hasConnection
               ? _buildOfflineContent(screenSize)
               : _isUpdating ? _showProgressBar() : _buildRecordListView(),
           _buildFooterContent(),
-        ],
+          ],
+        ),
       ),
     );
   }

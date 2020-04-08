@@ -44,8 +44,9 @@ class ApiRepository extends IApiRepository {
       debugPrint('state.insertedRowsCount: ${state.insertedRowsCount}');
       final int after = await localDatabaseService.countPasses();
       debugPrint('after: $after');
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
       state.exception = e;
       state.statusMessage = e.toString();
     }
