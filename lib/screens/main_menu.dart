@@ -187,12 +187,14 @@ class MainMenu extends StatelessWidget {
               .checkControlNumber(deserializedQrCode.qrData.controlCode);
           debugPrint('fromDatabase.isValid: ${fromDatabase.isValid}');
           return fromDatabase.isValid ? fromDatabase : deserializedQrCode;
+        } else {
+          return deserializedQrCode;
         }
       }
     } catch (e) {
       debugPrint('Error occured: $e');
     }
     // TODO Display invalid code
-    return null;
+    return ScanResults.invalidPass;
   }
 }
