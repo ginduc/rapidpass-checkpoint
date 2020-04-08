@@ -115,4 +115,22 @@ class PassValidationService {
       return ScanResults.invalidPass;
     }
   }
+
+  Future<ScanResults> checkControlNumber(final int controlNumber) async {
+    final validPass = await apiRepository.localDatabaseService
+        .getValidPassByIntegerControlCode(controlNumber);
+    if (validPass != null) {
+      final QrData qrData = QrData(
+          passType:
+              validPass.passType == 1 ? PassType.Vehicle : PassType.Individual,
+          apor: validPass.apor,
+          controlCode: validPass.controlCode,
+          validFrom: validPass.validFrom,
+          validUntil: validPass.validUntil,
+          idOrPlate: validPass.idOrPlate);
+      return ScanResults(qrData);
+    } else {
+      return ScanResults.invalidPass;
+    }
+  }
 }

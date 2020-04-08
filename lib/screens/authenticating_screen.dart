@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_secrets.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
@@ -65,24 +66,27 @@ class AuthenticatingScreenState extends State<AuthenticatingScreen> {
 
   @override
   Widget build(final BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('Connecting to API')),
-        body: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-              SpinKitWave(
-                color: deepPurple600,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0, left: 8.0),
-                child: FutureBuilder<AppSecrets>(
-                    future: _futureAppSecrets,
-                    builder: (_, snapshot) => Text(
-                        snapshot.hasData ? 'Logged in' : 'Authenticating...')),
-              )
-            ])));
+    return FlavorBanner(
+      child: Scaffold(
+          appBar: AppBar(title: Text('Connecting to API')),
+          body: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                SpinKitWave(
+                  color: deepPurple600,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left: 8.0),
+                  child: FutureBuilder<AppSecrets>(
+                      future: _futureAppSecrets,
+                      builder: (_, snapshot) => Text(snapshot.hasData
+                          ? 'Logged in'
+                          : 'Authenticating...')),
+                )
+              ]))),
+    );
   }
 
   Future<AppSecrets> _authenticate(final ApiService apiService,
