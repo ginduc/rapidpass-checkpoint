@@ -18,7 +18,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   bool _hasConnection = true;
   bool _isUpdating = false;
-  bool _hasError = false;
 
   Map<String, Object> _latestUpdateInfo = {
     'count': 0,
@@ -118,28 +117,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     ));
   }
 
-  Widget _buildUpdateErrorMessage() {
-    return Expanded(
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.warning, color: Colors.red),
-            SizedBox(width: 10),
-            Text(
-              'Error Updating Database.',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildFooterContent() {
     return Container(
       padding: EdgeInsets.all(20.0),
@@ -212,7 +189,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           !_hasConnection
               ? _buildOfflineContent(screenSize)
               : _isUpdating ? _showProgressBar() : _buildRecordListView(),
-          if (_hasError && !_isUpdating) _buildUpdateErrorMessage(),
           _buildFooterContent(),
         ],
       ),
@@ -241,7 +217,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       );
 
       setState(() {
-        _hasError = true;
         _isUpdating = false;
       });
 
@@ -260,8 +235,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     final int totalRecords =
         await apiRepository.localDatabaseService.countPasses();
     final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} ${(state.insertedRowsCount > 1 ? 'records' : 'record')}'
-        : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} records in database is $totalRecords';
+        ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
+        : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} records in database is $totalRecords.';
 
     if (state != null) {
       await AppStorage.setLastSyncOnToNow().then((timestamp) {
@@ -276,7 +251,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       );
 
       setState(() {
-        _hasError = false;
         _isUpdating = false;
         _latestUpdateInfo['count'] = state.insertedRowsCount;
         _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
