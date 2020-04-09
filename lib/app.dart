@@ -166,7 +166,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
         appDatabase: AppDatabase(LazyDatabase(() async {
           final dbFolder = await getDatabasesPath();
           final file = File(p.join(dbFolder, 'db.sqlite'));
-          return VmDatabase(file, logStatements: true);
+          return VmDatabase(file, logStatements: Flavor.isDevelopment);
         })),
         encryptionKey: encryptionKey);
     final apiRepository = ApiRepository(
