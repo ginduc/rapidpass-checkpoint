@@ -140,7 +140,7 @@ class MainMenu extends StatelessWidget {
           title: 'Database sync error',
           message: 'An unknown error occurred.'));
     }
-    if (state.exception != null) {
+    if (state.exception == null) {
       final int totalPages = state.totalPages;
       debugPrint('state.totalPages: $totalPages');
       if (totalPages > 0) {
