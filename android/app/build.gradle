@@ -61,10 +61,18 @@ android {
         }
     }
 
+    flavorDimensions "flavor"
+
     buildTypes {
+        dev {
+            dimension "flavor"
+            resValue "string", "app_name", "RapidPass Checkpoint (Dev)"
+            versionNameSuffix "-dev"
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            dimension "flavor"
+            resValue "string", "app_name", "RapidPass Checkpoint"
+
             signingConfig signingConfigs.release
 
             minifyEnabled true
