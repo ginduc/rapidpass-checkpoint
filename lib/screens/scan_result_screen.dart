@@ -100,7 +100,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
         data: Green.buildFor(context),
         child: WillPopScope(
           onWillPop: () async {
-            await _scanAndNavigate(context);
+            Navigator.popUntil(context, ModalRoute.withName("/menu"));
             return false;
           },
           child: FlavorBanner(

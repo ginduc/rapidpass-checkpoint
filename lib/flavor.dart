@@ -20,4 +20,5 @@ class Flavor {
 
   static Flavor get instance => _instance;
   static bool get isProduction => _instance.environment == Environment.prod;
+  static bool get isDevelopment => _instance.environment == Environment.dev;
 }

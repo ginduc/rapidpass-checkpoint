@@ -190,8 +190,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
                         _buildFooter('About'),
-                        _buildFooter('FAQs'),
-                        _buildFooter('Contact Us'),
+                        _buildFooter('Need Help?'),
                         _buildFooter('Privacy Policy'),
                         IconButton(
                           icon: Icon(
@@ -235,8 +234,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
 
   Widget _buildFooter(String title) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(
-          context, "/${title.replaceAll(' ', '_').toLowerCase()}"),
+      onTap: () => Navigator.pushNamed(context,
+          "/${title.replaceAll(' ', '_').replaceAll('?', '').toLowerCase()}"),
       child: Text(
         title,
         style: TextStyle(

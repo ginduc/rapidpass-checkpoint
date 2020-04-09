@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/components/rounded_button.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
+import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
 
@@ -17,9 +18,17 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
+  Future<int> _numberOfRecordsFuture;
+
   @override
   void initState() {
+    _numberOfRecordsFuture = countNumberOfRecords(context);
     super.initState();
+  }
+
+  Future<int> countNumberOfRecords(final BuildContext context) async {
+    final apiRepository = Provider.of<ApiRepository>(context, listen: false);
+    return await apiRepository.localDatabaseService.countPasses();
   }
 
   @override
@@ -43,7 +52,15 @@ class SettingsScreenState extends State<SettingsScreen> {
                   text: 'Reauthenticate Device',
                   onPressed: () => _reauthenticateDevice(context),
                 ),
-              )
+              ),
+              FutureBuilder<int>(
+                  future: _numberOfRecordsFuture,
+                  builder: (BuildContext context,
+                          AsyncSnapshot<int> snapshot) =>
+                      snapshot.hasData
+                          ? Text(
+                              'Number of records in database: ${snapshot.data}')
+                          : Text(''))
             ],
           )))),
     );

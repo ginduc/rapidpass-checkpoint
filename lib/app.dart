@@ -15,10 +15,10 @@ import 'package:rapidpass_checkpoint/screens/about_screen.dart';
 import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
-import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
+import 'package:rapidpass_checkpoint/screens/need_help_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
@@ -140,8 +140,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => UpdateDatabaseScreen(),
                 settings: settings,
               );
-            case '/contact_us':
-              return CupertinoPageRoute(builder: (_) => ContactUs());
+            case '/need_help':
+              return CupertinoPageRoute(builder: (_) => NeedHelp());
             case '/about':
               return CupertinoPageRoute(builder: (_) => About());
             case '/privacy_policy':
@@ -166,7 +166,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
         appDatabase: AppDatabase(LazyDatabase(() async {
           final dbFolder = await getDatabasesPath();
           final file = File(p.join(dbFolder, 'db.sqlite'));
-          return VmDatabase(file, logStatements: true);
+          return VmDatabase(file, logStatements: Flavor.isDevelopment);
         })),
         encryptionKey: encryptionKey);
     final apiRepository = ApiRepository(

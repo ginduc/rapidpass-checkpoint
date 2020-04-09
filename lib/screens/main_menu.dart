@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -126,7 +127,8 @@ class MainMenu extends StatelessWidget {
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
-    final scanResults = await scanAndValidate(context);
+    final scanResults = await MainMenu.scanAndValidate(context);
+    debugPrint('scanAndValidate() returned $scanResults');
     if (scanResults is ScanResults) {
       Navigator.pushNamed(context, '/scanResults', arguments: scanResults);
     }
@@ -140,7 +142,10 @@ class MainMenu extends StatelessWidget {
     try {
       final String base64Encoded = await BarcodeScanner.scan();
       debugPrint('base64Encoded: $base64Encoded');
-      if (base64Encoded != null) {
+      if (base64Encoded == null) {
+        // 'Back' button pressed on scanner
+        return null;
+      } else {
         final ScanResults deserializedQrCode =
             PassValidationService.deserializeAndValidate(
                 appState.appSecrets, base64Encoded);
@@ -150,12 +155,13 @@ class MainMenu extends StatelessWidget {
               .checkControlNumber(deserializedQrCode.qrData.controlCode);
           debugPrint('fromDatabase.isValid: ${fromDatabase.isValid}');
           return fromDatabase.isValid ? fromDatabase : deserializedQrCode;
+        } else {
+          return deserializedQrCode;
         }
       }
     } catch (e) {
       debugPrint('Error occured: $e');
     }
-    // TODO Display invalid code
     return null;
   }
 }

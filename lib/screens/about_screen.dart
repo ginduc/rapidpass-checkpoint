@@ -39,12 +39,12 @@ class About extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    'RapidPass is powered by DCTX, a team of quarantined, yet passionate ' +
-                        'designers-voluunters, under DevCon.ph COVID-19 Technology Initiative.\n',
+                    'RapidPass is powered by DCTx, a team of quarantined, yet passionate volunteers '
+                    'who specialize in technology, under DevCon.ph COVID-19 Technology initiative.\n',
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    'We exist to empathize, define, ideate, and design solutions to help solve ' +
+                    'We exist to empathize, ideate, define, and design solutions to help solve ' +
                         'pressing COVID-19 pandemic problems.',
                     style: TextStyle(fontSize: 16),
                   ),
