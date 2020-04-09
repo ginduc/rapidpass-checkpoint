@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -134,32 +135,65 @@ class MainMenu extends StatelessWidget {
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses();
     if (state == null) {
-      progressDialog.hide().then((_) => DialogHelper.showAlertDialog(context,
-          title: 'Database sync error', message: 'An unknown error occurred.'));
+      await progressDialog.hide().then((_) => DialogHelper.showAlertDialog(
+          context,
+          title: 'Database sync error',
+          message: 'An unknown error occurred.'));
     }
-    final int totalPages = state.totalPages;
-    debugPrint('state.totalPages: $totalPages');
-    if (totalPages > 0) {
-      while (state.pageNumber < totalPages) {
-        state.pageNumber = state.pageNumber + 1;
-        final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
-        progressDialog.update(progress: progress.toDouble());
-        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+    if (state.exception != null) {
+      final int totalPages = state.totalPages;
+      debugPrint('state.totalPages: $totalPages');
+      if (totalPages > 0) {
+        while (state.pageNumber < totalPages) {
+          state.pageNumber = state.pageNumber + 1;
+          final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
+          progressDialog.update(progress: progress.toDouble());
+          state =
+              await apiRepository.continueBatchDownloadAndInsertPasses(state);
+          if (state.exception != null) {
+            break;
+          }
+        }
       }
     }
-    final int totalRecords =
-        await apiRepository.localDatabaseService.countPasses();
-    final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} record(s).'
-        : 'No new records found. Total records in database is $totalRecords.';
-    progressDialog.hide().then((_) async {
-      DialogHelper.showAlertDialog(context,
-          title: 'Database Updated', message: message);
-      await AppStorage.setLastSyncOnToNow().then((timestamp) {
-        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-        appState.databaseLastUpdated = timestamp;
+    final e = state.exception;
+    if (e != null) {
+      String title = 'Database sync error';
+      String message = state.statusMessage ?? e.toString();
+      if (e is DioError) {
+        switch (e.type) {
+          case DioErrorType.SEND_TIMEOUT:
+            continue timeout;
+          case DioErrorType.CONNECT_TIMEOUT:
+            continue timeout;
+          timeout:
+          case DioErrorType.RECEIVE_TIMEOUT:
+            title = 'Network error';
+            message = 'Please check your network settings and try again.';
+            break;
+          default:
+          // noop
+        }
+      }
+      await progressDialog.hide().then((_) => DialogHelper.showAlertDialog(
+          context,
+          title: title,
+          message: message));
+    } else {
+      final int totalRecords =
+          await apiRepository.localDatabaseService.countPasses();
+      final String message = state.insertedRowsCount > 0
+          ? 'Downloaded ${state.insertedRowsCount} record(s).'
+          : 'No new records found. Total records in database is $totalRecords.';
+      progressDialog.hide().then((_) async {
+        DialogHelper.showAlertDialog(context,
+            title: 'Database Updated', message: message);
+        await AppStorage.setLastSyncOnToNow().then((timestamp) {
+          debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+          appState.databaseLastUpdated = timestamp;
+        });
       });
-    });
+    }
   }
 
   Future _scanAndNavigate(final BuildContext context) async {

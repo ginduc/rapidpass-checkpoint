@@ -69,9 +69,13 @@ class ApiRepository extends IApiRepository {
       final int after = await localDatabaseService.countPasses();
       debugPrint('after: $after');
       return state;
-    } catch (e) {
-      debugPrint(e);
+    } catch (e, stackTrace) {
+      debugPrint(e.toString());
+      debugPrintStack(stackTrace: stackTrace);
+      state.exception = e;
+      state.statusMessage = e.toString();
     }
+    return state;
   }
 
   @override
