@@ -9,9 +9,10 @@ import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 
 // TODO Rename this to RapidPassRepository
 abstract class IApiRepository {
-  Future<DatabaseSyncState> batchDownloadAndInsertPasses();
+  Future<DatabaseSyncState> batchDownloadAndInsertPasses(
+      final String accessCode);
   Future<DatabaseSyncState> continueBatchDownloadAndInsertPasses(
-      final DatabaseSyncState state);
+      final String accessCode, final DatabaseSyncState state);
   Future<void> verifyPlateNumber(String plateNumber);
   Future<void> verifyControlNumber(int controlNumber);
 }
@@ -19,14 +20,16 @@ abstract class IApiRepository {
 class ApiRepository extends IApiRepository {
   final ApiService apiService;
   final LocalDatabaseService localDatabaseService;
+  final String accessToken;
 
-  ApiRepository({
-    @required this.apiService,
-    @required this.localDatabaseService,
-  });
+  ApiRepository(
+      {@required this.apiService,
+      @required this.localDatabaseService,
+      @required this.accessToken});
 
   @override
-  Future<DatabaseSyncState> batchDownloadAndInsertPasses() async {
+  Future<DatabaseSyncState> batchDownloadAndInsertPasses(
+      final String accessCode) async {
     final int before = await localDatabaseService.countPasses();
     debugPrint('before: $before');
     final int lastSyncOn = await AppStorage.getLastSyncOn();
@@ -37,7 +40,7 @@ class ApiRepository extends IApiRepository {
     debugPrint('lastSyncOnDateTime: ${dateFormat.format(lastSyncOnDateTime)}');
     final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: 0);
     try {
-      await apiService.getBatchPasses(state);
+      await apiService.getBatchPasses(accessCode, state);
       localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
@@ -55,13 +58,13 @@ class ApiRepository extends IApiRepository {
 
   @override
   Future<DatabaseSyncState> continueBatchDownloadAndInsertPasses(
-      DatabaseSyncState state) async {
+      final String accessCode, DatabaseSyncState state) async {
     // TODO Factor out common code with above
     final int before = await localDatabaseService.countPasses();
     debugPrint('before: $before');
     debugPrint('state.lastSyncOn: ${state.lastSyncOn}');
     try {
-      await apiService.getBatchPasses(state);
+      await apiService.getBatchPasses(accessCode, state);
       localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
