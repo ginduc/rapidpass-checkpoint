@@ -18,6 +18,7 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
   final String idOrPlate;
   final String company;
   final String homeAddress;
+  final String status;
   ValidPass(
       {@required this.id,
       @required this.passType,
@@ -28,7 +29,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       this.idType,
       this.idOrPlate,
       this.company,
-      this.homeAddress});
+      this.homeAddress,
+      @required this.status});
   factory ValidPass.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -53,6 +55,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}company']),
       homeAddress: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}home_address']),
+      status:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
     );
   }
   factory ValidPass.fromJson(Map<String, dynamic> json,
@@ -69,6 +73,7 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       idOrPlate: serializer.fromJson<String>(json['idOrPlate']),
       company: serializer.fromJson<String>(json['company']),
       homeAddress: serializer.fromJson<String>(json['homeAddress']),
+      status: serializer.fromJson<String>(json['status']),
     );
   }
   @override
@@ -85,6 +90,7 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       'idOrPlate': serializer.toJson<String>(idOrPlate),
       'company': serializer.toJson<String>(company),
       'homeAddress': serializer.toJson<String>(homeAddress),
+      'status': serializer.toJson<String>(status),
     };
   }
 
@@ -116,6 +122,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       homeAddress: homeAddress == null && nullToAbsent
           ? const Value.absent()
           : Value(homeAddress),
+      status:
+          status == null && nullToAbsent ? const Value.absent() : Value(status),
     );
   }
 
@@ -129,7 +137,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
           String idType,
           String idOrPlate,
           String company,
-          String homeAddress}) =>
+          String homeAddress,
+          String status}) =>
       ValidPass(
         id: id ?? this.id,
         passType: passType ?? this.passType,
@@ -141,6 +150,7 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
         idOrPlate: idOrPlate ?? this.idOrPlate,
         company: company ?? this.company,
         homeAddress: homeAddress ?? this.homeAddress,
+        status: status ?? this.status,
       );
   @override
   String toString() {
@@ -154,7 +164,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
           ..write('idType: $idType, ')
           ..write('idOrPlate: $idOrPlate, ')
           ..write('company: $company, ')
-          ..write('homeAddress: $homeAddress')
+          ..write('homeAddress: $homeAddress, ')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -176,8 +187,10 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
                               idType.hashCode,
                               $mrjc(
                                   idOrPlate.hashCode,
-                                  $mrjc(company.hashCode,
-                                      homeAddress.hashCode))))))))));
+                                  $mrjc(
+                                      company.hashCode,
+                                      $mrjc(homeAddress.hashCode,
+                                          status.hashCode)))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -191,7 +204,8 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
           other.idType == this.idType &&
           other.idOrPlate == this.idOrPlate &&
           other.company == this.company &&
-          other.homeAddress == this.homeAddress);
+          other.homeAddress == this.homeAddress &&
+          other.status == this.status);
 }
 
 class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
@@ -205,6 +219,7 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
   final Value<String> idOrPlate;
   final Value<String> company;
   final Value<String> homeAddress;
+  final Value<String> status;
   const ValidPassesCompanion({
     this.id = const Value.absent(),
     this.passType = const Value.absent(),
@@ -216,6 +231,7 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
     this.idOrPlate = const Value.absent(),
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
+    this.status = const Value.absent(),
   });
   ValidPassesCompanion.insert({
     this.id = const Value.absent(),
@@ -228,8 +244,10 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
     this.idOrPlate = const Value.absent(),
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
+    @required String status,
   })  : passType = Value(passType),
-        controlCode = Value(controlCode);
+        controlCode = Value(controlCode),
+        status = Value(status);
   ValidPassesCompanion copyWith(
       {Value<int> id,
       Value<int> passType,
@@ -240,7 +258,8 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
       Value<String> idType,
       Value<String> idOrPlate,
       Value<String> company,
-      Value<String> homeAddress}) {
+      Value<String> homeAddress,
+      Value<String> status}) {
     return ValidPassesCompanion(
       id: id ?? this.id,
       passType: passType ?? this.passType,
@@ -252,6 +271,7 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
       idOrPlate: idOrPlate ?? this.idOrPlate,
       company: company ?? this.company,
       homeAddress: homeAddress ?? this.homeAddress,
+      status: status ?? this.status,
     );
   }
 }
@@ -379,6 +399,18 @@ class $ValidPassesTable extends ValidPasses
     );
   }
 
+  final VerificationMeta _statusMeta = const VerificationMeta('status');
+  GeneratedTextColumn _status;
+  @override
+  GeneratedTextColumn get status => _status ??= _constructStatus();
+  GeneratedTextColumn _constructStatus() {
+    return GeneratedTextColumn(
+      'status',
+      $tableName,
+      false,
+    );
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -390,7 +422,8 @@ class $ValidPassesTable extends ValidPasses
         idType,
         idOrPlate,
         company,
-        homeAddress
+        homeAddress,
+        status
       ];
   @override
   $ValidPassesTable get asDslTable => this;
@@ -445,6 +478,12 @@ class $ValidPassesTable extends ValidPasses
       context.handle(_homeAddressMeta,
           homeAddress.isAcceptableValue(d.homeAddress.value, _homeAddressMeta));
     }
+    if (d.status.present) {
+      context.handle(
+          _statusMeta, status.isAcceptableValue(d.status.value, _statusMeta));
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
     return context;
   }
 
@@ -488,6 +527,9 @@ class $ValidPassesTable extends ValidPasses
     }
     if (d.homeAddress.present) {
       map['home_address'] = Variable<String, StringType>(d.homeAddress.value);
+    }
+    if (d.status.present) {
+      map['status'] = Variable<String, StringType>(d.status.value);
     }
     return map;
   }
