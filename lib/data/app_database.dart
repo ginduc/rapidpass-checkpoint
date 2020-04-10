@@ -32,8 +32,6 @@ class ValidPasses extends Table {
   TextColumn get company => text().nullable()();
 
   TextColumn get homeAddress => text().nullable()();
-
-  TextColumn get status => text()();
 }
 
 @DataClassName('InvalidPass')
