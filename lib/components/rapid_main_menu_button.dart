@@ -22,13 +22,14 @@ class RapidMainMenuButton extends StatefulWidget {
 class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   Color _textColor = Colors.deepPurple, _backgroundColor = Colors.white;
   SvgPicture _svgPicture;
+  final double _svgPictureSize = 56.0;
 
   @override
   void initState() {
     super.initState();
     _textColor = Colors.deepPurple;
     _backgroundColor = Colors.white;
-    _svgPicture = SvgPicture.asset(widget.iconPath, width: 40.0);
+    _svgPicture = SvgPicture.asset(widget.iconPath, width: _svgPictureSize);
   }
 
   void _changeColor(bool value) {
@@ -36,11 +37,11 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
       if (value) {
         _textColor = Colors.white;
         _backgroundColor = deepPurple600;
-        _svgPicture = SvgPicture.asset(widget.iconPathInverted, width: 40.0);
+        _svgPicture = SvgPicture.asset(widget.iconPathInverted, width: _svgPictureSize);
       } else {
         _textColor = Colors.deepPurple;
         _backgroundColor = Colors.white;
-        _svgPicture = SvgPicture.asset(widget.iconPath, width: 40.0);
+        _svgPicture = SvgPicture.asset(widget.iconPath, width: _svgPictureSize);
       }
     });
   }
@@ -78,10 +79,6 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      // Image(
-                      //   width: 40.0,
-                      //   image: AssetImage(widget.iconPath),
-                      // ),
                       _svgPicture,
                       Padding(
                         padding: const EdgeInsets.only(left: 4.0),
