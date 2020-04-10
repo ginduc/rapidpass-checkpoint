@@ -33,7 +33,7 @@ class ValidPasses extends Table {
 
   TextColumn get homeAddress => text().nullable()();
 
-  TextColumn get status => text()();
+  TextColumn get status => text().nullable()();
 }
 
 @DataClassName('InvalidPass')
@@ -50,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -59,7 +59,10 @@ class AppDatabase extends _$AppDatabase {
         return m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        // TODO: Add implementation here when upgrading the db while on prod
+        // see https://moor.simonbinder.eu/docs/advanced-features/migrations/
+        if (from == 1) {
+          await m.addColumn(validPasses, validPasses.status);
+        }
       },
     );
   }
