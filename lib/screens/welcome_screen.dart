@@ -43,7 +43,7 @@ class WelcomeScreenState extends State<WelcomeScreen>
     _checkRequiredPermissions();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       final code = await AppStorage.getMasterQrCode();
-      debugPrint("Got masterQrCode: '$code'");
+      debugPrint("Got masterQrCode: '${code.substring(1, 16)}...'");
       if (code != null) {
         // TODO there must be a cleaner way to do this
         appState.masterQrCode = code;
