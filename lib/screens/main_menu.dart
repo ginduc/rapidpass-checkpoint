@@ -145,7 +145,6 @@ class MainMenu extends StatelessWidget {
       debugPrint('state.totalPages: $totalPages');
       if (totalPages > 0) {
         while (state.pageNumber < totalPages) {
-          state.pageNumber = state.pageNumber + 1;
           final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
           progressDialog.update(progress: progress.toDouble());
           state =
