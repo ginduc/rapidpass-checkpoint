@@ -22,7 +22,7 @@ class RapidMainMenuButton extends StatefulWidget {
 class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   Color _textColor = Colors.deepPurple, _backgroundColor = Colors.white;
   SvgPicture _svgPicture;
-  final double _svgPictureSize = 56.0;
+  final double _svgPictureSize = 72.0;
 
   @override
   void initState() {
@@ -37,7 +37,8 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
       if (value) {
         _textColor = Colors.white;
         _backgroundColor = deepPurple600;
-        _svgPicture = SvgPicture.asset(widget.iconPathInverted, width: _svgPictureSize);
+        _svgPicture =
+            SvgPicture.asset(widget.iconPathInverted, width: _svgPictureSize);
       } else {
         _textColor = Colors.deepPurple;
         _backgroundColor = Colors.white;
