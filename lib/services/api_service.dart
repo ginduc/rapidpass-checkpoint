@@ -18,7 +18,8 @@ class ApiException implements Exception {
 
 abstract class IApiService {
   Future<void> authenticateDevice({String imei, String masterKey});
-  Future<DatabaseSyncState> getBatchPasses(DatabaseSyncState state);
+  Future<DatabaseSyncState> getBatchPasses(
+      String accessCode, DatabaseSyncState state);
   Future<void> verifyPlateNumber(String plateNumber);
   Future<void> verifyControlNumber(String controlNumber);
 }
@@ -72,7 +73,8 @@ class ApiService extends IApiService {
     } on DioError catch (e) {
       debugPrint(e.toString());
       if (e.response == null) {
-        throw ApiException('Network error. Please check your internet connection.');
+        throw ApiException(
+            'Network error. Please check your internet connection.');
       }
       var statusCode = e.response.statusCode;
       debugPrint('statusCode: $statusCode');
@@ -100,7 +102,7 @@ class ApiService extends IApiService {
 
   @override
   Future<DatabaseSyncState> getBatchPasses(
-      final DatabaseSyncState state) async {
+      final String accessToken, final DatabaseSyncState state) async {
     debugPrint('getBatchPasses.state: $state');
     if (state.totalPages > 0 && state.pageNumber > state.totalPages) {
       state.passesForInsert = List();
@@ -110,7 +112,8 @@ class ApiService extends IApiService {
         baseUrl: baseUrl,
         connectTimeout: 30000,
         receiveTimeout: 60000,
-        contentType: Headers.jsonContentType));
+        contentType: Headers.jsonContentType,
+        headers: {'Authorization': 'Bearer $accessToken'}));
     client.httpClientAdapter = httpClientAdapter;
     final Response response =
         await client.get(getBatchPassesPath, queryParameters: {

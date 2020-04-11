@@ -30,7 +30,7 @@ class ValidPass extends DataClass implements Insertable<ValidPass> {
       this.idOrPlate,
       this.company,
       this.homeAddress,
-      @required this.status});
+      this.status});
   factory ValidPass.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -244,10 +244,9 @@ class ValidPassesCompanion extends UpdateCompanion<ValidPass> {
     this.idOrPlate = const Value.absent(),
     this.company = const Value.absent(),
     this.homeAddress = const Value.absent(),
-    @required String status,
+    this.status = const Value.absent(),
   })  : passType = Value(passType),
-        controlCode = Value(controlCode),
-        status = Value(status);
+        controlCode = Value(controlCode);
   ValidPassesCompanion copyWith(
       {Value<int> id,
       Value<int> passType,
@@ -407,7 +406,7 @@ class $ValidPassesTable extends ValidPasses
     return GeneratedTextColumn(
       'status',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -481,8 +480,6 @@ class $ValidPassesTable extends ValidPasses
     if (d.status.present) {
       context.handle(
           _statusMeta, status.isAcceptableValue(d.status.value, _statusMeta));
-    } else if (isInserting) {
-      context.missing(_statusMeta);
     }
     return context;
   }
