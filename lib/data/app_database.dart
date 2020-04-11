@@ -5,11 +5,11 @@ part 'app_database.g.dart';
 
 /// Remember to generate the code using
 /// ```
-/// flutter packages pub run build_runner build
+/// flutter packages pub run build_runner build --delete-conflicting-outputs
 /// ```
 /// Or
 /// ```
-/// flutter packages pub run build_runner watch
+/// flutter packages pub run build_runner watch --delete-conflicting-outputs
 /// ```
 @DataClassName('ValidPass')
 class ValidPasses extends Table {
