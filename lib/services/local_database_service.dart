@@ -101,11 +101,10 @@ class LocalDatabaseService implements ILocalDatabaseService {
     if (companion == null) {
       return null;
     }
-    debugPrint('companion.idOrPlate.value: ${companion?.idOrPlate?.value}');
     if (companion.idOrPlate == null ||
         companion.idOrPlate == Value.absent() ||
         companion.idOrPlate.value == null) {
-      return companion.copyWith(idOrPlate: Value(''));
+      return companion.copyWith(idOrPlate: Value.absent());
     }
     final String encryptedValue =
         encryptIdOrPlateValue(encryptionKey, companion.idOrPlate.value);

@@ -132,8 +132,9 @@ class MainMenu extends StatelessWidget {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
     final appState = Provider.of<AppState>(context, listen: false);
+    final accessCode = appState.appSecrets.accessCode;
     DatabaseSyncState state =
-        await apiRepository.batchDownloadAndInsertPasses();
+        await apiRepository.batchDownloadAndInsertPasses(accessCode);
     if (state == null) {
       await progressDialog.hide().then((_) => DialogHelper.showAlertDialog(
           context,
@@ -145,11 +146,10 @@ class MainMenu extends StatelessWidget {
       debugPrint('state.totalPages: $totalPages');
       if (totalPages > 0) {
         while (state.pageNumber < totalPages) {
-          state.pageNumber = state.pageNumber + 1;
           final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
           progressDialog.update(progress: progress.toDouble());
-          state =
-              await apiRepository.continueBatchDownloadAndInsertPasses(state);
+          state = await apiRepository.continueBatchDownloadAndInsertPasses(
+              accessCode, state);
           if (state.exception != null) {
             break;
           }
