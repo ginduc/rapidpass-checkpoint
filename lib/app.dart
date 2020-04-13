@@ -41,6 +41,7 @@ class RapidPassCheckpointApp extends StatelessWidget {
   static const String databaseName = 'rapid_pass.sqlite';
 
   final Flavor _flavor;
+
   RapidPassCheckpointApp(this._flavor) {
     debugPrint('apiBaseUrl: ${_flavor.apiBaseUrl}');
   }
@@ -58,6 +59,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
           final appState = AppState();
           AppStorage.getLastSyncOn()
               .then((timestamp) => appState.databaseLastUpdated = timestamp);
+          AppStorage.getDatabaseSyncLog().then((records) =>
+              records.forEach((log) => appState.addDatabaseSyncLog(log)));
           return appState;
         }),
         FutureProvider<ApiRepository>(
