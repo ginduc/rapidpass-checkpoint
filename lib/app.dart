@@ -9,6 +9,7 @@ import 'package:moor_ffi/moor_ffi.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/data/app_database.dart';
+import 'package:rapidpass_checkpoint/helpers/local_notifications_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/about_screen.dart';
@@ -183,6 +184,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
 
 void runRapidPassCheckpoint(final Flavor flavor) {
   WidgetsFlutterBinding.ensureInitialized();
+  LocalNotificationsHelper.initialize()
+      .then((_) => LocalNotificationsHelper.setDailyNotifications());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) => runApp(RapidPassCheckpointApp(flavor)));
