@@ -23,6 +23,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   bool _hasConnection = true;
   bool _isUpdating = false;
   int _progressValue = 0;
+  bool _isStopped = false;
 
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -162,7 +163,11 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                   ? !_isUpdating ? () => _updateDatabase(context) : null
                   : null,
               child: Text(
-                  _isUpdating ? 'Please Wait... ($_progressValue%)' : 'Sync',
+                  _isUpdating
+                      ? _isStopped
+                          ? 'Stopping...'
+                          : 'Please Wait... ($_progressValue%)'
+                      : 'Sync',
                   style: TextStyle(fontSize: 16.0)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
@@ -204,23 +209,43 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     );
   }
 
+  Future<bool> _onWillPop() async {
+    return _isUpdating
+        ? (await DialogHelper.showAlertDialog(
+              context,
+              title: 'Database Sync is In-Progress',
+              message: 'Do you want to stop?',
+              onConfirm: () {
+                setState(() {
+                  _isStopped = true;
+                });
+              },
+              onCancel: () {},
+            )) ??
+            false
+        : true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     appState = Provider.of<AppState>(context, listen: false);
 
-    return FlavorBanner(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Update Database'),
-        ),
-        body: Column(
-          children: <Widget>[
-            !_hasConnection
-                ? _buildOfflineContent(screenSize)
-                : _isUpdating ? _showProgressBar() : _buildRecordListView(),
-            _buildFooterContent(),
-          ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: FlavorBanner(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Update Database'),
+          ),
+          body: Column(
+            children: <Widget>[
+              !_hasConnection
+                  ? _buildOfflineContent(screenSize)
+                  : _isUpdating ? _showProgressBar() : _buildRecordListView(),
+              _buildFooterContent(),
+            ],
+          ),
         ),
       ),
     );
@@ -228,6 +253,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   Future _updateDatabase(final BuildContext context) async {
     setState(() {
+      _isStopped = false;
       _progressValue = 0;
       _isUpdating = true;
     });
@@ -271,11 +297,15 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
         setState(() {
-          _progressValue =
-              ((state.pageNumber / totalPages) * 100).truncate();
+          _progressValue = ((state.pageNumber / totalPages) * 100).truncate();
         });
         state = await apiRepository.continueBatchDownloadAndInsertPasses(
             accessCode, state);
+
+        if (_isStopped) {
+          Navigator.of(context).pop(true);
+          return;
+        }
       }
     }
 
