@@ -1,19 +1,14 @@
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
-import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
-import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
-import 'package:rapidpass_checkpoint/repository/api_repository.dart';
-import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -111,8 +106,7 @@ class MainMenu extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
                   debugPrint('Update Database pressed');
-//                  Navigator.pushNamed(context, '/updateDatabase');
-                  _updateDatabase(context);
+                  Navigator.pushNamed(context, '/updateDatabase');
                 },
                 child: Text('Update Database',
                     style: TextStyle(
@@ -125,75 +119,6 @@ class MainMenu extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future _updateDatabase(final BuildContext context) async {
-    await progressDialog.show();
-    final ApiRepository apiRepository =
-        Provider.of<ApiRepository>(context, listen: false);
-    final appState = Provider.of<AppState>(context, listen: false);
-    final accessCode = appState.appSecrets.accessCode;
-    DatabaseSyncState state =
-        await apiRepository.batchDownloadAndInsertPasses(accessCode);
-    if (state == null) {
-      await progressDialog.hide().then((_) => DialogHelper.showAlertDialog(
-          context,
-          title: 'Database sync error',
-          message: 'An unknown error occurred.'));
-    }
-    if (state.exception == null) {
-      final int totalPages = state.totalPages;
-      debugPrint('state.totalPages: $totalPages');
-      if (totalPages > 0) {
-        while (state.pageNumber < totalPages) {
-          final progress = ((state.pageNumber / totalPages) * 10000) ~/ 100;
-          progressDialog.update(progress: progress.toDouble());
-          state = await apiRepository.continueBatchDownloadAndInsertPasses(
-              accessCode, state);
-          if (state.exception != null) {
-            break;
-          }
-        }
-      }
-    }
-    final e = state.exception;
-    if (e != null) {
-      String title = 'Database sync error';
-      String message = state.statusMessage ?? e.toString();
-      if (e is DioError) {
-        switch (e.type) {
-          case DioErrorType.SEND_TIMEOUT:
-            continue timeout;
-          case DioErrorType.CONNECT_TIMEOUT:
-            continue timeout;
-          timeout:
-          case DioErrorType.RECEIVE_TIMEOUT:
-            title = 'Network error';
-            message = 'Please check your network settings and try again.';
-            break;
-          default:
-          // noop
-        }
-      }
-      await progressDialog.hide().then((_) => DialogHelper.showAlertDialog(
-          context,
-          title: title,
-          message: message));
-    } else {
-      final int totalRecords =
-          await apiRepository.localDatabaseService.countPasses();
-      final String message = state.insertedRowsCount > 0
-          ? 'Downloaded ${state.insertedRowsCount} record(s).'
-          : 'No new records found. Total records in database is $totalRecords.';
-      progressDialog.hide().then((_) async {
-        DialogHelper.showAlertDialog(context,
-            title: 'Database Updated', message: message);
-        await AppStorage.setLastSyncOnToNow().then((timestamp) {
-          debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-          appState.databaseLastUpdated = timestamp;
-        });
-      });
-    }
   }
 
   Future _scanAndNavigate(final BuildContext context) async {
