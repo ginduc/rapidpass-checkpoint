@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
-import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UpdateDatabaseScreen extends StatefulWidget {
@@ -189,9 +189,9 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         body: Column(
           children: <Widget>[
             !_hasConnection
-              ? _buildOfflineContent(screenSize)
-              : _isUpdating ? _showProgressBar() : _buildRecordListView(),
-          _buildFooterContent(),
+                ? _buildOfflineContent(screenSize)
+                : _isUpdating ? _showProgressBar() : _buildRecordListView(),
+            _buildFooterContent(),
           ],
         ),
       ),
@@ -203,10 +203,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       _isUpdating = true;
     });
 
+    final AppState appState = Provider.of<AppState>(context, listen: false);
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
+    final accessCode = appState.appSecrets?.accessCode;
     DatabaseSyncState state =
-        await apiRepository.batchDownloadAndInsertPasses();
+        await apiRepository.batchDownloadAndInsertPasses(accessCode);
 
     // ! For Functionality Test
     // ! [Uncomment statement below to drive an update failure state]
@@ -231,7 +233,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
         state.pageNumber = state.pageNumber + 1;
-        state = await apiRepository.continueBatchDownloadAndInsertPasses(state);
+        state = await apiRepository.continueBatchDownloadAndInsertPasses(
+            accessCode, state);
       }
     }
 

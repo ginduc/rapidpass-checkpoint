@@ -18,9 +18,9 @@ import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_scre
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
-import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/need_help_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
@@ -121,9 +121,12 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => CheckPlateOrControlScreen(
                     CheckPlateOrControlScreenModeType.control),
               );
-            case '/masterQrScannerScreen':
-              return CupertinoPageRoute(
-                  builder: (_) => MasterQrScannerScreen());
+            case '/scanQr':
+              QrScannerScreenArgs args = settings.arguments;
+              if (args == null || !(args is QrScannerScreenArgs)) {
+                args = QrScannerScreenArgs();
+              }
+              return CupertinoPageRoute(builder: (_) => QrScannerScreen(args));
             case '/authenticatingScreen':
               return CupertinoPageRoute(
                   builder: (_) => AuthenticatingScreen(
