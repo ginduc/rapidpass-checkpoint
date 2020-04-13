@@ -12,6 +12,7 @@ import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/credits_screen.dart';
+import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
@@ -216,15 +217,28 @@ class WelcomeScreenState extends State<WelcomeScreen>
     final AppState appState = Provider.of<AppState>(context, listen: false);
     debugPrint('_startButtonPressed()');
     if (appState.masterQrCode == null) {
-      Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) async {
-        debugPrint("masterQrScannerScreen returned $code");
-        if (code != null) {
-          await AppStorage.setMasterQrCode(code).then((_) {
-            appState.masterQrCode = code;
-            Navigator.pushNamed(context, '/authenticatingScreen');
-          });
-        }
-      });
+      final code = await Navigator.pushNamed(context, '/scanQr',
+          arguments: QrScannerScreenArgs(
+              title: 'Scan Master QR Code',
+              message:
+                  'Position the Master QR image inside the frame. It will scan automatically.'));
+      debugPrint("QrScannerScreen returned $code");
+      if (code != null) {
+        await AppStorage.setMasterQrCode(code).then((_) {
+          appState.masterQrCode = code;
+          Navigator.pushNamed(context, '/authenticatingScreen');
+        });
+      }
+
+      // Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) async {
+      //   debugPrint("masterQrScannerScreen returned $code");
+      //   if (code != null) {
+      //     await AppStorage.setMasterQrCode(code).then((_) {
+      //       appState.masterQrCode = code;
+      //       Navigator.pushNamed(context, '/authenticatingScreen');
+      //     });
+      //   }
+      // });
     } else if (appState.appSecrets == null) {
       Navigator.pushNamed(context, '/authenticatingScreen');
     } else {
