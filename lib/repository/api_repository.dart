@@ -38,7 +38,7 @@ class ApiRepository extends IApiRepository {
         DateTime.fromMillisecondsSinceEpoch(lastSyncOn * 1000);
     final DateFormat dateFormat = new DateFormat.yMd().add_jm();
     debugPrint('lastSyncOnDateTime: ${dateFormat.format(lastSyncOnDateTime)}');
-    final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: 0);
+    final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: lastSyncOn);
     try {
       await apiService.getBatchPasses(accessCode, state);
       localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
