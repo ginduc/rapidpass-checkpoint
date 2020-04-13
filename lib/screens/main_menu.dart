@@ -1,19 +1,14 @@
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/components/rapid_main_menu_button.dart';
-import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
-import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
-import 'package:rapidpass_checkpoint/repository/api_repository.dart';
-import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -111,7 +106,7 @@ class MainMenu extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24.0)),
                 onPressed: () {
                   debugPrint('Update Database pressed');
-                 Navigator.pushNamed(context, '/updateDatabase');
+                  Navigator.pushNamed(context, '/updateDatabase');
                 },
                 child: Text('Update Database',
                     style: TextStyle(

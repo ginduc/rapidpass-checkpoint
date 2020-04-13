@@ -91,9 +91,10 @@ void main() {
           baseUrl: 'https://rapidpass-api-stage.azurewebsites.net/api/v1/');
       final int before = await database.countPasses();
       print('before: $before');
-      DatabaseSyncState state = DatabaseSyncState(lastSyncOn: 0);
+      final String accessToken = '80Y+wph9EAL6NwmZ0iW1psMRHl2B31iSy6NbzByczI4=';
+      final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: 0);
       try {
-        await apiService.getBatchPasses(state);
+        await apiService.getBatchPasses(accessToken, state);
       } catch (e) {
         print(e);
       }

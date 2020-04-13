@@ -41,12 +41,13 @@ class RapidPassCheckpointApp extends StatelessWidget {
   static const String databaseName = 'rapid_pass.sqlite';
 
   final Flavor _flavor;
-  RapidPassCheckpointApp(this._flavor);
+  RapidPassCheckpointApp(this._flavor) {
+    debugPrint('apiBaseUrl: ${_flavor.apiBaseUrl}');
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    debugPrint('apiBaseUrl: ${_flavor.apiBaseUrl}');
     return MultiProvider(
       providers: [
         // Provide the model here
