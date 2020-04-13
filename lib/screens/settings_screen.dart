@@ -18,21 +18,10 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  Future<int> _numberOfRecordsFuture;
-
-  @override
-  void initState() {
-    _numberOfRecordsFuture = countNumberOfRecords(context);
-    super.initState();
-  }
-
-  Future<int> countNumberOfRecords(final BuildContext context) async {
-    final apiRepository = Provider.of<ApiRepository>(context, listen: false);
-    return await apiRepository.localDatabaseService.countPasses();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final appState = Provider.of<AppState>(context, listen: false);
+
     return FlavorBanner(
       child: Scaffold(
           appBar: AppBar(title: Text('Settings')),
@@ -53,14 +42,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () => _reauthenticateDevice(context),
                 ),
               ),
-              FutureBuilder<int>(
-                  future: _numberOfRecordsFuture,
-                  builder: (BuildContext context,
-                          AsyncSnapshot<int> snapshot) =>
-                      snapshot.hasData
-                          ? Text(
-                              'Number of records in database: ${snapshot.data}')
-                          : Text(''))
+              Text(
+                  'Number of records in database: ${appState.databaseRecordCount}')
             ],
           )))),
     );
