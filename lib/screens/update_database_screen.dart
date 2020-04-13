@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +22,41 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   bool _hasConnection = true;
   bool _isUpdating = false;
+  int _progressValue = 0;
 
-  Map<String, Object> _latestUpdateInfo = {
-    'count': 0,
-    'dateTime': DateTime(0),
-    // ! Assumes there is no database record yet if DateTime is 0. Shared preference can be apply later.
-  };
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  @override
+  initState() {
+    super.initState();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      bool _tempHasConnection;
+      if (result == ConnectivityResult.none) {
+        _tempHasConnection = false;
+      } else {
+        _tempHasConnection = true;
+      }
+
+      if (_tempHasConnection != _hasConnection) {
+        _hasConnection = _tempHasConnection;
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
 
   Widget _buildRecordListView() {
+    final appState = Provider.of<AppState>(context, listen: false);
+    final databaseSyncLog = appState.databaseSyncLog;
+
     return Expanded(
       flex: 3,
       child: LayoutBuilder(
@@ -34,7 +64,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           return Container(
             height: constraints.maxHeight,
             width: constraints.maxWidth,
-            child: _dummyRecord.isNotEmpty
+            child: databaseSyncLog.isNotEmpty
                 ? ListView.separated(
                     separatorBuilder: (context, count) {
                       return const Divider(
@@ -47,19 +77,19 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                         title: Text(
-                          '${_dummyRecord[index]['count']} ${(_dummyRecord[index]['count'] as int > 1 ? 'records' : 'record')} Added',
+                          '${databaseSyncLog[index]['count']} ${databaseSyncLog[index]['count'] > 1 ? 'records' : 'record'} added',
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                         trailing: Text(
-                          '${DateFormat('MM-dd-yyyy').format(_dummyRecord[index]['dateTime'])} ${DateFormat.jm().format(_dummyRecord[index]['dateTime'])}',
+                          '${DateFormat('MMM dd, yyyy hh:mm aaa').format(new DateTime.fromMillisecondsSinceEpoch(databaseSyncLog[index]['dateTime']))}',
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w500),
                         ),
                         onTap: () {},
                       ),
                     ),
-                    itemCount: _dummyRecord.length,
+                    itemCount: databaseSyncLog.length,
                   )
                 : Container(
                     padding: EdgeInsets.all(20.0),
@@ -119,6 +149,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   }
 
   Widget _buildFooterContent() {
+    final appState = Provider.of<AppState>(context, listen: false);
+
     return Container(
       padding: EdgeInsets.all(20.0),
       child: Column(
@@ -129,7 +161,8 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
               onPressed: _hasConnection
                   ? !_isUpdating ? () => _updateDatabase(context) : null
                   : null,
-              child: Text(_isUpdating ? 'Please Wait...' : 'Sync',
+              child: Text(
+                  _isUpdating ? 'Please Wait... ($_progressValue%)' : 'Sync',
                   style: TextStyle(fontSize: 16.0)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24.0),
@@ -143,12 +176,11 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
           ),
           SizedBox(height: 10),
           Container(
-            child: (_latestUpdateInfo['dateTime'] != null &&
-                    _latestUpdateInfo['dateTime'] != DateTime(0))
+            child: appState.databaseLastUpdated > 0
                 ? Text(
                     'UPDATED AS OF\n'
-                    '${DateFormat.jm().format(_latestUpdateInfo['dateTime'])} ${DateFormat('MMMM dd, yyyy').format(_latestUpdateInfo['dateTime'])}\n'
-                    'Total of ${_latestUpdateInfo['count']} ${_latestUpdateInfo['count'] as int > 1 ? 'records' : 'record'}',
+                    '${DateFormat('hh:mm aaa MMMM dd, yyyy').format(DateTime.fromMillisecondsSinceEpoch(appState.databaseLastUpdated))}\n'
+                    'Total of ${appState.databaseRecordCount} ${appState.databaseRecordCount > 1 ? 'records' : 'record'}',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 10),
                   )
@@ -177,10 +209,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     final screenSize = MediaQuery.of(context).size;
     appState = Provider.of<AppState>(context, listen: false);
 
-    setState(() {
-      _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
-    });
-
     return FlavorBanner(
       child: Scaffold(
         appBar: AppBar(
@@ -200,6 +228,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
   Future _updateDatabase(final BuildContext context) async {
     setState(() {
+      _progressValue = 0;
       _isUpdating = true;
     });
 
@@ -207,6 +236,15 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
     final accessCode = appState.appSecrets?.accessCode;
+    final int lastSyncTimestamp = DateTime.now().millisecondsSinceEpoch;
+
+    if (appState.databaseSyncLog.isEmpty) {
+      await AppStorage.setLastSyncOn(0).then((timestamp) {
+        debugPrint('After setLastSyncOn(), timestamp: $timestamp');
+        appState.databaseLastUpdated = timestamp;
+      });
+    }
+
     DatabaseSyncState state =
         await apiRepository.batchDownloadAndInsertPasses(accessCode);
 
@@ -232,23 +270,36 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     debugPrint('state.totalPages: $totalPages');
     if (totalPages > 0) {
       while (state.pageNumber < totalPages) {
-        state.pageNumber = state.pageNumber + 1;
+        setState(() {
+          _progressValue =
+              ((state.pageNumber / totalPages) * 100).truncate();
+        });
         state = await apiRepository.continueBatchDownloadAndInsertPasses(
             accessCode, state);
       }
     }
 
-    final int totalRecords =
-        await apiRepository.localDatabaseService.countPasses();
-    final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
-        : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} records in database is $totalRecords.';
-
     if (state != null) {
-      await AppStorage.setLastSyncOnToNow().then((timestamp) {
+      int totalRecords = appState.databaseRecordCount;
+
+      await AppStorage.setLastSyncOn(lastSyncTimestamp).then((timestamp) {
         debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
         appState.databaseLastUpdated = timestamp;
       });
+
+      if (state.insertedRowsCount > 0) {
+        totalRecords = await apiRepository.localDatabaseService.countPasses();
+        appState.databaseRecordCount = totalRecords;
+
+        await AppStorage.addDatabaseSyncLog({
+          'count': state.insertedRowsCount,
+          'dateTime': lastSyncTimestamp
+        }).then((r) => appState.addDatabaseSyncLog(r));
+      }
+
+      final String message = state.insertedRowsCount > 0
+          ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
+          : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} in database is $totalRecords.';
 
       DialogHelper.showAlertDialog(
         context,
@@ -258,21 +309,7 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
 
       setState(() {
         _isUpdating = false;
-        _latestUpdateInfo['count'] = state.insertedRowsCount;
-        _latestUpdateInfo['dateTime'] = appState.databaseLastUpdatedDateTime;
       });
     }
   }
 }
-
-List<Map<String, dynamic>> _dummyRecord = [
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 100, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-  {'count': 2000, 'dateTime': DateTime.parse("2020-04-02 16:40:00")},
-  {'count': 500, 'dateTime': DateTime.parse("2020-03-29 16:00:00")},
-  {'count': 1, 'dateTime': DateTime.parse("2020-03-28 16:00:00")},
-];

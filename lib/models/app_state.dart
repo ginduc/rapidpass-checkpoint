@@ -10,6 +10,8 @@ class AppState extends ChangeNotifier {
   String _masterQrCode;
   AppSecrets _appSecrets;
   PackageInfo _packageInfo;
+  dynamic _databaseSyncLog = [];
+  int _databaseRecordCount = 0;
 
   static final DateFormat dateFormat = DateFormat.yMMMd('en_US').add_jm();
 
@@ -18,6 +20,10 @@ class AppState extends ChangeNotifier {
       : null;
 
   DateTime get databaseLastUpdatedDateTime => _databaseLastUpdated ?? null;
+  
+  int get databaseLastUpdated => _databaseLastUpdated != null
+      ? _databaseLastUpdated.millisecondsSinceEpoch
+      : 0;
 
   set databaseLastUpdated(final int timestamp) {
     debugPrint('databaseLastUpdated($timestamp)');
@@ -27,13 +33,30 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  dynamic get databaseSyncLog => _databaseSyncLog;
+
+  dynamic addDatabaseSyncLog(Object data) {
+    this._databaseSyncLog.add(data);
+    notifyListeners();
+    return data;
+  }
+
+  int get databaseRecordCount => _databaseRecordCount;
+
+  set databaseRecordCount(int value) {
+    this._databaseRecordCount = value;
+    notifyListeners();
+  }
+
   String get masterQrCode => this._masterQrCode;
+
   set masterQrCode(final String masterQrCode) {
     this._masterQrCode = masterQrCode;
     notifyListeners();
   }
 
   AppSecrets get appSecrets => this._appSecrets;
+
   Future<AppSecrets> setAppSecrets(final AppSecrets appSecrets) {
     this._appSecrets = appSecrets;
     return AppStorage.setAppSecrets(appSecrets).then((secrets) {
@@ -43,6 +66,7 @@ class AppState extends ChangeNotifier {
   }
 
   PackageInfo get packageInfo => this._packageInfo;
+
   set packageInfo(final PackageInfo packageInfo) {
     this._packageInfo = packageInfo;
     notifyListeners();
