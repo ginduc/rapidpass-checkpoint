@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qrcode/qrcode.dart';
+import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 
 class MasterQrScannerScreen extends StatefulWidget {
   @override
@@ -31,56 +32,58 @@ class _MasterQrScannerScreenState extends State<MasterQrScannerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scan Master QR Code'),
-      ),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Container(
-                    width: 400,
-                    height: 400,
-                    child: QRCaptureView(
-                      controller: _captureController,
-                    ),
-                  ),
-                  Container(
-                    child: Text(_captureText),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 24.0, left: 10.0),
-                child: Text(
-                  'Position the QR image inside the frame.\nIt will scan automatically.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              FlatButton(
-                onPressed: () {
-                  debugPrint('_isTorchOn: $_isTorchOn');
-                  if (_isTorchOn) {
-                    _captureController.torchMode = CaptureTorchMode.off;
-                  } else {
-                    _captureController.torchMode = CaptureTorchMode.on;
-                  }
-                  _isTorchOn = !_isTorchOn;
-                },
-                child: Text(
-                  "Flash",
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+    return FlavorBanner(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Scan Master QR Code'),
+        ),
+        body: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 400,
+                      height: 400,
+                      child: QRCaptureView(
+                        controller: _captureController,
                       ),
+                    ),
+                    Container(
+                      child: Text(_captureText),
+                    )
+                  ],
                 ),
-              ),
-            ]),
+                Padding(
+                  padding: EdgeInsets.only(top: 24.0, left: 10.0),
+                  child: Text(
+                    'Position the QR image inside the frame.\nIt will scan automatically.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    debugPrint('_isTorchOn: $_isTorchOn');
+                    if (_isTorchOn) {
+                      _captureController.torchMode = CaptureTorchMode.off;
+                    } else {
+                      _captureController.torchMode = CaptureTorchMode.on;
+                    }
+                    _isTorchOn = !_isTorchOn;
+                  },
+                  child: Text(
+                    "Flash",
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+              ]),
+        ),
       ),
     );
   }

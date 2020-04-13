@@ -4,14 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rapidpass_checkpoint/common/constants/rapid_asset_constants.dart';
 import 'package:rapidpass_checkpoint/helpers/url_launcher_helper.dart';
 
-class ContactUs extends StatelessWidget {
-  static final String routeName = "/contact_us";
+class NeedHelp extends StatelessWidget {
+  static final String routeName = "/need_help";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contact Us'),
+        title: Text('Support'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
@@ -40,8 +40,11 @@ class ContactUs extends StatelessWidget {
               ),
             ),
             Text(
-              'If you have any questions, remarks or suggestions, feel free to contact us ' +
-                  'using the channels below. We will get back to you as soon as possible.',
+              "If you are having trouble with the Checkpoint App, see training manual provided.\n\n" +
+                  "If you can't find the answer in the training manual, please text your concerns to 09611071047 and we will get back to you as soon as we can.\n\n" +
+                  "Please indicate all the issues that you are having via text.\n\n" +
+                  "For example: Cannot update database even mobile data is open; all scans are invalid; cannot update new APK\n\n" +
+                  "Thank you.",
             ),
             SizedBox(height: 25),
             InkWell(

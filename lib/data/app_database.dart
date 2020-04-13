@@ -5,11 +5,11 @@ part 'app_database.g.dart';
 
 /// Remember to generate the code using
 /// ```
-/// flutter packages pub run build_runner build
+/// flutter packages pub run build_runner build --delete-conflicting-outputs
 /// ```
 /// Or
 /// ```
-/// flutter packages pub run build_runner watch
+/// flutter packages pub run build_runner watch --delete-conflicting-outputs
 /// ```
 @DataClassName('ValidPass')
 class ValidPasses extends Table {
@@ -32,6 +32,8 @@ class ValidPasses extends Table {
   TextColumn get company => text().nullable()();
 
   TextColumn get homeAddress => text().nullable()();
+
+  TextColumn get status => text().nullable()();
 }
 
 @DataClassName('InvalidPass')
@@ -48,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -57,7 +59,11 @@ class AppDatabase extends _$AppDatabase {
         return m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        // TODO: Add implementation here when upgrading the db while on prod
+        debugPrint('onUpgrade(from: $from, to: $to)...');
+        // see https://moor.simonbinder.eu/docs/advanced-features/migrations/
+        if (from == 1) {
+          await m.addColumn(validPasses, validPasses.status);
+        }
       },
     );
   }

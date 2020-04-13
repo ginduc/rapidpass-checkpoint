@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
@@ -14,10 +15,10 @@ import 'package:rapidpass_checkpoint/screens/about_screen.dart';
 import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
-import 'package:rapidpass_checkpoint/screens/contact_us_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/master_qr_scanner_screen.dart';
+import 'package:rapidpass_checkpoint/screens/need_help_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
@@ -32,17 +33,21 @@ import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
 import 'package:rapidpass_checkpoint/viewmodel/device_info_model.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
-import 'env.dart' as Env;
+import 'flavor.dart';
 import 'models/check_plate_or_control_args.dart';
 
 class RapidPassCheckpointApp extends StatelessWidget {
   // Local
   static const String databaseName = 'rapid_pass.sqlite';
 
+  final Flavor _flavor;
+  RapidPassCheckpointApp(this._flavor) {
+    debugPrint('apiBaseUrl: ${_flavor.apiBaseUrl}');
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    debugPrint('apiBaseUrl: ${Env.apiBaseUrl}');
     return MultiProvider(
       providers: [
         // Provide the model here
@@ -136,8 +141,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
                 builder: (_) => UpdateDatabaseScreen(),
                 settings: settings,
               );
-            case '/contact_us':
-              return CupertinoPageRoute(builder: (_) => ContactUs());
+            case '/need_help':
+              return CupertinoPageRoute(builder: (_) => NeedHelp());
             case '/about':
               return CupertinoPageRoute(builder: (_) => About());
             case '/privacy_policy':
@@ -162,16 +167,23 @@ class RapidPassCheckpointApp extends StatelessWidget {
         appDatabase: AppDatabase(LazyDatabase(() async {
           final dbFolder = await getDatabasesPath();
           final file = File(p.join(dbFolder, 'db.sqlite'));
-          return VmDatabase(file, logStatements: true);
+          return VmDatabase(file, logStatements: Flavor.isDevelopment);
         })),
         encryptionKey: encryptionKey);
     final apiRepository = ApiRepository(
       apiService: ApiService(
-        baseUrl: Env.apiBaseUrl,
+        baseUrl: _flavor.apiBaseUrl,
       ),
       localDatabaseService: localDatabaseService,
     );
     debugPrint('_buildApiRepository() => $apiRepository');
     return apiRepository;
   }
+}
+
+void runRapidPassCheckpoint(final Flavor flavor) {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((_) => runApp(RapidPassCheckpointApp(flavor)));
 }
