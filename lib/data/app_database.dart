@@ -59,6 +59,7 @@ class AppDatabase extends _$AppDatabase {
         return m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
+        debugPrint('onUpgrade(from: $from, to: $to)...');
         // see https://moor.simonbinder.eu/docs/advanced-features/migrations/
         if (from == 1) {
           await m.addColumn(validPasses, validPasses.status);
