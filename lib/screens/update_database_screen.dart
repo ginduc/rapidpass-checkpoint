@@ -277,7 +277,12 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
     // ! For Functionality Test
     // ! [Uncomment statement below to drive an update failure state]
     // state = null;
-    if (state == null) {
+    if (state == null || state.exception != null) {
+      if (state != null && state.exception != null) {
+        debugPrint(
+            '_updateDatabase() exception: ' + state.exception.toString());
+      }
+
       DialogHelper.showAlertDialog(
         context,
         title: 'Database Sync Failed!',
@@ -288,7 +293,6 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       setState(() {
         _isUpdating = false;
       });
-
       return;
     }
 
@@ -302,6 +306,10 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
         state = await apiRepository.continueBatchDownloadAndInsertPasses(
             accessCode, state);
 
+        if (state == null || state.exception != null) {
+          break;
+        }
+
         if (_isStopped) {
           Navigator.of(context).pop(true);
           return;
@@ -309,37 +317,53 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       }
     }
 
-    if (state != null) {
-      int totalRecords = appState.databaseRecordCount;
-
-      await AppStorage.setLastSyncOn(lastSyncTimestamp).then((timestamp) {
-        debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
-        appState.databaseLastUpdated = timestamp;
-      });
-
-      if (state.insertedRowsCount > 0) {
-        totalRecords = await apiRepository.localDatabaseService.countPasses();
-        appState.databaseRecordCount = totalRecords;
-
-        await AppStorage.addDatabaseSyncLog({
-          'count': state.insertedRowsCount,
-          'dateTime': lastSyncTimestamp
-        }).then((r) => appState.addDatabaseSyncLog(r));
+    if (state == null || state.exception != null) {
+      if (state != null && state.exception != null) {
+        debugPrint(
+            '_updateDatabase() exception: ' + state.exception.toString());
       }
-
-      final String message = state.insertedRowsCount > 0
-          ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
-          : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} in database is $totalRecords.';
 
       DialogHelper.showAlertDialog(
         context,
-        title: 'Database Synced!',
-        message: message,
+        title: 'Database Sync Failed!',
+        message:
+            'There\'s something wrong while getting the new information from the database.',
       );
 
       setState(() {
         _isUpdating = false;
       });
+      return;
     }
+
+    int totalRecords = appState.databaseRecordCount;
+
+    await AppStorage.setLastSyncOn(lastSyncTimestamp).then((timestamp) {
+      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+      appState.databaseLastUpdated = timestamp;
+    });
+
+    if (state.insertedRowsCount > 0) {
+      totalRecords = await apiRepository.localDatabaseService.countPasses();
+      appState.databaseRecordCount = totalRecords;
+
+      await AppStorage.addDatabaseSyncLog(
+              {'count': state.insertedRowsCount, 'dateTime': lastSyncTimestamp})
+          .then((r) => appState.addDatabaseSyncLog(r));
+    }
+
+    final String message = state.insertedRowsCount > 0
+        ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
+        : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} in database is $totalRecords.';
+
+    DialogHelper.showAlertDialog(
+      context,
+      title: 'Database Synced!',
+      message: message,
+    );
+
+    setState(() {
+      _isUpdating = false;
+    });
   }
 }
