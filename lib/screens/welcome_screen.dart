@@ -50,6 +50,9 @@ class WelcomeScreenState extends State<WelcomeScreen>
         appState.masterQrCode = code;
       }
       appState.packageInfo = await PackageInfo.fromPlatform();
+
+      final apiRepository = Provider.of<ApiRepository>(context, listen: false);
+      appState.databaseRecordCount = await apiRepository.localDatabaseService.countPasses();
     });
   }
 

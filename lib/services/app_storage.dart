@@ -16,6 +16,8 @@ class AppStorage {
   static const _signingKeyKey = 'rapidPass.signingKey';
   static const _encryptionKeyKey = 'rapidPass.encryptionKey';
   static const _accessCodeKey = 'rapidPass.accessCode';
+  static const _lastSyncOnKey = 'lastSyncOn';
+  static const _databaseSyncLogKey = "databaseSyncLog";
 
   static Future<void> setMasterQrCode(final String masterQrCode) async {
     if (masterQrCode == null) return;
@@ -32,14 +34,58 @@ class AppStorage {
 
   static Future<int> getLastSyncOn() =>
       SharedPreferences.getInstance().then((prefs) =>
-          prefs.containsKey('lastSyncOn') ? prefs.getInt('lastSyncOn') : 0);
+          prefs.containsKey(_lastSyncOnKey) ? prefs.getInt(_lastSyncOnKey) : 0);
+
+  static Future<int> setLastSyncOn(int timestamp) {
+    timestamp = timestamp ~/ 1000;
+    return SharedPreferences.getInstance().then((prefs) =>
+        prefs.setInt(_lastSyncOnKey, timestamp).then((_) => timestamp));
+  }
 
   static Future<int> setLastSyncOnToNow() {
     final DateTime now = DateTime.now();
     final int timestamp = now.millisecondsSinceEpoch ~/ 1000;
     debugPrint('timestamp: $timestamp');
     return SharedPreferences.getInstance().then((prefs) =>
-        prefs.setInt('lastSyncOn', timestamp).then((_) => timestamp));
+        prefs.setInt(_lastSyncOnKey, timestamp).then((_) => timestamp));
+  }
+
+  static Future<dynamic> addDatabaseSyncLog(obj) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonObj = Map<String, dynamic>();
+    String jsonStr = prefs.containsKey(_databaseSyncLogKey) ? prefs.getString(_databaseSyncLogKey) : '{}';
+
+    try {
+      jsonObj = json.decode(jsonStr);
+    } catch (e) {
+      debugPrint('addDatabaseSyncLog() exception:' + e.toString());
+      jsonObj = {};
+    }
+
+    if (jsonObj['records'] == null) {
+      jsonObj['records'] = [];
+    }
+    jsonObj['records'].add(obj);
+    prefs.setString(_databaseSyncLogKey, json.encode(jsonObj));
+    return obj;
+  }
+
+  static Future<dynamic> getDatabaseSyncLog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonObj = Map<String, dynamic>();
+    String jsonStr = prefs.containsKey(_databaseSyncLogKey) ? prefs.getString(_databaseSyncLogKey) : '{}';
+
+    try {
+      jsonObj = json.decode(jsonStr);
+    } catch (e) {
+      debugPrint('getDatabaseSyncLog() exception:' + e.toString());
+      jsonObj = {};
+    }
+
+    if (jsonObj['records'] == null) {
+      jsonObj['records'] = [];
+    }
+    return jsonObj['records'];
   }
 
   static Future<AppSecrets> setAppSecrets(final AppSecrets appSecrets) {
