@@ -53,7 +53,9 @@ class AppStorage {
   static Future<dynamic> addDatabaseSyncLog(obj) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonObj = Map<String, dynamic>();
-    String jsonStr = prefs.containsKey(_databaseSyncLogKey) ? prefs.getString(_databaseSyncLogKey) : '{}';
+    String jsonStr = prefs.containsKey(_databaseSyncLogKey)
+        ? prefs.getString(_databaseSyncLogKey)
+        : '{}';
 
     try {
       jsonObj = json.decode(jsonStr);
@@ -73,7 +75,9 @@ class AppStorage {
   static Future<dynamic> getDatabaseSyncLog() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonObj = Map<String, dynamic>();
-    String jsonStr = prefs.containsKey(_databaseSyncLogKey) ? prefs.getString(_databaseSyncLogKey) : '{}';
+    String jsonStr = prefs.containsKey(_databaseSyncLogKey)
+        ? prefs.getString(_databaseSyncLogKey)
+        : '{}';
 
     try {
       jsonObj = json.decode(jsonStr);
