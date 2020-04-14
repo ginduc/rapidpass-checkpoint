@@ -42,8 +42,14 @@ git clone https://gitlab.com/dctx/rapidpass/rapidpass-checkpoint/
 
 3. Run the project
 
+To run in development:
 ```
-flutter run -v
+flutter run -v --flavor dev -t lib/main-dev.dart
+```
+
+To run in production:
+```
+flutter run -v --flavor prod
 ```
 
 
