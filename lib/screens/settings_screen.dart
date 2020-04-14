@@ -52,8 +52,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   void _reauthenticateDevice(final BuildContext context) {
     final AppState appState = Provider.of<AppState>(context, listen: false);
     debugPrint('_startButtonPressed()');
-    Navigator.pushNamed(context, '/masterQrScannerScreen').then((code) async {
-      debugPrint("masterQrScannerScreen returned $code");
+    Navigator.pushNamed(context, '/scanQr').then((code) async {
+      debugPrint("scanQr returned $code");
       if (code != null) {
         await AppStorage.setMasterQrCode(code).then((_) async {
           appState.masterQrCode = code;
