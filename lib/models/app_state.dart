@@ -20,7 +20,7 @@ class AppState extends ChangeNotifier {
       : null;
 
   DateTime get databaseLastUpdatedDateTime => _databaseLastUpdated ?? null;
-  
+
   int get databaseLastUpdated => _databaseLastUpdated != null
       ? _databaseLastUpdated.millisecondsSinceEpoch
       : 0;

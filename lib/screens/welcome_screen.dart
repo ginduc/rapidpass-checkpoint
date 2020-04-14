@@ -52,7 +52,8 @@ class WelcomeScreenState extends State<WelcomeScreen>
       appState.packageInfo = await PackageInfo.fromPlatform();
 
       final apiRepository = Provider.of<ApiRepository>(context, listen: false);
-      appState.databaseRecordCount = await apiRepository.localDatabaseService.countPasses();
+      appState.databaseRecordCount =
+          await apiRepository.localDatabaseService.countPasses();
     });
   }
 
