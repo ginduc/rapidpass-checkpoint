@@ -57,7 +57,7 @@ class AppState extends ChangeNotifier {
 
   AppSecrets get appSecrets => this._appSecrets;
 
-  set appSecrets (AppSecrets value) {
+  set appSecrets(AppSecrets value) {
     this._appSecrets = value;
     notifyListeners();
   }
