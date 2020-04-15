@@ -210,20 +210,27 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    return _isUpdating
+    return _isStopped
         ? (await DialogHelper.showAlertDialog(
               context,
-              title: 'Database Sync is In-Progress',
-              message: 'Do you want to stop?',
-              onConfirm: () {
-                setState(() {
-                  _isStopped = true;
-                });
-              },
-              onCancel: () {},
+              title: 'Database Sync is Stopping!',
+              message: 'Please wait.',
             )) ??
             false
-        : true;
+        : _isUpdating
+            ? (await DialogHelper.showAlertDialog(
+                  context,
+                  title: 'Database Sync is In-Progress!',
+                  message: 'Do you want to stop?',
+                  onConfirm: () {
+                    setState(() {
+                      _isStopped = true;
+                    });
+                  },
+                  onCancel: () {},
+                )) ??
+                false
+            : true;
   }
 
   @override
