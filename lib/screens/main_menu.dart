@@ -15,7 +15,6 @@ import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
-import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
   @override
@@ -88,13 +87,19 @@ class MainMenu extends StatelessWidget {
             title: 'Plate Number',
             iconPath: RapidAssetConstants.icPlateNumberGray,
             iconPathInverted: RapidAssetConstants.icPlateNumberWhite,
-            onPressed: null,
+            borderColor: Colors.grey,
+            textColor: Colors.grey,
+            onPressed: () => DialogHelper.showAlertDialog(context,
+                title: "Temporarily disabled"),
           ),
           RapidMainMenuButton(
             title: 'Control Number',
             iconPath: RapidAssetConstants.icControlCodeGray,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
-            onPressed: null,
+            borderColor: Colors.grey,
+            textColor: Colors.grey,
+            onPressed: () => DialogHelper.showAlertDialog(context,
+                title: "Temporarily disabled"),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
@@ -102,10 +107,11 @@ class MainMenu extends StatelessWidget {
               height: 48.0,
               width: 300.0,
               child: RaisedButton(
-                color: green300,
+                color: Colors.grey,
                 shape: new RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0)),
-                onPressed: null,
+                onPressed: () => DialogHelper.showAlertDialog(context,
+                    title: "Temporarily disabled"),
                 child: Text('Update Database',
                     style: TextStyle(
                         // Not sure how to get rid of color: Colors.white here

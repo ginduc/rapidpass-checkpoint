@@ -7,12 +7,16 @@ class RapidMainMenuButton extends StatefulWidget {
   final String iconPath;
   final String iconPathInverted;
   final VoidCallback onPressed;
+  final Color textColor;
+  final Color borderColor;
 
   RapidMainMenuButton({
     @required this.title,
     @required this.iconPath,
     @required this.iconPathInverted,
     @required this.onPressed,
+    this.textColor = deepPurple900,
+    this.borderColor = deepPurple900,
   });
 
   @override
@@ -27,7 +31,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   @override
   void initState() {
     super.initState();
-    _textColor = Colors.deepPurple;
+    _textColor = widget.textColor;
     _backgroundColor = Colors.white;
     _svgPicture = SvgPicture.asset(widget.iconPath, width: _svgPictureSize);
   }
@@ -40,7 +44,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
         _svgPicture =
             SvgPicture.asset(widget.iconPathInverted, width: _svgPictureSize);
       } else {
-        _textColor = Colors.deepPurple;
+        _textColor = widget.textColor;
         _backgroundColor = Colors.white;
         _svgPicture = SvgPicture.asset(widget.iconPath, width: _svgPictureSize);
       }
@@ -50,13 +54,8 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
-    final borderColor = widget.onPressed != null ? deepPurple900 : Colors.grey;
-    final textColor = widget.onPressed != null ? _textColor : Colors.grey;
-
     return InkWell(
       onTap: widget.onPressed,
-      onHighlightChanged: _changeColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -73,7 +72,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 2.0,
-                    color: borderColor,
+                    color: widget.borderColor,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
                   color: _backgroundColor,
@@ -90,7 +89,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                           widget.title,
                           style: Theme.of(context).textTheme.title.copyWith(
                                 fontSize: 22,
-                                color: textColor, //Colors.deepPurple,
+                                color: _textColor,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
