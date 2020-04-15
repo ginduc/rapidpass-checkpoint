@@ -86,19 +86,15 @@ class MainMenu extends StatelessWidget {
           ),
           RapidMainMenuButton(
             title: 'Plate Number',
-            iconPath: RapidAssetConstants.icPlateNumber,
+            iconPath: RapidAssetConstants.icPlateNumberGray,
             iconPathInverted: RapidAssetConstants.icPlateNumberWhite,
-            onPressed: () {
-              Navigator.pushNamed(context, "/checkPlateNumber");
-            },
+            onPressed: null,
           ),
           RapidMainMenuButton(
             title: 'Control Number',
-            iconPath: RapidAssetConstants.icControlCode,
+            iconPath: RapidAssetConstants.icControlCodeGray,
             iconPathInverted: RapidAssetConstants.icControlCodeWhite,
-            onPressed: () {
-              Navigator.pushNamed(context, '/checkControlNumber');
-            },
+            onPressed: null,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 20.0),
@@ -109,11 +105,7 @@ class MainMenu extends StatelessWidget {
                 color: green300,
                 shape: new RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0)),
-                onPressed: () {
-                  debugPrint('Update Database pressed');
-//                  Navigator.pushNamed(context, '/updateDatabase');
-                  _updateDatabase(context);
-                },
+                onPressed: null,
                 child: Text('Update Database',
                     style: TextStyle(
                         // Not sure how to get rid of color: Colors.white here

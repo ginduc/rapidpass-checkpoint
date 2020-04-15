@@ -51,6 +51,9 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    final borderColor = widget.onPressed != null ? deepPurple900 : Colors.grey;
+    final textColor = widget.onPressed != null ? _textColor : Colors.grey;
+
     return InkWell(
       onTap: widget.onPressed,
       onHighlightChanged: _changeColor,
@@ -70,7 +73,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 2.0,
-                    color: deepPurple900,
+                    color: borderColor,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
                   color: _backgroundColor,
@@ -87,7 +90,7 @@ class _RapidMainMenuButtonState extends State<RapidMainMenuButton> {
                           widget.title,
                           style: Theme.of(context).textTheme.title.copyWith(
                                 fontSize: 22,
-                                color: _textColor, //Colors.deepPurple,
+                                color: textColor, //Colors.deepPurple,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
