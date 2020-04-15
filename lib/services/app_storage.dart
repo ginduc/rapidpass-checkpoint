@@ -104,6 +104,25 @@ class AppStorage {
     });
   }
 
+  static Future<AppSecrets> getAppSecrets() {
+    return Future.wait([
+      secureStorage.read(key: _signingKeyKey),
+      secureStorage.read(key: _encryptionKeyKey),
+      secureStorage.read(key: _accessCodeKey)
+    ]).then((res) {
+      debugPrint('appSecrets: ' + res.toString());
+
+      if (res[0] == null || res[1] == null || res[2] == null) {
+        return null;
+      } else {
+        return AppSecrets(
+            signingKey: res[0], encryptionKey: res[1], accessCode: res[2]);
+      }
+    }).catchError((e) {
+      throw (null);
+    });
+  }
+
   static Future<Uint8List> getDatabaseEncryptionKey() =>
       secureStorage.read(key: _databaseEncryptionKeyKey).then((value) {
         if (value != null) {
