@@ -244,7 +244,13 @@ class WelcomeScreenState extends State<WelcomeScreen>
       //   }
       // });
     } else if (appState.appSecrets == null) {
-      Navigator.pushNamed(context, '/authenticatingScreen');
+      var appSecrets = await AppStorage.getAppSecrets();
+      if (appSecrets == null) {
+        Navigator.pushNamed(context, '/authenticatingScreen');
+      } else {
+        appState.appSecrets = appSecrets;
+        Navigator.pushNamed(context, '/menu');
+      }
     } else {
       Navigator.pushNamed(context, '/menu');
     }
