@@ -41,7 +41,7 @@ class ApiRepository extends IApiRepository {
     final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: lastSyncOn);
     try {
       await apiService.getBatchPasses(accessCode, state);
-      localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
+      await localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
       debugPrint('state.insertedRowsCount: ${state.insertedRowsCount}');
@@ -65,7 +65,7 @@ class ApiRepository extends IApiRepository {
     debugPrint('state.lastSyncOn: ${state.lastSyncOn}');
     try {
       await apiService.getBatchPasses(accessCode, state);
-      localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
+      await localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
       debugPrint('state.insertedRowsCount: ${state.insertedRowsCount}');
