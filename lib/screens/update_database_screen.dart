@@ -210,20 +210,27 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    return _isUpdating
+    return _isStopped
         ? (await DialogHelper.showAlertDialog(
               context,
-              title: 'Database Sync is In-Progress',
-              message: 'Do you want to stop?',
-              onConfirm: () {
-                setState(() {
-                  _isStopped = true;
-                });
-              },
-              onCancel: () {},
+              title: 'Database Sync is Stopping!',
+              message: 'Please wait.',
             )) ??
             false
-        : true;
+        : _isUpdating
+            ? (await DialogHelper.showAlertDialog(
+                  context,
+                  title: 'Database Sync is In-Progress!',
+                  message: 'Do you want to stop?',
+                  onConfirm: () {
+                    setState(() {
+                      _isStopped = true;
+                    });
+                  },
+                  onCancel: () {},
+                )) ??
+                false
+            : true;
   }
 
   @override
@@ -336,24 +343,24 @@ class _UpdateDatabaseScreenState extends State<UpdateDatabaseScreen> {
       return;
     }
 
-    int totalRecords = appState.databaseRecordCount;
+    final int totalRecords =
+        await apiRepository.localDatabaseService.countPasses();
+    final int recordsAdded = totalRecords - appState.databaseRecordCount;
+    appState.databaseRecordCount = totalRecords;
 
     await AppStorage.setLastSyncOn(lastSyncTimestamp).then((timestamp) {
-      debugPrint('After setLastSyncOnToNow(), timestamp: $timestamp');
+      debugPrint('After setLastSyncOn(), timestamp: $timestamp');
       appState.databaseLastUpdated = timestamp;
     });
 
-    if (state.insertedRowsCount > 0) {
-      totalRecords = await apiRepository.localDatabaseService.countPasses();
-      appState.databaseRecordCount = totalRecords;
-
+    if (recordsAdded > 0) {
       await AppStorage.addDatabaseSyncLog(
-              {'count': state.insertedRowsCount, 'dateTime': lastSyncTimestamp})
+              {'count': recordsAdded, 'dateTime': lastSyncTimestamp})
           .then((r) => appState.addDatabaseSyncLog(r));
     }
 
-    final String message = state.insertedRowsCount > 0
-        ? 'Downloaded ${state.insertedRowsCount} new ${(state.insertedRowsCount > 1 ? 'records' : 'record')}.'
+    final String message = recordsAdded > 0
+        ? 'Downloaded $recordsAdded new ${(recordsAdded > 1 ? 'records' : 'record')}.'
         : 'No new records found. Total ${totalRecords > 1 ? 'records' : 'record'} in database is $totalRecords.';
 
     DialogHelper.showAlertDialog(

@@ -97,7 +97,7 @@ class MainMenu extends StatelessWidget {
             },
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+            padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
             child: SizedBox(
               height: 48.0,
               width: 300.0,
