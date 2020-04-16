@@ -7,3 +7,6 @@
 -keep class io.flutter.plugins.**  { *; }
 -keep public class io.flutter.embedding.android.FlutterSplashView.$SavedState { *; }
 -dontwarn io.flutter.embedding.**
+
+## flutter_local_notification plugin rules
+-keep class com.dexterous.** { *; }
