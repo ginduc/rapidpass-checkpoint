@@ -11,9 +11,12 @@ import 'package:rapidpass_checkpoint/services/local_database_service.dart';
 abstract class IApiRepository {
   Future<DatabaseSyncState> batchDownloadAndInsertPasses(
       final String accessCode);
+
   Future<DatabaseSyncState> continueBatchDownloadAndInsertPasses(
       final String accessCode, final DatabaseSyncState state);
+
   Future<void> verifyPlateNumber(String plateNumber);
+
   Future<void> verifyControlNumber(int controlNumber);
 }
 
@@ -40,7 +43,9 @@ class ApiRepository extends IApiRepository {
     debugPrint('lastSyncOnDateTime: ${dateFormat.format(lastSyncOnDateTime)}');
     final DatabaseSyncState state = DatabaseSyncState(lastSyncOn: lastSyncOn);
     try {
-      await apiService.getBatchPasses(accessCode, state);
+      await apiService
+          .getBatchPasses(accessCode, state)
+          .catchError((e) => throw Exception(e));
       await localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
@@ -64,7 +69,9 @@ class ApiRepository extends IApiRepository {
     debugPrint('before: $before');
     debugPrint('state.lastSyncOn: ${state.lastSyncOn}');
     try {
-      await apiService.getBatchPasses(accessCode, state);
+      await apiService
+          .getBatchPasses(accessCode, state)
+          .catchError((e) => throw Exception(e));
       await localDatabaseService.bulkInsertOrUpdate(state.passesForInsert);
       state.insertedRowsCount =
           state.insertedRowsCount + state.passesForInsert.length;
