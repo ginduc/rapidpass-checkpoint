@@ -13,14 +13,18 @@ import 'package:rapidpass_checkpoint/models/database_sync_state.dart';
 class ApiException implements Exception {
   final String message;
   final int statusCode;
+
   ApiException(this.message, {this.statusCode});
 }
 
 abstract class IApiService {
   Future<void> authenticateDevice({String imei, String masterKey});
+
   Future<DatabaseSyncState> getBatchPasses(
       String accessCode, DatabaseSyncState state);
+
   Future<void> verifyPlateNumber(String plateNumber);
+
   Future<void> verifyControlNumber(String controlNumber);
 }
 
@@ -121,37 +125,42 @@ class ApiService extends IApiService {
       'pageNumber': state.pageNumber,
       'pageSize': state.pageSize
     });
-    final data = response.data;
-    debugPrint('${inspect(data)}');
-    if (state.totalPages == 0) {
-      state.totalPages = data['totalPages'];
-      state.totalRows = data['totalRows'];
-    }
-    final list = response.data['data'];
-    final listLength = list.length;
-    if (list.length < 2) {
-      return state;
-    }
-    debugPrint('Got ${listLength - 1} rows...');
-    final List<String> headers = list[0].cast<String>().toList();
-    debugPrint('headers => $headers');
-    final passCsvToJsonConverter = PassCsvToJsonConverter(headers: headers);
-    final List<ValidPassesCompanion> receivedPasses = List();
 
-    for (final row in list.sublist(1, listLength)) {
-      try {
-        final json = passCsvToJsonConverter.convert(row);
-        debugPrint('Got pass ${ControlCode.encode(json['controlCode'])}');
-        final validPass = ValidPass.fromJson(json);
-        final companion = validPass.createCompanion(true);
-        receivedPasses.add(companion);
-      } on FormatException catch (e) {
-        debugPrint(e.toString());
+    try {
+      final data = response.data;
+      debugPrint('${inspect(data)}');
+      if (state.totalPages == 0) {
+        state.totalPages = data['totalPages'];
+        state.totalRows = data['totalRows'];
       }
+      final list = response.data['data'];
+      final listLength = list.length;
+      if (list.length < 2) {
+        return state;
+      }
+      debugPrint('Got ${listLength - 1} rows...');
+      final List<String> headers = list[0].cast<String>().toList();
+      debugPrint('headers => $headers');
+      final passCsvToJsonConverter = PassCsvToJsonConverter(headers: headers);
+      final List<ValidPassesCompanion> receivedPasses = List();
+
+      for (final row in list.sublist(1, listLength)) {
+        try {
+          final json = passCsvToJsonConverter.convert(row);
+          debugPrint('Got pass ${ControlCode.encode(json['controlCode'])}');
+          final validPass = ValidPass.fromJson(json);
+          final companion = validPass.createCompanion(true);
+          receivedPasses.add(companion);
+        } on FormatException catch (e) {
+          debugPrint(e.toString());
+        }
+      }
+      state.passesForInsert = receivedPasses;
+      state.pageNumber = state.pageNumber + 1;
+      return state;
+    } catch (e) {
+      rethrow;
     }
-    state.passesForInsert = receivedPasses;
-    state.pageNumber = state.pageNumber + 1;
-    return state;
   }
 
   @override
