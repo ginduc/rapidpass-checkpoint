@@ -7,6 +7,7 @@ enum RapidPassField {
   validFrom,
   validUntil,
   idOrPlate,
+  status,
   signature
 }
 

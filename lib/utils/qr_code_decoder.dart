@@ -85,7 +85,8 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
           validFrom: validFrom,
           validUntil: validUntil,
           idOrPlate: idOrPlate,
-          signature: signature);
+          signature: signature,
+          status: 'APPROVED');
     } catch (e) {
       throw FormatException(e.toString());
     }

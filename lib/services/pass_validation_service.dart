@@ -90,7 +90,8 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
       return ScanResults(qrData);
     } else {
       return ScanResults.invalidPass;
@@ -109,7 +110,8 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
       return ScanResults(qrData);
     } else {
       return ScanResults.invalidPass;
@@ -127,7 +129,8 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
       return ScanResults(qrData);
     } else {
       return ScanResults.invalidPass;
