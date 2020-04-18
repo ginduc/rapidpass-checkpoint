@@ -14,6 +14,7 @@ class QrData {
   final int validFrom;
   final int validUntil;
   final String idOrPlate;
+  final String status;
   final int signature;
 
   QrData(
@@ -23,6 +24,7 @@ class QrData {
       @required this.validFrom,
       @required this.validUntil,
       @required this.idOrPlate,
+      @required this.status,
       this.signature});
 
   static final QrData empty = QrData(
@@ -31,13 +33,14 @@ class QrData {
       controlCode: 0,
       validFrom: 0,
       validUntil: 0,
-      idOrPlate: '');
+      idOrPlate: '',
+      status: '');
 
   @override
   String toString() {
     return "%{pass_type: $passType, apor: $apor, control_code: $controlCode, "
         "valid_from: $validFrom, valid_until: $validUntil, "
-        "id_or_plate: '$idOrPlate', signature: $signature}";
+        "id_or_plate: '$idOrPlate', status: '$status', signature: $signature}";
   }
 
   String controlCodeAsString() {
