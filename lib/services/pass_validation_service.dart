@@ -65,11 +65,17 @@ class PassValidationService {
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
           source: RapidPassField.validUntil);
     }
-    if (qrData.idOrPlate.isEmpty) {
+    if (qrData.passType == PassType.Vehicle &&
+        (qrData.idOrPlate == null || qrData.idOrPlate.isEmpty)) {
       results.resultMessage = 'ENTRY DENIED';
       results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError('Invalid Plate Number',
           source: RapidPassField.idOrPlate);
+    }
+    if (qrData.status == 'SUSPENDED') {
+      results.resultMessage = 'ENTRY DENIED';
+      results.resultSubMessage = 'RAPIDPASS IS SUSPENDED';
+      results.addError('Suspended status.', source: RapidPassField.status);
     }
     return results;
   }
@@ -90,8 +96,9 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
-      return ScanResults(qrData);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
+      return validate(qrData);
     } else {
       return ScanResults.invalidPass;
     }
@@ -109,8 +116,9 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
-      return ScanResults(qrData);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
+      return validate(qrData);
     } else {
       return ScanResults.invalidPass;
     }
@@ -127,8 +135,9 @@ class PassValidationService {
           controlCode: validPass.controlCode,
           validFrom: validPass.validFrom,
           validUntil: validPass.validUntil,
-          idOrPlate: validPass.idOrPlate);
-      return ScanResults(qrData);
+          idOrPlate: validPass.idOrPlate,
+          status: validPass.status);
+      return validate(qrData);
     } else {
       return ScanResults.invalidPass;
     }
