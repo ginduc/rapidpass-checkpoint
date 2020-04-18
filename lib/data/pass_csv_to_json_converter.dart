@@ -14,17 +14,25 @@ class PassCsvToJsonConverter
     for (int i = 0; i < input.length; ++i) {
       map(json, headers[i], input[i]);
     }
+    json['idOrPlate'] =
+        json['passType'] == 1 ? json['plateNumber'] : json['identifierNumber'];
+    json.remove('plateNumber');
+    json.remove('identifierNumber');
     return json;
   }
 
   final toJsonMapping = {
     'aporType': 'apor',
     'controlCode': 'controlCode',
-    'plateNumber': 'idOrPlate',
+    'passType': 'passType',
+    'plateNumber': 'plateNumber',
+    'identifierNumber': 'identifierNumber',
     'idType': 'idType',
     'status': 'status',
     'validFrom': 'validFrom',
-    'validTo': 'validUntil'
+    'validTo': 'validUntil',
+    'referenceID': 'referenceID',
+    'name': 'name'
   };
 
   void map(Map<String, dynamic> json, String header, dynamic value) {
