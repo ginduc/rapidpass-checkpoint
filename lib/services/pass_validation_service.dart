@@ -35,9 +35,17 @@ class PassValidationService {
       } else {
         final sr =
             ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
+        sr.resultSubMessage = 'Invalid RapidPass';
         sr.addError('Invalid QR Data');
         return sr;
       }
+    } on FormatException catch (fe) {
+      print(fe.toString());
+      final sr =
+          ScanResults(null, resultMessage: 'NOT A RAPIDPASS', allRed: true);
+      sr.resultSubMessage = 'Please scan a RapidPass QR Code';
+      sr.addError('Invalid QR Data');
+      return sr;
     } catch (e) {
       print(e.toString());
       final sr = ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);

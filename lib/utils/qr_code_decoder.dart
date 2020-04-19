@@ -52,6 +52,7 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
     debugPrint(
         'rawInput: ${hex.encode(rawInput.buffer.asUint8List())} (${rawInput.lengthInBytes})');
     ByteData input;
+    // 'Magic marker' bytes for v2 encrypted QR Code
     if (rawInput.getUint8(0) == 0xff && rawInput.getUint8(1) == 0xfe) {
       input = _decrypt(rawInput);
     } else {
