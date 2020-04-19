@@ -5,17 +5,22 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 class RoundedButton extends StatelessWidget {
   final double height;
   final double minWidth;
+  final EdgeInsetsGeometry padding;
   final String text;
   final Function onPressed;
 
   RoundedButton(
-      {this.text, this.height = 48.0, this.minWidth = 200.0, this.onPressed});
+      {this.text,
+      this.height = 48.0,
+      this.minWidth = 200.0,
+      this.padding = const EdgeInsets.symmetric(vertical: 40.0),
+      this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final contextTheme = Green.buildFor(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40.0),
+      padding: this.padding,
       child: SizedBox(
         height: this.height,
         width: this.minWidth,
