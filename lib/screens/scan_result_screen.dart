@@ -35,7 +35,8 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final qrData = widget.scanResults.qrData;
+    final scanResults = widget.scanResults;
+    final qrData = scanResults.qrData;
     final tableData = qrData != null
         ? {
             RapidPassField.passType: (qrData.passType == PassType.Vehicle)
@@ -64,7 +65,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
           : getFieldName(field);
 
       String errorMessage;
-      final error = widget.scanResults.findErrorForSource(field);
+      final error = scanResults.findErrorForSource(field);
       if (error != null) {
         errorMessage = error.errorMessage;
       }
@@ -79,23 +80,23 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
               label: label, value: value, errorMessage: errorMessage);
     }).toList();
 
-    final card = widget.scanResults.isValid
+    final resultMessage = scanResults.resultMessage;
+    final resultSubMessage = scanResults.resultSubMessage;
+    final notRapidPass = resultMessage == 'NOT A VALID RAPIDPASS QR CODE';
+    final card = scanResults.isValid
         ? PassResultsCard(
-            iconName: 'check-2x',
-            headerText: widget.scanResults.resultMessage,
+            iconName: 'check',
+            headerText: resultMessage,
             data: passResultsData,
             color: green300)
         : PassResultsCard(
             iconName: 'error',
-            headerText: widget.scanResults.resultMessage,
-            subHeaderText: widget.scanResults.resultSubMessage,
+            headerText: resultMessage,
+            subHeaderText: resultSubMessage,
             data: passResultsData,
-            color: Colors.red,
-            allRed: widget.scanResults.allRed,
-            headerOnly: widget.scanResults.resultSubMessage == 'QR CODE INVALID'
-                ? true
-                : false,
-          );
+            color: notRapidPass ? amber : Colors.red,
+            allRed: scanResults.allRed,
+            headerOnly: resultSubMessage == 'QR CODE INVALID' || notRapidPass);
     return Theme(
         data: Green.buildFor(context),
         child: WillPopScope(
@@ -146,7 +147,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 //                              ),
 //                            ),
 //                          ),
-                          if (widget.scanResults.isValid)
+                          if (scanResults.isValid)
                             Padding(padding: EdgeInsets.only(top: 16.0)),
                           InkWell(
                             onTap: () => _scanAndNavigate(context),

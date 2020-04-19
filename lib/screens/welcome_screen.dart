@@ -131,19 +131,16 @@ class WelcomeScreenState extends State<WelcomeScreen>
                       top: MediaQuery.of(context).size.height * 0.05,
                     ),
                     child: Consumer<AppState>(
-                      builder: (context, appState, child) {
-                        return Text(
-                          appState.databaseLastUpdatedText ??
-                              'Please sync the database',
-                          style: TextStyle(
-                            fontSize: appState.databaseLastUpdatedText == null
-                                ? 18.0
-                                : 15.0,
-                          ),
-                          textAlign: TextAlign.center,
-                        );
-                      },
-                    ),
+                        builder: (context, appState, child) =>
+                            appState.databaseLastUpdatedText != null
+                                ? Text(
+                                    appState.databaseLastUpdatedText,
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  )
+                                : Container()),
                   ),
                   Expanded(
                     child: Column(

@@ -13,7 +13,12 @@ class RapidAssetConstants {
   static const icControlCode = '$baseAssetFont/control-number-purple.svg';
 
   /// White
-  static const icQrCodeWhite = '$baseAssetFont/qrcode-white.svg';
-  static const icPlateNumberWhite = '$baseAssetFont/plate-number-white.svg';
-  static const icControlCodeWhite = '$baseAssetFont/control-number-white.svg';
+  static const icQrCodeGray = '$baseAssetFont/qrcode-gray.svg';
+  static const icPlateNumberGray = '$baseAssetFont/plate-number-gray.svg';
+  static const icControlCodeGray = '$baseAssetFont/control-number-gray.svg';
+
+  /// White
+  static const icQrCodeWhite = '$baseAssetFont/qrcode-gray.svg';
+  static const icPlateNumberWhite = '$baseAssetFont/plate-number-gray.svg';
+  static const icControlCodeWhite = '$baseAssetFont/control-number-gray.svg';
 }

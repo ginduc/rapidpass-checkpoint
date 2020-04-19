@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-final Color deepPurple300 = const Color(0xff9575CD);
-final Color deepPurple600 = const Color(0xff5E35B1);
-final Color deepPurple900 = const Color(0xff311B92);
-final Color green300 = const Color(0xff81C784);
+const Color amber = const Color(0xffff8000);
+const Color deepPurple300 = const Color(0xff9575CD);
+const Color deepPurple600 = const Color(0xff5E35B1);
+const Color deepPurple900 = const Color(0xff311B92);
+const Color green300 = const Color(0xff81C784);
 
 final ColorScheme light = ColorScheme.light();
 final ColorScheme rapidPassColorScheme = ColorScheme(
