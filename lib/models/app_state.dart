@@ -41,6 +41,11 @@ class AppState extends ChangeNotifier {
     return data;
   }
 
+  void clearDatabaseSyncLog() {
+    this._databaseSyncLog = [];
+    notifyListeners();
+  }
+
   int get databaseRecordCount => _databaseRecordCount;
 
   set databaseRecordCount(int value) {
