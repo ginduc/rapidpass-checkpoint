@@ -82,7 +82,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
     final resultMessage = scanResults.resultMessage;
     final resultSubMessage = scanResults.resultSubMessage;
-    final notRapidPass = resultMessage == 'NOT A VALID RAPIDPASS QR CODE';
+    final notRapidPass = resultMessage == 'NOT A RAPIDPASS QR CODE';
     final card = scanResults.isValid
         ? PassResultsCard(
             iconName: 'check',
