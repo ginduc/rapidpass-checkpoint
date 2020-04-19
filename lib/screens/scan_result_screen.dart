@@ -82,7 +82,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
     final resultMessage = scanResults.resultMessage;
     final resultSubMessage = scanResults.resultSubMessage;
-    final notRapidPass = resultMessage == 'NOT A RAPIDPASS';
+    final notRapidPass = resultMessage == 'NOT A VALID RAPIDPASS QR CODE';
     final card = scanResults.isValid
         ? PassResultsCard(
             iconName: 'check-2x',
@@ -94,7 +94,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
             headerText: resultMessage,
             subHeaderText: resultSubMessage,
             data: passResultsData,
-            color: Colors.red,
+            color: notRapidPass ? amber : Colors.red,
             allRed: scanResults.allRed,
             headerOnly: resultSubMessage == 'QR CODE INVALID' || notRapidPass);
     return Theme(

@@ -81,6 +81,8 @@ class PassResultsCard extends StatelessWidget {
         ]);
       }
     }).toList();
+    final bottomRadius =
+        this.headerOnly ? Radius.circular(borderRadius) : Radius.zero;
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: this.color, width: 1.0),
@@ -98,10 +100,8 @@ class PassResultsCard extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(borderRadius),
                     topRight: Radius.circular(borderRadius),
-                    bottomLeft:
-                        Radius.circular(this.headerOnly ? borderRadius : 0),
-                    bottomRight:
-                        Radius.circular(this.headerOnly ? borderRadius : 0),
+                    bottomLeft: bottomRadius,
+                    bottomRight: bottomRadius,
                   ),
                   color: this.color,
                 ),
@@ -119,9 +119,10 @@ class PassResultsCard extends StatelessWidget {
                       if (this.headerText != null)
                         Text(
                           this.headerText.toUpperCase(),
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20.0,
+                              fontSize: 32.0,
                               fontWeight: FontWeight.bold),
                         ),
                       SizedBox(
@@ -135,7 +136,7 @@ class PassResultsCard extends StatelessWidget {
                           this.subHeaderText.toUpperCase(),
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                               fontWeight: FontWeight.bold),
                         )
                       ]

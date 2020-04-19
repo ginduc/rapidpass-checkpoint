@@ -41,9 +41,9 @@ class PassValidationService {
       }
     } on FormatException catch (fe) {
       print(fe.toString());
-      final sr =
-          ScanResults(null, resultMessage: 'NOT A RAPIDPASS', allRed: true);
-      sr.resultSubMessage = 'Please scan a RapidPass QR Code';
+      final sr = ScanResults(null,
+          resultMessage: 'NOT A VALID RAPIDPASS QR CODE', allRed: true);
+      sr.resultSubMessage = 'Please try again';
       sr.addError('Invalid QR Data');
       return sr;
     } catch (e) {
