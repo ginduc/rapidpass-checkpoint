@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 
 const borderRadius = 12.0;
@@ -83,6 +84,11 @@ class PassResultsCard extends StatelessWidget {
     }).toList();
     final bottomRadius =
         this.headerOnly ? Radius.circular(borderRadius) : Radius.zero;
+    final image = SvgPicture.asset(
+      'assets/${this.iconName}.svg',
+      color: Colors.white,
+      width: 80.0,
+    );
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: this.color, width: 1.0),
@@ -111,10 +117,7 @@ class PassResultsCard extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Image(
-                          width: 80.0,
-                          image: AssetImage('assets/${this.iconName}.png'),
-                        ),
+                        child: image,
                       ),
                       if (this.headerText != null)
                         Text(
