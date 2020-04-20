@@ -109,4 +109,8 @@ class AppDatabase extends _$AppDatabase {
       return Future.wait(futures);
     });
   }
+
+  Future deleteValidPasses() {
+    return delete(validPasses).go();
+  }
 }

@@ -92,6 +92,24 @@ class AppStorage {
     return jsonObj['records'];
   }
 
+  static Future<void> clearDatabaseSyncLog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonObj = Map<String, dynamic>();
+    String jsonStr = prefs.containsKey(_databaseSyncLogKey)
+        ? prefs.getString(_databaseSyncLogKey)
+        : '{}';
+
+    try {
+      jsonObj = json.decode(jsonStr);
+    } catch (e) {
+      debugPrint('addDatabaseSyncLog() exception:' + e.toString());
+      jsonObj = {};
+    }
+
+    jsonObj['records'] = [];
+    prefs.setString(_databaseSyncLogKey, json.encode(jsonObj));
+  }
+
   static Future<AppSecrets> setAppSecrets(final AppSecrets appSecrets) {
     return Future.wait([
       secureStorage.write(key: _signingKeyKey, value: appSecrets.signingKey),

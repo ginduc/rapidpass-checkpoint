@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rapidpass_checkpoint/components/flavor_banner.dart';
 import 'package:rapidpass_checkpoint/components/rounded_button.dart';
+import 'package:rapidpass_checkpoint/helpers/dialog_helper.dart';
 import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
@@ -37,9 +38,22 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               InkWell(
                 child: RoundedButton(
+                  padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 10.0),
                   minWidth: 300.0,
                   text: 'Reauthenticate Device',
                   onPressed: () => _reauthenticateDevice(context),
+                ),
+              ),
+              InkWell(
+                child: RoundedButton(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 40.0),
+                  minWidth: 300.0,
+                  text: appState.databaseRecordCount == 0
+                      ? 'Update Database'
+                      : 'Reset Database',
+                  onPressed: appState.databaseRecordCount == 0
+                      ? () => Navigator.pushNamed(context, '/updateDatabase')
+                      : () => _resetDatabase(context),
                 ),
               ),
               Text(
@@ -68,5 +82,38 @@ class SettingsScreenState extends State<SettingsScreen> {
         });
       }
     });
+  }
+
+  void _resetDatabase(final BuildContext context) async {
+    bool isConfirmed = false;
+    await DialogHelper.showAlertDialog(
+      context,
+      title: 'Warning!',
+      message:
+          'Database records will be erased. Do you really want to proceed?',
+      onConfirm: () => isConfirmed = true,
+      onCancel: () => isConfirmed = false,
+    );
+
+    if (!isConfirmed) return;
+
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    final AppState appState = Provider.of<AppState>(context, listen: false);
+
+    await apiRepository.localDatabaseService.deleteValidPasses();
+    final int totalRecords =
+        await apiRepository.localDatabaseService.countPasses();
+    appState.databaseRecordCount = totalRecords;
+
+    await AppStorage.setLastSyncOn(0).then((timestamp) {
+      debugPrint('After setLastSyncOn(), timestamp: $timestamp');
+      appState.databaseLastUpdated = timestamp;
+    });
+    await AppStorage.clearDatabaseSyncLog().then((_) {
+      appState.clearDatabaseSyncLog();
+    });
+
+    Navigator.pushNamed(context, '/updateDatabase');
   }
 }
