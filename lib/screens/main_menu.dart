@@ -43,6 +43,7 @@ class MainMenuScreen extends StatelessWidget {
 
 class MainMenu extends StatelessWidget {
   ProgressDialog progressDialog;
+
   @override
   Widget build(BuildContext context) {
     progressDialog = ProgressDialog(context, type: ProgressDialogType.Download)
@@ -154,7 +155,9 @@ class MainMenu extends StatelessWidget {
           final ScanResults fromDatabase = await passValidationService
               .checkControlNumber(deserializedQrCode.qrData.controlCode);
           debugPrint('fromDatabase.isValid: ${fromDatabase.isValid}');
-          return fromDatabase.isValid ? fromDatabase : deserializedQrCode;
+          return fromDatabase.qrData != null
+              ? fromDatabase
+              : deserializedQrCode;
         } else {
           return deserializedQrCode;
         }
