@@ -15,6 +15,7 @@ abstract class ILocalDatabaseService {
   Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
   Future<int> insertValidPass(final ValidPassesCompanion companion);
   Future bulkInsertOrUpdate(final List<ValidPassesCompanion> forInserting);
+  Future deleteValidPasses();
   void dispose();
 }
 
@@ -145,5 +146,10 @@ class LocalDatabaseService implements ILocalDatabaseService {
         }));
     return Future.wait(futures.toList()).then((bulkInsertOrUpdate) =>
         appDatabase.insertOrUpdateAll(bulkInsertOrUpdate));
+  }
+
+  @override
+  Future deleteValidPasses() {
+    return appDatabase.deleteValidPasses();
   }
 }
