@@ -51,8 +51,10 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
           };
     final passResultsData = tableData.entries.map((e) {
       var field = e.key;
-      final String label = field == RapidPassField.idOrPlate
-          ? 'Plate Number'
+      final String label = (field == RapidPassField.idOrPlate)
+          ? (qrData?.passType == PassType.Vehicle)
+              ? 'Plate Number'
+              : 'ID Number'
           : getFieldName(field);
 
       String errorMessage;
@@ -64,11 +66,6 @@ class CheckPlateOrControlCodeResultsScreen extends StatelessWidget {
           field == RapidPassField.apor && aporCodes.containsKey(e.value)
               ? aporCodes[e.value] + ' (${e.value})'
               : e.value;
-
-      if (label == 'Plate Number' &&
-          tableData[RapidPassField.passType].startsWith("I -")) {
-        return null;
-      }
 
       return error == null
           ? PassResultsTableRow(label: label, value: value)
