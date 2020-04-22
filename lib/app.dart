@@ -17,6 +17,7 @@ import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_results_screen.dart';
 import 'package:rapidpass_checkpoint/screens/check_plate_or_control_screen.dart';
 import 'package:rapidpass_checkpoint/screens/faqs_screen.dart';
+import 'package:rapidpass_checkpoint/screens/feedback_screen.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
 import 'package:rapidpass_checkpoint/screens/need_help_screen.dart';
 import 'package:rapidpass_checkpoint/screens/privacy_policy_screen.dart';
@@ -160,6 +161,8 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(builder: (_) => Faqs());
             case '/settings':
               return CupertinoPageRoute(builder: (_) => SettingsScreen());
+            case '/feedback':
+              return CupertinoPageRoute(builder: (_) => FeedbackScreen());
           }
           return null;
         },
