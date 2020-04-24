@@ -10,12 +10,29 @@ import 'package:rapidpass_checkpoint/utils/aes.dart';
 
 abstract class ILocalDatabaseService {
   Future<int> countPasses();
+
   Future<ValidPass> getValidPassByIdOrPlate(final String idOrPlate);
+
   Future<ValidPass> getValidPassByStringControlCode(final String controlCode);
+
   Future<ValidPass> getValidPassByIntegerControlCode(final int controlNumber);
+
   Future<int> insertValidPass(final ValidPassesCompanion companion);
+
   Future bulkInsertOrUpdate(final List<ValidPassesCompanion> forInserting);
+
   Future deleteValidPasses();
+
+  Future<List<UsageLog>> getUsageLogs();
+
+  Future<List<UsageLog>> getUsageLogs24Hours(int timestamp);
+
+  Future<List<UsageDateLog>> getUsageDateLog();
+
+  Future<int> insertUsageLog(final UsageLogsCompanion companion);
+
+  Future deleteUsageLogs();
+
   void dispose();
 }
 
@@ -151,5 +168,65 @@ class LocalDatabaseService implements ILocalDatabaseService {
   @override
   Future deleteValidPasses() {
     return appDatabase.deleteValidPasses();
+  }
+
+  @override
+  Future deleteUsageLogs() {
+    return appDatabase.deleteUsageLogs();
+  }
+
+  @override
+  Future<List<UsageLog>> getUsageLogs() {
+    return appDatabase.getUsageLogs();
+  }
+
+  @override
+  Future<List<UsageLog>> getUsageLogs24Hours(int timestamp) {
+    return appDatabase.getUsageLogsByTimestamp(
+        timestamp, timestamp + (1000 * 60 * 60 * 24));
+  }
+
+  @override
+  Future<List<UsageDateLog>> getUsageDateLog() async {
+    List<UsageLog> res = await appDatabase.getUsageLogs();
+    const int milliseconds1Hour = 1000 * 60 * 60;
+
+    // group per day starting from 12 midnight of current timezone
+    final int timeZoneOffset = DateTime.now().timeZoneOffset.inHours;
+    dynamic count = {};
+    for (UsageLog log in res) {
+      int date = (log.timestamp + (milliseconds1Hour * timeZoneOffset)) ~/
+          (milliseconds1Hour * 24);
+      String key = ((date * (milliseconds1Hour * 24)) -
+              (milliseconds1Hour * timeZoneOffset))
+          .toString();
+      if (count[key] == null) {
+        count[key] = 0;
+      }
+      count[key]++;
+    }
+
+    List<UsageDateLog> usageDateLog = [];
+    count.forEach((final key, final value) {
+      usageDateLog.add(UsageDateLog(int.parse(key), value));
+    });
+    return usageDateLog;
+  }
+
+  @override
+  Future<int> insertUsageLog(UsageLogsCompanion companion) {
+    return appDatabase.insertUsageLog(companion);
+  }
+}
+
+class UsageDateLog {
+  int timestamp;
+  int count;
+
+  UsageDateLog(this.timestamp, this.count);
+
+  @override
+  String toString() {
+    return 'timestamp: ${timestamp.toString()}, count:${count.toString()}';
   }
 }
