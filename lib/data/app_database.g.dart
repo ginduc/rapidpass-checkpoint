@@ -738,6 +738,372 @@ class $InvalidPassesTable extends InvalidPasses
   }
 }
 
+class UsageLog extends DataClass implements Insertable<UsageLog> {
+  final int id;
+  final int timestamp;
+  final int mode;
+  final int status;
+  final String inputData;
+  final int latitude;
+  final int longitude;
+  UsageLog(
+      {@required this.id,
+      @required this.timestamp,
+      @required this.mode,
+      @required this.status,
+      @required this.inputData,
+      this.latitude,
+      this.longitude});
+  factory UsageLog.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return UsageLog(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      timestamp:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}timestamp']),
+      mode: intType.mapFromDatabaseResponse(data['${effectivePrefix}mode']),
+      status: intType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
+      inputData: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}input_data']),
+      latitude:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}latitude']),
+      longitude:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}longitude']),
+    );
+  }
+  factory UsageLog.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return UsageLog(
+      id: serializer.fromJson<int>(json['id']),
+      timestamp: serializer.fromJson<int>(json['timestamp']),
+      mode: serializer.fromJson<int>(json['mode']),
+      status: serializer.fromJson<int>(json['status']),
+      inputData: serializer.fromJson<String>(json['inputData']),
+      latitude: serializer.fromJson<int>(json['latitude']),
+      longitude: serializer.fromJson<int>(json['longitude']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'timestamp': serializer.toJson<int>(timestamp),
+      'mode': serializer.toJson<int>(mode),
+      'status': serializer.toJson<int>(status),
+      'inputData': serializer.toJson<String>(inputData),
+      'latitude': serializer.toJson<int>(latitude),
+      'longitude': serializer.toJson<int>(longitude),
+    };
+  }
+
+  @override
+  UsageLogsCompanion createCompanion(bool nullToAbsent) {
+    return UsageLogsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      timestamp: timestamp == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timestamp),
+      mode: mode == null && nullToAbsent ? const Value.absent() : Value(mode),
+      status:
+          status == null && nullToAbsent ? const Value.absent() : Value(status),
+      inputData: inputData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputData),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+    );
+  }
+
+  UsageLog copyWith(
+          {int id,
+          int timestamp,
+          int mode,
+          int status,
+          String inputData,
+          int latitude,
+          int longitude}) =>
+      UsageLog(
+        id: id ?? this.id,
+        timestamp: timestamp ?? this.timestamp,
+        mode: mode ?? this.mode,
+        status: status ?? this.status,
+        inputData: inputData ?? this.inputData,
+        latitude: latitude ?? this.latitude,
+        longitude: longitude ?? this.longitude,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UsageLog(')
+          ..write('id: $id, ')
+          ..write('timestamp: $timestamp, ')
+          ..write('mode: $mode, ')
+          ..write('status: $status, ')
+          ..write('inputData: $inputData, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          timestamp.hashCode,
+          $mrjc(
+              mode.hashCode,
+              $mrjc(
+                  status.hashCode,
+                  $mrjc(inputData.hashCode,
+                      $mrjc(latitude.hashCode, longitude.hashCode)))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is UsageLog &&
+          other.id == this.id &&
+          other.timestamp == this.timestamp &&
+          other.mode == this.mode &&
+          other.status == this.status &&
+          other.inputData == this.inputData &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude);
+}
+
+class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
+  final Value<int> id;
+  final Value<int> timestamp;
+  final Value<int> mode;
+  final Value<int> status;
+  final Value<String> inputData;
+  final Value<int> latitude;
+  final Value<int> longitude;
+  const UsageLogsCompanion({
+    this.id = const Value.absent(),
+    this.timestamp = const Value.absent(),
+    this.mode = const Value.absent(),
+    this.status = const Value.absent(),
+    this.inputData = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+  });
+  UsageLogsCompanion.insert({
+    this.id = const Value.absent(),
+    @required int timestamp,
+    @required int mode,
+    @required int status,
+    @required String inputData,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+  })  : timestamp = Value(timestamp),
+        mode = Value(mode),
+        status = Value(status),
+        inputData = Value(inputData);
+  UsageLogsCompanion copyWith(
+      {Value<int> id,
+      Value<int> timestamp,
+      Value<int> mode,
+      Value<int> status,
+      Value<String> inputData,
+      Value<int> latitude,
+      Value<int> longitude}) {
+    return UsageLogsCompanion(
+      id: id ?? this.id,
+      timestamp: timestamp ?? this.timestamp,
+      mode: mode ?? this.mode,
+      status: status ?? this.status,
+      inputData: inputData ?? this.inputData,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+    );
+  }
+}
+
+class $UsageLogsTable extends UsageLogs
+    with TableInfo<$UsageLogsTable, UsageLog> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $UsageLogsTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _timestampMeta = const VerificationMeta('timestamp');
+  GeneratedIntColumn _timestamp;
+  @override
+  GeneratedIntColumn get timestamp => _timestamp ??= _constructTimestamp();
+  GeneratedIntColumn _constructTimestamp() {
+    return GeneratedIntColumn(
+      'timestamp',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _modeMeta = const VerificationMeta('mode');
+  GeneratedIntColumn _mode;
+  @override
+  GeneratedIntColumn get mode => _mode ??= _constructMode();
+  GeneratedIntColumn _constructMode() {
+    return GeneratedIntColumn(
+      'mode',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _statusMeta = const VerificationMeta('status');
+  GeneratedIntColumn _status;
+  @override
+  GeneratedIntColumn get status => _status ??= _constructStatus();
+  GeneratedIntColumn _constructStatus() {
+    return GeneratedIntColumn(
+      'status',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _inputDataMeta = const VerificationMeta('inputData');
+  GeneratedTextColumn _inputData;
+  @override
+  GeneratedTextColumn get inputData => _inputData ??= _constructInputData();
+  GeneratedTextColumn _constructInputData() {
+    return GeneratedTextColumn(
+      'input_data',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _latitudeMeta = const VerificationMeta('latitude');
+  GeneratedIntColumn _latitude;
+  @override
+  GeneratedIntColumn get latitude => _latitude ??= _constructLatitude();
+  GeneratedIntColumn _constructLatitude() {
+    return GeneratedIntColumn(
+      'latitude',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _longitudeMeta = const VerificationMeta('longitude');
+  GeneratedIntColumn _longitude;
+  @override
+  GeneratedIntColumn get longitude => _longitude ??= _constructLongitude();
+  GeneratedIntColumn _constructLongitude() {
+    return GeneratedIntColumn(
+      'longitude',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, timestamp, mode, status, inputData, latitude, longitude];
+  @override
+  $UsageLogsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'usage_logs';
+  @override
+  final String actualTableName = 'usage_logs';
+  @override
+  VerificationContext validateIntegrity(UsageLogsCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    }
+    if (d.timestamp.present) {
+      context.handle(_timestampMeta,
+          timestamp.isAcceptableValue(d.timestamp.value, _timestampMeta));
+    } else if (isInserting) {
+      context.missing(_timestampMeta);
+    }
+    if (d.mode.present) {
+      context.handle(
+          _modeMeta, mode.isAcceptableValue(d.mode.value, _modeMeta));
+    } else if (isInserting) {
+      context.missing(_modeMeta);
+    }
+    if (d.status.present) {
+      context.handle(
+          _statusMeta, status.isAcceptableValue(d.status.value, _statusMeta));
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (d.inputData.present) {
+      context.handle(_inputDataMeta,
+          inputData.isAcceptableValue(d.inputData.value, _inputDataMeta));
+    } else if (isInserting) {
+      context.missing(_inputDataMeta);
+    }
+    if (d.latitude.present) {
+      context.handle(_latitudeMeta,
+          latitude.isAcceptableValue(d.latitude.value, _latitudeMeta));
+    }
+    if (d.longitude.present) {
+      context.handle(_longitudeMeta,
+          longitude.isAcceptableValue(d.longitude.value, _longitudeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UsageLog map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return UsageLog.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(UsageLogsCompanion d) {
+    final map = <String, Variable>{};
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
+    if (d.timestamp.present) {
+      map['timestamp'] = Variable<int, IntType>(d.timestamp.value);
+    }
+    if (d.mode.present) {
+      map['mode'] = Variable<int, IntType>(d.mode.value);
+    }
+    if (d.status.present) {
+      map['status'] = Variable<int, IntType>(d.status.value);
+    }
+    if (d.inputData.present) {
+      map['input_data'] = Variable<String, StringType>(d.inputData.value);
+    }
+    if (d.latitude.present) {
+      map['latitude'] = Variable<int, IntType>(d.latitude.value);
+    }
+    if (d.longitude.present) {
+      map['longitude'] = Variable<int, IntType>(d.longitude.value);
+    }
+    return map;
+  }
+
+  @override
+  $UsageLogsTable createAlias(String alias) {
+    return $UsageLogsTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $ValidPassesTable _validPasses;
@@ -745,9 +1111,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $InvalidPassesTable _invalidPasses;
   $InvalidPassesTable get invalidPasses =>
       _invalidPasses ??= $InvalidPassesTable(this);
+  $UsageLogsTable _usageLogs;
+  $UsageLogsTable get usageLogs => _usageLogs ??= $UsageLogsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [validPasses, invalidPasses];
+      [validPasses, invalidPasses, usageLogs];
 }
