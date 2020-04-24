@@ -25,6 +25,8 @@ import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/screens/scan_result_screen.dart';
 import 'package:rapidpass_checkpoint/screens/settings_screen.dart';
 import 'package:rapidpass_checkpoint/screens/update_database_screen.dart';
+import 'package:rapidpass_checkpoint/screens/usage_log_detail_screen.dart';
+import 'package:rapidpass_checkpoint/screens/usage_log_screen.dart';
 import 'package:rapidpass_checkpoint/screens/view_more_info_screen.dart';
 import 'package:rapidpass_checkpoint/screens/welcome_screen.dart';
 import 'package:rapidpass_checkpoint/services/api_service.dart';
@@ -163,6 +165,15 @@ class RapidPassCheckpointApp extends StatelessWidget {
               return CupertinoPageRoute(builder: (_) => SettingsScreen());
             case '/feedback':
               return CupertinoPageRoute(builder: (_) => FeedbackScreen());
+            case '/usageLog':
+              return CupertinoPageRoute(builder: (_) => UsageLogScreen());
+            case '/usageLogDetail':
+              UsageLogDetailArgs args = settings.arguments;
+              if (args == null || !(args is UsageLogDetailArgs)) {
+                args = UsageLogDetailArgs(0);
+              }
+              return CupertinoPageRoute(
+                  builder: (_) => UsageLogDetailScreen(args));
           }
           return null;
         },
