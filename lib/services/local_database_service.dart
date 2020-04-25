@@ -27,6 +27,8 @@ abstract class ILocalDatabaseService {
 
   Future<List<UsageLog>> getUsageLogs24Hours(int timestamp);
 
+  Future<List<UsageLog>> getUsageLogsByControlNumber(int controlNumber);
+
   Future<List<UsageDateLog>> getUsageDateLog();
 
   Future<int> insertUsageLog(final UsageLogsCompanion companion);
@@ -184,6 +186,11 @@ class LocalDatabaseService implements ILocalDatabaseService {
   Future<List<UsageLog>> getUsageLogs24Hours(int timestamp) {
     return appDatabase.getUsageLogsByTimestamp(
         timestamp, timestamp + (1000 * 60 * 60 * 24));
+  }
+
+  @override
+  Future<List<UsageLog>> getUsageLogsByControlNumber(int controlNumber) {
+    return appDatabase.getUsageLogsByControlNumber(controlNumber);
   }
 
   @override

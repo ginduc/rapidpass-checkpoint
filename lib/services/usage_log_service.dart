@@ -22,8 +22,16 @@ class UsageLogService {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
 
+    if (result == null ||
+        result.inputData == null ||
+        result.mode.value == null ||
+        result.status.value == null) {
+      return;
+    }
+
     await apiRepository.localDatabaseService.insertUsageLog(UsageLog.fromJson({
       'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'controlNumber': result?.qrData?.controlCode,
       'inputData': result.inputData,
       'mode': result.mode.value,
       'status': result.status.value
@@ -67,6 +75,14 @@ class UsageLogService {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);
     return await apiRepository.localDatabaseService.getUsageDateLog();
+  }
+
+  static Future<List<UsageLog>> getUsageLogByControlNumber(
+      final BuildContext context, int controlNumber) async {
+    final ApiRepository apiRepository =
+        Provider.of<ApiRepository>(context, listen: false);
+    return await apiRepository.localDatabaseService
+        .getUsageLogsByControlNumber(controlNumber);
   }
 
   static Future<void> deleteUsageLog(BuildContext context) {
