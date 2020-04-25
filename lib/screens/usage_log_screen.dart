@@ -37,17 +37,19 @@ class _UsageLogScreenState extends State<UsageLogScreen> {
                   builder: (bContext, bSnapshot) {
                     if (bSnapshot.connectionState == ConnectionState.done) {
                       final List<UsageDateLog> logs = bSnapshot.data;
-                      return ListView.separated(
-                        itemCount: logs.length,
-                        separatorBuilder: (context, count) {
-                          return const Divider(
-                            height: 2,
-                            color: Colors.grey,
-                          );
-                        },
-                        itemBuilder: (bContext, index) =>
-                            _buildDateLog(logs[logs.length - index - 1]),
-                      );
+                      return logs.isNotEmpty
+                          ? ListView.separated(
+                              itemCount: logs.length,
+                              separatorBuilder: (context, count) {
+                                return const Divider(
+                                  height: 2,
+                                  color: Colors.grey,
+                                );
+                              },
+                              itemBuilder: (bContext, index) =>
+                                  _buildDateLog(logs[logs.length - index - 1]),
+                            )
+                          : _buildEmptyLog();
                     } else {
                       return CircularProgressIndicator();
                     }
@@ -70,6 +72,32 @@ class _UsageLogScreenState extends State<UsageLogScreen> {
         ),
         onTap: () => Navigator.pushNamed(context, '/usageLogDetail',
             arguments: UsageLogDetailArgs(log.timestamp)),
+      ),
+    );
+  }
+
+  _buildEmptyLog() {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      padding: EdgeInsets.all(20.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.assignment,
+                size: size.width * 0.25,
+                color: Colors.grey),
+            SizedBox(height: 20.0,),
+            Text(
+              'Log is Empty.',
+              style: Theme.of(context).textTheme.display1.apply(
+                    color: Colors.grey,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
