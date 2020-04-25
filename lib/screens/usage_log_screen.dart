@@ -11,6 +11,20 @@ class UsageLogScreen extends StatefulWidget {
 }
 
 class _UsageLogScreenState extends State<UsageLogScreen> {
+  List<UsageDateLog> _cachedLogs = [];
+
+  Future<List<UsageDateLog>> _getUsageDateLog(
+      final BuildContext context) async {
+    if (_cachedLogs.isEmpty) {
+      return UsageLogService.getUsageLogByDate(context).then((res) {
+        res.forEach((log) => _cachedLogs.add((log)));
+        return _cachedLogs;
+      });
+    } else {
+      return _cachedLogs;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlavorBanner(
@@ -19,7 +33,7 @@ class _UsageLogScreenState extends State<UsageLogScreen> {
           body: Padding(
               padding: EdgeInsets.all(8.0),
               child: FutureBuilder(
-                  future: UsageLogService.getUsageLogByDate(context),
+                  future: _getUsageDateLog(context),
                   builder: (bContext, bSnapshot) {
                     if (bSnapshot.connectionState == ConnectionState.done) {
                       final List<UsageDateLog> logs = bSnapshot.data;

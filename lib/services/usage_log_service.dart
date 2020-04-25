@@ -38,7 +38,7 @@ class UsageLogService {
     }).createCompanion(true));
   }
 
-  static Future<List<UsageLogInfo>> getUsageLogs(
+  static Future<List<UsageLogInfo>> getUsageLogs24Hour(
       final BuildContext context, int timestamp) async {
     final ApiRepository apiRepository =
         Provider.of<ApiRepository>(context, listen: false);

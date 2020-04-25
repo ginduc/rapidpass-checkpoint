@@ -12,11 +12,13 @@ import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class UsageLogDetailArgs {
   final int timestamp;
+
   UsageLogDetailArgs(this.timestamp);
 }
 
 class UsageLogDetailScreen extends StatefulWidget {
   final UsageLogDetailArgs args;
+
   const UsageLogDetailScreen(this.args);
 
   @override
@@ -26,6 +28,21 @@ class UsageLogDetailScreen extends StatefulWidget {
 }
 
 class UsageLogDetailScreenState extends State<UsageLogDetailScreen> {
+  List<UsageLogInfo> _cachedLogs = [];
+
+  Future<List<UsageLogInfo>> _getUsageLogInfo(
+      final BuildContext context, int timestamp) async {
+    if (_cachedLogs.isEmpty) {
+      return UsageLogService.getUsageLogs24Hour(context, timestamp)
+          .then((res) {
+        res.forEach((log) => _cachedLogs.add(log));
+        return _cachedLogs;
+      });
+    } else {
+      return _cachedLogs;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlavorBanner(
@@ -34,7 +51,7 @@ class UsageLogDetailScreenState extends State<UsageLogDetailScreen> {
           body: Padding(
               padding: EdgeInsets.all(8.0),
               child: FutureBuilder(
-                  future: UsageLogService.getUsageLogs(context, widget.args.timestamp),
+                  future: _getUsageLogInfo(context, widget.args.timestamp),
                   builder: (bContext, bSnapshot) {
                     if (bSnapshot.connectionState == ConnectionState.done) {
                       final List<UsageLogInfo> logs = bSnapshot.data;
