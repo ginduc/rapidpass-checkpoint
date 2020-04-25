@@ -39,6 +39,7 @@ class _UsageLogScreenState extends State<UsageLogScreen> {
                       final List<UsageDateLog> logs = bSnapshot.data;
                       return logs.isNotEmpty
                           ? ListView.separated(
+                              key: PageStorageKey(0),
                               itemCount: logs.length,
                               separatorBuilder: (context, count) {
                                 return const Divider(
@@ -85,10 +86,10 @@ class _UsageLogScreenState extends State<UsageLogScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.assignment,
-                size: size.width * 0.25,
-                color: Colors.grey),
-            SizedBox(height: 20.0,),
+            Icon(Icons.assignment, size: size.width * 0.25, color: Colors.grey),
+            SizedBox(
+              height: 20.0,
+            ),
             Text(
               'Log is Empty.',
               style: Theme.of(context).textTheme.display1.apply(

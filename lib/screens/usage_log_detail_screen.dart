@@ -34,8 +34,7 @@ class UsageLogDetailScreenState extends State<UsageLogDetailScreen> {
   Future<List<UsageLogInfo>> _getUsageLogInfo(
       final BuildContext context, int timestamp) async {
     if (_cachedLogs.isEmpty) {
-      return UsageLogService.getUsageLogs24Hour(context, timestamp)
-          .then((res) {
+      return UsageLogService.getUsageLogs24Hour(context, timestamp).then((res) {
         res.forEach((log) => _cachedLogs.add(log));
         return _cachedLogs;
       });
@@ -57,6 +56,7 @@ class UsageLogDetailScreenState extends State<UsageLogDetailScreen> {
                     if (bSnapshot.connectionState == ConnectionState.done) {
                       final List<UsageLogInfo> logs = bSnapshot.data;
                       return ListView.separated(
+                        key: PageStorageKey(0),
                         itemCount: logs.length,
                         separatorBuilder: (context, count) {
                           return const SizedBox(height: 10);
