@@ -51,6 +51,8 @@ class UsageLogs extends Table {
 
   IntColumn get timestamp => integer()();
 
+  IntColumn get controlNumber => integer().nullable()();
+
   IntColumn get mode => integer()();
 
   IntColumn get status => integer()();
@@ -141,6 +143,10 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<UsageLog>> getUsageLogsByTimestamp(int start, int end) =>
       (select(usageLogs)..where((t) => t.timestamp.isBetweenValues(start, end)))
+          .get();
+
+  Future<List<UsageLog>> getUsageLogsByControlNumber(int controlNumber) =>
+      (select(usageLogs)..where((t) => t.controlNumber.equals(controlNumber)))
           .get();
 
   Future deleteUsageLogs() => delete(usageLogs).go();

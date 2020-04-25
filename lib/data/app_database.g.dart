@@ -741,6 +741,7 @@ class $InvalidPassesTable extends InvalidPasses
 class UsageLog extends DataClass implements Insertable<UsageLog> {
   final int id;
   final int timestamp;
+  final int controlNumber;
   final int mode;
   final int status;
   final String inputData;
@@ -749,6 +750,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
   UsageLog(
       {@required this.id,
       @required this.timestamp,
+      this.controlNumber,
       @required this.mode,
       @required this.status,
       @required this.inputData,
@@ -763,6 +765,8 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       timestamp:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}timestamp']),
+      controlNumber: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}control_number']),
       mode: intType.mapFromDatabaseResponse(data['${effectivePrefix}mode']),
       status: intType.mapFromDatabaseResponse(data['${effectivePrefix}status']),
       inputData: stringType
@@ -779,6 +783,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
     return UsageLog(
       id: serializer.fromJson<int>(json['id']),
       timestamp: serializer.fromJson<int>(json['timestamp']),
+      controlNumber: serializer.fromJson<int>(json['controlNumber']),
       mode: serializer.fromJson<int>(json['mode']),
       status: serializer.fromJson<int>(json['status']),
       inputData: serializer.fromJson<String>(json['inputData']),
@@ -792,6 +797,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'timestamp': serializer.toJson<int>(timestamp),
+      'controlNumber': serializer.toJson<int>(controlNumber),
       'mode': serializer.toJson<int>(mode),
       'status': serializer.toJson<int>(status),
       'inputData': serializer.toJson<String>(inputData),
@@ -807,6 +813,9 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
       timestamp: timestamp == null && nullToAbsent
           ? const Value.absent()
           : Value(timestamp),
+      controlNumber: controlNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(controlNumber),
       mode: mode == null && nullToAbsent ? const Value.absent() : Value(mode),
       status:
           status == null && nullToAbsent ? const Value.absent() : Value(status),
@@ -825,6 +834,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
   UsageLog copyWith(
           {int id,
           int timestamp,
+          int controlNumber,
           int mode,
           int status,
           String inputData,
@@ -833,6 +843,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
       UsageLog(
         id: id ?? this.id,
         timestamp: timestamp ?? this.timestamp,
+        controlNumber: controlNumber ?? this.controlNumber,
         mode: mode ?? this.mode,
         status: status ?? this.status,
         inputData: inputData ?? this.inputData,
@@ -844,6 +855,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
     return (StringBuffer('UsageLog(')
           ..write('id: $id, ')
           ..write('timestamp: $timestamp, ')
+          ..write('controlNumber: $controlNumber, ')
           ..write('mode: $mode, ')
           ..write('status: $status, ')
           ..write('inputData: $inputData, ')
@@ -859,17 +871,20 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
       $mrjc(
           timestamp.hashCode,
           $mrjc(
-              mode.hashCode,
+              controlNumber.hashCode,
               $mrjc(
-                  status.hashCode,
-                  $mrjc(inputData.hashCode,
-                      $mrjc(latitude.hashCode, longitude.hashCode)))))));
+                  mode.hashCode,
+                  $mrjc(
+                      status.hashCode,
+                      $mrjc(inputData.hashCode,
+                          $mrjc(latitude.hashCode, longitude.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is UsageLog &&
           other.id == this.id &&
           other.timestamp == this.timestamp &&
+          other.controlNumber == this.controlNumber &&
           other.mode == this.mode &&
           other.status == this.status &&
           other.inputData == this.inputData &&
@@ -880,6 +895,7 @@ class UsageLog extends DataClass implements Insertable<UsageLog> {
 class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
   final Value<int> id;
   final Value<int> timestamp;
+  final Value<int> controlNumber;
   final Value<int> mode;
   final Value<int> status;
   final Value<String> inputData;
@@ -888,6 +904,7 @@ class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
   const UsageLogsCompanion({
     this.id = const Value.absent(),
     this.timestamp = const Value.absent(),
+    this.controlNumber = const Value.absent(),
     this.mode = const Value.absent(),
     this.status = const Value.absent(),
     this.inputData = const Value.absent(),
@@ -897,6 +914,7 @@ class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
   UsageLogsCompanion.insert({
     this.id = const Value.absent(),
     @required int timestamp,
+    this.controlNumber = const Value.absent(),
     @required int mode,
     @required int status,
     @required String inputData,
@@ -909,6 +927,7 @@ class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
   UsageLogsCompanion copyWith(
       {Value<int> id,
       Value<int> timestamp,
+      Value<int> controlNumber,
       Value<int> mode,
       Value<int> status,
       Value<String> inputData,
@@ -917,6 +936,7 @@ class UsageLogsCompanion extends UpdateCompanion<UsageLog> {
     return UsageLogsCompanion(
       id: id ?? this.id,
       timestamp: timestamp ?? this.timestamp,
+      controlNumber: controlNumber ?? this.controlNumber,
       mode: mode ?? this.mode,
       status: status ?? this.status,
       inputData: inputData ?? this.inputData,
@@ -949,6 +969,20 @@ class $UsageLogsTable extends UsageLogs
       'timestamp',
       $tableName,
       false,
+    );
+  }
+
+  final VerificationMeta _controlNumberMeta =
+      const VerificationMeta('controlNumber');
+  GeneratedIntColumn _controlNumber;
+  @override
+  GeneratedIntColumn get controlNumber =>
+      _controlNumber ??= _constructControlNumber();
+  GeneratedIntColumn _constructControlNumber() {
+    return GeneratedIntColumn(
+      'control_number',
+      $tableName,
+      true,
     );
   }
 
@@ -1013,8 +1047,16 @@ class $UsageLogsTable extends UsageLogs
   }
 
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, timestamp, mode, status, inputData, latitude, longitude];
+  List<GeneratedColumn> get $columns => [
+        id,
+        timestamp,
+        controlNumber,
+        mode,
+        status,
+        inputData,
+        latitude,
+        longitude
+      ];
   @override
   $UsageLogsTable get asDslTable => this;
   @override
@@ -1033,6 +1075,12 @@ class $UsageLogsTable extends UsageLogs
           timestamp.isAcceptableValue(d.timestamp.value, _timestampMeta));
     } else if (isInserting) {
       context.missing(_timestampMeta);
+    }
+    if (d.controlNumber.present) {
+      context.handle(
+          _controlNumberMeta,
+          controlNumber.isAcceptableValue(
+              d.controlNumber.value, _controlNumberMeta));
     }
     if (d.mode.present) {
       context.handle(
@@ -1079,6 +1127,9 @@ class $UsageLogsTable extends UsageLogs
     }
     if (d.timestamp.present) {
       map['timestamp'] = Variable<int, IntType>(d.timestamp.value);
+    }
+    if (d.controlNumber.present) {
+      map['control_number'] = Variable<int, IntType>(d.controlNumber.value);
     }
     if (d.mode.present) {
       map['mode'] = Variable<int, IntType>(d.mode.value);
