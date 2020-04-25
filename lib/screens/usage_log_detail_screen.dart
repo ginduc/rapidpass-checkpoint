@@ -7,6 +7,7 @@ import 'package:rapidpass_checkpoint/data/app_database.dart';
 import 'package:rapidpass_checkpoint/models/apor.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
+import 'package:rapidpass_checkpoint/screens/usage_log_count_screen.dart';
 import 'package:rapidpass_checkpoint/services/usage_log_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
@@ -60,8 +61,18 @@ class UsageLogDetailScreenState extends State<UsageLogDetailScreen> {
                         separatorBuilder: (context, count) {
                           return const SizedBox(height: 10);
                         },
-                        itemBuilder: (bContext, index) =>
-                            _buildLogCard(logs[logs.length - index - 1]),
+                        itemBuilder: (bContext, index) {
+                          UsageLogInfo log = logs[logs.length - index - 1];
+                          return GestureDetector(
+                            onTap: log.usageLog.controlNumber != null
+                                ? () => Navigator.pushNamed(
+                                    context, '/usageLogCount',
+                                    arguments: UsageLogCountArgs(
+                                        log.scanResult.qrData))
+                                : () {},
+                            child: _buildLogCard(log),
+                          );
+                        },
                       );
                     } else {
                       return CircularProgressIndicator();
