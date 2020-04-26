@@ -55,6 +55,7 @@ dependencies:
   ai_barcode: ^1.0.3
   flutter_local_notifications: ^1.4.1
   connectivity: ^0.4.8+2
+  webview_flutter: ^0.3.20+2
 
 dev_dependencies:
   flutter_test:

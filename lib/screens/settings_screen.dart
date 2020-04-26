@@ -46,7 +46,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               InkWell(
                 child: RoundedButton(
-                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 40.0),
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
                   minWidth: 300.0,
                   text: appState.databaseRecordCount == 0
                       ? 'Update Database'
@@ -54,6 +54,14 @@ class SettingsScreenState extends State<SettingsScreen> {
                   onPressed: appState.databaseRecordCount == 0
                       ? () => Navigator.pushNamed(context, '/updateDatabase')
                       : () => _resetDatabase(context),
+                ),
+              ),
+              InkWell(
+                child: RoundedButton(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 40.0),
+                  minWidth: 300.0,
+                  text: 'Feedback',
+                  onPressed: () => Navigator.pushNamed(context, '/feedback'),
                 ),
               ),
               Text(
