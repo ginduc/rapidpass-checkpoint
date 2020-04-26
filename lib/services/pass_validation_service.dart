@@ -31,10 +31,16 @@ class PassValidationService {
       final signatureIsValid =
           HmacShac256.validateSignature(signingKey, decodedFromBase64);
       if (signatureIsValid) {
+        scanResults.inputData = base64Encoded;
+        scanResults.mode = ScanMode.QR_CODE;
         return scanResults;
       } else {
-        final sr =
-            ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
+        final sr = ScanResults(null,
+            resultMessage: 'ENTRY DENIED',
+            allRed: true,
+            status: ScanResultStatus.INVALID_RAPIDPASS_SIGNATURE,
+            inputData: base64Encoded,
+            mode: ScanMode.QR_CODE);
         sr.resultSubMessage = 'Invalid RapidPass';
         sr.addError('Invalid QR Data');
         return sr;
@@ -42,13 +48,22 @@ class PassValidationService {
     } on FormatException catch (fe) {
       print(fe.toString());
       final sr = ScanResults(null,
-          resultMessage: 'NOT A VALID RAPIDPASS QR CODE', allRed: true);
+          resultMessage: 'NOT A VALID RAPIDPASS QR CODE',
+          allRed: true,
+          status: ScanResultStatus.INVALID_RAPIDPASS_QRDATA,
+          inputData: base64Encoded,
+          mode: ScanMode.QR_CODE);
       sr.resultSubMessage = 'Please try again';
       sr.addError('Invalid QR Data');
       return sr;
     } catch (e) {
       print(e.toString());
-      final sr = ScanResults(null, resultMessage: 'ENTRY DENIED', allRed: true);
+      final sr = ScanResults(null,
+          resultMessage: 'ENTRY DENIED',
+          allRed: true,
+          status: ScanResultStatus.INVALID_QRCODE,
+          inputData: base64Encoded,
+          mode: ScanMode.QR_CODE);
       sr.resultSubMessage = 'QR CODE INVALID';
       sr.addError('Invalid QR Data');
       print(sr.resultSubMessage);
@@ -61,6 +76,7 @@ class PassValidationService {
     final DateTime now = DateTime.now();
 
     if (now.isBefore(qrData.validFromDateTime())) {
+      results.status = ScanResultStatus.INVALID_START_DATE;
       results.resultMessage = 'ENTRY DENIED';
       results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError(
@@ -68,6 +84,7 @@ class PassValidationService {
           source: RapidPassField.validFrom);
     }
     if (now.isAfter(qrData.validUntilDateTime())) {
+      results.status = ScanResultStatus.INVALID_END_DATE;
       results.resultMessage = 'ENTRY DENIED';
       results.resultSubMessage = 'RAPIDPASS HAS EXPIRED';
       results.addError('Pass expired on ${qrData.validUntilDisplayTimestamp()}',
@@ -75,12 +92,14 @@ class PassValidationService {
     }
     if (qrData.passType == PassType.Vehicle &&
         (qrData.idOrPlate == null || qrData.idOrPlate.isEmpty)) {
+      results.status = ScanResultStatus.INVALID_PLATE_NUMBER;
       results.resultMessage = 'ENTRY DENIED';
       results.resultSubMessage = 'RAPIDPASS IS INVALID';
       results.addError('Invalid Plate Number',
           source: RapidPassField.idOrPlate);
     }
     if (qrData.status == 'SUSPENDED') {
+      results.status = ScanResultStatus.RAPIDPASS_SUSPENDED;
       results.resultMessage = 'ENTRY DENIED';
       results.resultSubMessage = 'RAPIDPASS IS SUSPENDED';
       results.addError('Suspended status.', source: RapidPassField.status);
@@ -96,6 +115,7 @@ class PassValidationService {
     final normalizedPlateNumber = normalizePlateNumber(plateNumber);
     final validPass = await apiRepository.localDatabaseService
         .getValidPassByIdOrPlate(normalizedPlateNumber);
+    ScanResults sr;
     if (validPass != null) {
       final QrData qrData = QrData(
           passType:
@@ -106,16 +126,24 @@ class PassValidationService {
           validUntil: validPass.validUntil,
           idOrPlate: validPass.idOrPlate,
           status: validPass.status);
-      return validate(qrData);
+      sr = validate(qrData);
     } else {
-      return ScanResults.invalidPass;
+      sr = ScanResults(null,
+              resultMessage: 'ENTRY DENIED',
+              allRed: true,
+              status: ScanResultStatus.PLATE_NUMBER_NOT_FOUND)
+          .addError('ENTRY DENIED');
     }
+    sr.mode = ScanMode.PLATE_NUMBER;
+    sr.inputData = normalizedPlateNumber;
+    return sr;
   }
 
   Future<ScanResults> checkControlCode(final String controlCode) async {
     final String normalizedControlCode = controlCode.toUpperCase();
     final validPass = await apiRepository.localDatabaseService
         .getValidPassByStringControlCode(normalizedControlCode);
+    ScanResults sr;
     if (validPass != null) {
       final QrData qrData = QrData(
           passType:
@@ -126,15 +154,23 @@ class PassValidationService {
           validUntil: validPass.validUntil,
           idOrPlate: validPass.idOrPlate,
           status: validPass.status);
-      return validate(qrData);
+      sr = validate(qrData);
     } else {
-      return ScanResults.invalidPass;
+      sr = ScanResults(null,
+              resultMessage: 'ENTRY DENIED',
+              allRed: true,
+              status: ScanResultStatus.CONTROL_CODE_NOT_FOUND)
+          .addError('ENTRY DENIED');
     }
+    sr.mode = ScanMode.CONTROL_CODE;
+    sr.inputData = normalizedControlCode;
+    return sr;
   }
 
   Future<ScanResults> checkControlNumber(final int controlNumber) async {
     final validPass = await apiRepository.localDatabaseService
         .getValidPassByIntegerControlCode(controlNumber);
+    ScanResults sr;
     if (validPass != null) {
       final QrData qrData = QrData(
           passType:
@@ -145,9 +181,16 @@ class PassValidationService {
           validUntil: validPass.validUntil,
           idOrPlate: validPass.idOrPlate,
           status: validPass.status);
-      return validate(qrData);
+      sr = validate(qrData);
     } else {
-      return ScanResults.invalidPass;
+      sr = ScanResults(null,
+              resultMessage: 'ENTRY DENIED',
+              allRed: true,
+              status: ScanResultStatus.CONTROL_NUMBER_NOT_FOUND)
+          .addError('ENTRY DENIED');
     }
+    sr.mode = ScanMode.CONTROL_NUMBER;
+    sr.inputData = controlNumber.toString();
+    return sr;
   }
 }

@@ -7,6 +7,7 @@ import 'package:rapidpass_checkpoint/models/check_plate_or_control_args.dart';
 import 'package:rapidpass_checkpoint/models/control_code.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
+import 'package:rapidpass_checkpoint/services/usage_log_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class CheckPlateOrControlScreen extends StatefulWidget {
@@ -202,6 +203,9 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
     if (_screenModeType == CheckPlateOrControlScreenModeType.plate) {
       scanResults = await passValidationService
           .checkPlateNumber(_formFieldTextEditingController.text);
+
+      await UsageLogService.insertUsageLog(context, scanResults);
+
       if (scanResults.allRed) {
         DialogHelper.showAlertDialog(
           context,
@@ -225,6 +229,8 @@ class _CheckPlateOrControlScreenState extends State<CheckPlateOrControlScreen> {
       }
       scanResults =
           await passValidationService.checkControlCode(normalizedControlCode);
+
+      await UsageLogService.insertUsageLog(context, scanResults);
     }
 
     checkResults =

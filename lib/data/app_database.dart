@@ -45,12 +45,31 @@ class InvalidPasses extends Table {
   TextColumn get status => text()();
 }
 
-@UseMoor(tables: [ValidPasses, InvalidPasses])
+@DataClassName('UsageLog')
+class UsageLogs extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get timestamp => integer()();
+
+  IntColumn get controlNumber => integer().nullable()();
+
+  IntColumn get mode => integer()();
+
+  IntColumn get status => integer()();
+
+  TextColumn get inputData => text()();
+
+  IntColumn get latitude => integer().nullable()();
+
+  IntColumn get longitude => integer().nullable()();
+}
+
+@UseMoor(tables: [ValidPasses, InvalidPasses, UsageLogs])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -63,6 +82,9 @@ class AppDatabase extends _$AppDatabase {
         // see https://moor.simonbinder.eu/docs/advanced-features/migrations/
         if (from == 1) {
           await m.addColumn(validPasses, validPasses.status);
+        }
+        if (from <= 2) {
+          await m.createTable(usageLogs);
         }
       },
     );
@@ -113,4 +135,19 @@ class AppDatabase extends _$AppDatabase {
   Future deleteValidPasses() {
     return delete(validPasses).go();
   }
+
+  Future insertUsageLog(final UsageLogsCompanion usageLogsCompanion) =>
+      into(usageLogs).insert(usageLogsCompanion);
+
+  Future<List<UsageLog>> getUsageLogs() => (select(usageLogs).get());
+
+  Future<List<UsageLog>> getUsageLogsByTimestamp(int start, int end) =>
+      (select(usageLogs)..where((t) => t.timestamp.isBetweenValues(start, end)))
+          .get();
+
+  Future<List<UsageLog>> getUsageLogsByControlNumber(int controlNumber) =>
+      (select(usageLogs)..where((t) => t.controlNumber.equals(controlNumber)))
+          .get();
+
+  Future deleteUsageLogs() => delete(usageLogs).go();
 }
