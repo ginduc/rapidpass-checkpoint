@@ -10,6 +10,7 @@ import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/repository/api_repository.dart';
 import 'package:rapidpass_checkpoint/screens/authenticating_screen.dart';
 import 'package:rapidpass_checkpoint/services/app_storage.dart';
+import 'package:rapidpass_checkpoint/services/usage_log_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -54,6 +55,22 @@ class SettingsScreenState extends State<SettingsScreen> {
                   onPressed: appState.databaseRecordCount == 0
                       ? () => Navigator.pushNamed(context, '/updateDatabase')
                       : () => _resetDatabase(context),
+                ),
+              ),
+              InkWell(
+                child: RoundedButton(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                  minWidth: 300.0,
+                  text: 'View Usage Log',
+                  onPressed: () => Navigator.pushNamed(context, '/usageLog'),
+                ),
+              ),
+              InkWell(
+                child: RoundedButton(
+                  padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                  minWidth: 300.0,
+                  text: 'Clear Usage Log',
+                  onPressed: () => _resetUsageLog(context),
                 ),
               ),
               InkWell(
@@ -123,5 +140,19 @@ class SettingsScreenState extends State<SettingsScreen> {
     });
 
     Navigator.pushNamed(context, '/updateDatabase');
+  }
+
+  _resetUsageLog(final BuildContext context) async {
+    bool isConfirmed = false;
+    await DialogHelper.showAlertDialog(
+      context,
+      title: 'Warning!',
+      message: 'Usage Log will be erased. Do you really want to proceed?',
+      onConfirm: () => isConfirmed = true,
+      onCancel: () => isConfirmed = false,
+    );
+
+    if (!isConfirmed) return;
+    UsageLogService.deleteUsageLog(context);
   }
 }

@@ -10,6 +10,7 @@ import 'package:rapidpass_checkpoint/models/app_state.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/qr_scanner_screen.dart';
 import 'package:rapidpass_checkpoint/services/pass_validation_service.dart';
+import 'package:rapidpass_checkpoint/services/usage_log_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -124,6 +125,9 @@ class MainMenu extends StatelessWidget {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
+
+    await UsageLogService.insertUsageLog(context, scanResults);
+
     debugPrint('scanAndValidate() returned $scanResults');
     if (scanResults is ScanResults) {
       Navigator.pushNamed(context, '/scanResults', arguments: scanResults);

@@ -7,6 +7,7 @@ import 'package:rapidpass_checkpoint/models/apor.dart';
 import 'package:rapidpass_checkpoint/models/qr_data.dart';
 import 'package:rapidpass_checkpoint/models/scan_results.dart';
 import 'package:rapidpass_checkpoint/screens/main_menu.dart';
+import 'package:rapidpass_checkpoint/services/usage_log_service.dart';
 import 'package:rapidpass_checkpoint/themes/default.dart';
 
 const borderRadius = 12.0;
@@ -207,6 +208,9 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
   Future _scanAndNavigate(final BuildContext context) async {
     final scanResults = await MainMenu.scanAndValidate(context);
+
+    await UsageLogService.insertUsageLog(context, scanResults);
+
     if (scanResults == null) {
       Navigator.popUntil(context, ModalRoute.withName("/menu"));
       return;
