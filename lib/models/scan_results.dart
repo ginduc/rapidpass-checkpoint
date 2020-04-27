@@ -8,6 +8,7 @@ enum RapidPassField {
   validUntil,
   idOrPlate,
   status,
+  name,
   signature
 }
 
@@ -17,6 +18,7 @@ final fieldNames = {
   RapidPassField.apor: 'APOR',
   RapidPassField.validFrom: 'Valid From',
   RapidPassField.validUntil: 'Valid Until',
+  RapidPassField.name: 'Name',
   RapidPassField.signature: 'Signature'
 };
 

@@ -28,10 +28,10 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
   ByteData _decrypt(final ByteData rawInput) {
     final rawBuffer = rawInput.buffer.asUint8List();
     final Uint8List cipherText = rawBuffer.sublist(2, rawBuffer.length - 4);
-    print('cipherText: ${hex.encode(cipherText)} (${cipherText.length})');
+    debugPrint('cipherText: ${hex.encode(cipherText)} (${cipherText.length})');
     final List<int> signature =
         rawBuffer.sublist(rawBuffer.length - 4, rawBuffer.length);
-    print('signature: ${hex.encode(signature)} (${signature.length})');
+    debugPrint('signature: ${hex.encode(signature)} (${signature.length})');
     // Please don't do this if you need _real_ cryptographic security!
     // Use a _real_, one-time use initialization vector
     final iv = hex.decode('00') as Uint8List;
@@ -40,11 +40,20 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
     cipher.init(false, ParametersWithIV(KeyParameter(key), iv));
 
     final plainText = cipher.process(cipherText);
-    print('plainText: ${hex.encode(plainText)} (${plainText.length})');
+    debugPrint('plainText: ${hex.encode(plainText)} (${plainText.length})');
 
     final Uint8List plainTextWithSignature =
         Uint8List.fromList(plainText + signature);
     return plainTextWithSignature.buffer.asByteData();
+  }
+
+  String getStringFromBytes(final ByteData input, final int offset) {
+    final len = input.getUint8(offset);
+    final List<int> bytes = List(len);
+    for (var i = 0; i < len; ++i) {
+      bytes[i] = input.getUint8(offset + 1 + i);
+    }
+    return asciiDecoder.convert(bytes);
   }
 
   @override
@@ -59,35 +68,47 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
       input = rawInput;
     }
     try {
+      final inputLength = input.lengthInBytes;
+      debugPrint('inputLength: $inputLength');
       final passType = (input.getUint8(0) & 0x80 == 0x80)
           ? PassType.Vehicle
           : PassType.Individual;
-      print('passType: $passType');
+      debugPrint('passType: $passType');
       final aporBytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
       final apor = asciiDecoder.convert(aporBytes);
       final controlCode = input.getUint32(2);
-      print('controlCode: $controlCode (${ControlCode.encode(controlCode)})');
+      debugPrint(
+          'controlCode: $controlCode (${ControlCode.encode(controlCode)})');
       final validFrom = input.getUint32(6);
       debugPrint('validFrom: $validFrom');
       final validUntil = input.getUint32(10);
       debugPrint('validUntil: $validUntil');
       final idOrPlateLen = input.getUint8(14);
-      debugPrint('idOrPlateLen: $idOrPlateLen');
-      final List<int> bytes = List(idOrPlateLen);
-      for (var i = 0; i < idOrPlateLen; ++i) {
-        bytes[i] = input.getUint8(15 + i);
+      final String idOrPlate = getStringFromBytes(input, 14);
+      debugPrint('idOrPlate: $idOrPlate');
+      final int signature = input.getUint32(inputLength - 4);
+      if (inputLength > 15 + idOrPlateLen + 4) {
+        final String name = getStringFromBytes(input, 15 + idOrPlateLen);
+        debugPrint('name: $name');
+        return QrData(
+            passType: passType,
+            apor: apor,
+            controlCode: controlCode,
+            validFrom: validFrom,
+            validUntil: validUntil,
+            idOrPlate: idOrPlate,
+            name: name,
+            signature: signature);
+      } else {
+        return QrData(
+            passType: passType,
+            apor: apor,
+            controlCode: controlCode,
+            validFrom: validFrom,
+            validUntil: validUntil,
+            idOrPlate: idOrPlate,
+            signature: signature);
       }
-      final String idOrPlate = asciiDecoder.convert(bytes);
-      final int signature = input.getUint32(15 + idOrPlateLen);
-      return QrData(
-          passType: passType,
-          apor: apor,
-          controlCode: controlCode,
-          validFrom: validFrom,
-          validUntil: validUntil,
-          idOrPlate: idOrPlate,
-          signature: signature,
-          status: 'APPROVED');
     } catch (e) {
       throw FormatException(e.toString());
     }
