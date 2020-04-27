@@ -10,6 +10,22 @@ void main() {
   final Uint8List encryptionKey =
       hex.decode('d099294ebdae6763ba75d386eae517aa') as Uint8List;
 
+  test('QrCodeDecoder works with special characters in name field', () {
+    final String raw =
+        '//5qFlQbr6l8mdTjKOx05S9ejfETOduxpxgWbCR37qmpnBbcwm65dZahKzf6UJXrd9VctfmkybCmzgRKFbM=';
+    final bytes = base64.decode(raw);
+    final byteData = bytes.buffer.asByteData();
+    final qrData = QrCodeDecoder(encryptionKey).convert(byteData);
+    expect(qrData.passType, equals(PassType.Individual));
+    expect(qrData.apor, equals('GO'));
+    expect(qrData.controlCode, equals(2491777155));
+    expect(qrData.validFrom, equals(1587830400));
+    expect(qrData.validUntil, equals(1589472000));
+    expect(qrData.idOrPlate, equals('ABC1234'));
+    expect(qrData.name, equals('ÐÐÉÉÑÑÖÖÓÓÜÜ毛泽东'));
+    expect(qrData.signature, equals(0x044a15b3));
+  });
+
   test('QrCodeDecoder works with added name field', () {
     final String raw =
         '//5qFlQbr6l8SnZjKCxd5S9ejfETOduxiJHT7vqUIy9sHqdcAfh1u7X54A==';
