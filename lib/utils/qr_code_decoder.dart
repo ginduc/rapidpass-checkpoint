@@ -18,7 +18,7 @@ const int $a = 0x61;
 /// Character 'f'
 const int $f = 0x66;
 
-const AsciiDecoder asciiDecoder = const AsciiDecoder();
+const Utf8Decoder utf8Decoder = const Utf8Decoder();
 
 class QrCodeDecoder extends Converter<ByteData, QrData> {
   final Uint8List key;
@@ -53,7 +53,7 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
     for (var i = 0; i < len; ++i) {
       bytes[i] = input.getUint8(offset + 1 + i);
     }
-    return asciiDecoder.convert(bytes);
+    return utf8Decoder.convert(bytes);
   }
 
   @override
@@ -75,7 +75,7 @@ class QrCodeDecoder extends Converter<ByteData, QrData> {
           : PassType.Individual;
       debugPrint('passType: $passType');
       final aporBytes = [input.getUint8(0) & 0x7f, input.getUint8(1)];
-      final apor = asciiDecoder.convert(aporBytes);
+      final apor = utf8Decoder.convert(aporBytes);
       final controlCode = input.getUint32(2);
       debugPrint(
           'controlCode: $controlCode (${ControlCode.encode(controlCode)})');
